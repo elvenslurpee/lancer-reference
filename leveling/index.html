@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Leveling &amp; Licenses</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a0f;--panel:#0b1118;--border:#1a2d3f;--border2:#1e3348;--accent:#00d4ff;--text:#c8dce8;--text-dim:#4a6880;--text-bright:#eaf4ff;--green:#39ff14;--orange:#ff9f43;--purple:#a29bfe;--red:#ff4444;--gold:#ffd166;--gms:#7ec8e3;--ipsn:#ff9f43;--ssc:#a29bfe;--horus:#55efc4;--ha:#fd79a8}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;z-index:9999}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 24px 80px}
+header{padding:40px 0 28px;border-bottom:1px solid var(--border);margin-bottom:32px;position:relative}
+header::after{content:'';position:absolute;bottom:-1px;left:0;width:280px;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.logo-mark{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:4px;opacity:.6;margin-bottom:6px;text-transform:uppercase}
+h1{font-family:'Exo 2',sans-serif;font-weight:900;font-size:clamp(1.8rem,4vw,3rem);line-height:1;letter-spacing:-1px;text-transform:uppercase;background:linear-gradient(135deg,#fff 0%,var(--gold) 50%,#cc8800 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:3px;margin-top:8px;text-transform:uppercase}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.tab{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--border);border-bottom:none;color:var(--text-dim);cursor:pointer;transition:all .15s;position:relative;top:1px}
+.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab.active{background:var(--panel);color:var(--accent);border-color:var(--accent);border-bottom-color:var(--panel)}
+.section{display:none;padding-top:28px}
+.section.active{display:block}
+.sh{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);padding:6px 0;margin-bottom:18px;border-bottom:1px solid var(--border);position:relative}
+.sh::after{content:'';position:absolute;bottom:-1px;left:0;width:60px;height:1px;background:var(--accent)}
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:28px}
+.rule-card{background:var(--panel);border:1px solid var(--border2);padding:20px}
+.rule-card h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--text-bright);margin-bottom:10px}
+.rule-card p,.rule-card li{font-size:12px;color:var(--text-dim);line-height:1.7}
+.rule-card p+p{margin-top:8px}
+.rule-card ul{padding-left:14px;margin-top:6px}
+.rule-card strong{color:var(--text)}
+
+/* LL TABLE */
+.ll-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:28px}
+.ll-table th{background:var(--panel);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:9px 12px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+.ll-table th:first-child{text-align:left}
+.ll-table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px}
+.ll-table td:first-child{text-align:left;color:var(--gold);font-weight:bold;font-size:13px}
+.ll-table tr:hover td{background:rgba(0,212,255,0.02)}
+.ll-table tr.milestone td{background:rgba(255,209,102,0.06);border-bottom:1px solid rgba(255,209,102,0.2)}
+.ll-table tr.milestone td:first-child{color:var(--gold)}
+.ll-table .bonus-cell{color:var(--green)}
+.grit-val{color:var(--accent)}
+
+/* GAIN CARDS */
+.gain-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.gain-row{display:grid;grid-template-columns:200px 1fr;gap:0;border:1px solid var(--border2)}
+.gain-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:14px 16px;background:var(--panel);color:var(--accent);display:flex;align-items:center;border-right:1px solid var(--border2)}
+.gain-text{padding:14px 16px;font-size:12px;color:var(--text-dim);line-height:1.7}
+.gain-text strong{color:var(--text)}
+
+/* MANUFACTURER CARDS */
+.mfr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px}
+.mfr-card{background:var(--panel);border:1px solid var(--border2);padding:20px;border-top:3px solid currentColor}
+.mfr-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.mfr-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-bottom:12px}
+.mfr-desc{font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:10px}
+.mfr-ranks{font-size:11px;color:var(--text-dim);line-height:1.7}
+.mfr-ranks strong{color:var(--text)}
+
+/* RANK EXAMPLE */
+.rank-example{background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:24px}
+.rank-row{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.rank-row:last-child{border-bottom:none}
+.rank-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;border:1px solid currentColor;text-align:center}
+.rank-i{color:var(--text-dim);border-color:var(--border2)}
+.rank-ii{color:var(--accent);background:rgba(0,212,255,.06)}
+.rank-iii{color:var(--gold);background:rgba(255,209,102,.06)}
+.rank-text{font-size:12px;color:var(--text-dim);line-height:1.65}
+.rank-text strong{color:var(--text)}
+
+/* MOUNT TABLE */
+.mount-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:24px}
+.mount-table th{background:var(--panel);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.mount-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top}
+.mount-table tr:hover td{background:rgba(0,212,255,.02)}
+.mount-table td:first-child{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--text);white-space:nowrap}
+.mount-table td:nth-child(2){color:var(--text-dim);font-size:11px}
+.pip{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:2px;border:1px solid currentColor;text-transform:uppercase;white-space:nowrap}
+.pip-flex{color:#a29bfe;background:rgba(162,155,254,.1)}
+.pip-main{color:#00d4ff;background:rgba(0,212,255,.08)}
+.pip-heavy{color:#ff9f43;background:rgba(255,159,67,.08)}
+.pip-aux{color:#6c8ea0;background:rgba(108,142,160,.1)}
+.pip-mainaux{color:#7ec8e3;background:rgba(126,200,227,.08)}
+.pip-auxaux{color:#5a7a90;background:rgba(90,122,144,.1)}
+
+/* CORE BONUS */
+.cb-rules{background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:24px;font-size:12px;color:var(--text-dim);line-height:1.7}
+.cb-rules strong{color:var(--text)}
+
+/* BUILDING STEPS */
+.build-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.build-step{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;background:var(--panel);border:1px solid var(--border2);padding:14px 16px}
+.step-num{font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--accent);opacity:.5;line-height:1}
+.step-body h4{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-bright);margin-bottom:5px}
+.step-body p{font-size:12px;color:var(--text-dim);line-height:1.65}
+.step-body p strong{color:var(--text)}
+.step-body code{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);background:rgba(0,212,255,.08);padding:1px 5px;border-radius:2px}
+
+/* REALLOC */
+.realloc-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.realloc-row{background:var(--panel);border:1px solid var(--border2);padding:14px 16px;font-size:12px;color:var(--text-dim);line-height:1.65}
+.realloc-row strong{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrapper">
+
+<header>
+  <div class="logo-mark">Section 1 // Building Pilots &amp; Mechs</div>
+  <h1>Leveling &amp; Licenses</h1>
+  <div class="subtitle">LL Progression &middot; What You Gain &middot; Licenses &middot; Mech Building &middot; Reallocation</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('leveling',this)">Leveling Up</button>
+  <button class="tab" onclick="showTab('lltable',this)">LL Table</button>
+  <button class="tab" onclick="showTab('licenses',this)">Licenses</button>
+  <button class="tab" onclick="showTab('talents',this)">Talents</button>
+  <button class="tab" onclick="showTab('corebonuses',this)">Core Bonuses</button>
+  <button class="tab" onclick="showTab('building',this)">Building a Mech</button>
+</nav>
+
+<!-- LEVELING UP -->
+<div id="tab-leveling" class="section active">
+  <div class="sh">When Do You Level Up?</div>
+  <div style="background:var(--panel);border:1px solid var(--border2);padding:20px;margin-bottom:28px;font-size:13px;color:var(--text-dim);line-height:1.8">
+    At the <strong style="color:var(--text)">end of every mission</strong> &mdash; whether it succeeded or failed &mdash; all characters advance one License Level (LL). This happens during the Debrief stage. Maximum LL is <strong style="color:var(--text)">12</strong>.
+  </div>
+
+  <div class="sh">What You Gain Each Level</div>
+  <div class="gain-list">
+    <div class="gain-row"><div class="gain-label">+1 Trigger</div><div class="gain-text">Add <strong>+2 to an existing trigger</strong>, or take a <strong>new trigger at +2</strong>. Triggers max out at +6. Your pilot's on-foot skills keep growing with their experience.</div></div>
+    <div class="gain-row"><div class="gain-label">+1 Mech Skill</div><div class="gain-text">Add <strong>+1 to any mech skill</strong> (HULL, AGILITY, SYSTEMS, or ENGINEERING). Each point also improves your mech's base stats. Maximum +6 in any single skill.</div></div>
+    <div class="gain-row"><div class="gain-label">+1 Talent Rank</div><div class="gain-text"><strong>Advance an existing talent</strong> to the next rank (I&rarr;II or II&rarr;III), or <strong>take a new talent at rank I</strong>. Talents define your combat style and give special abilities that only apply while piloting a mech.</div></div>
+    <div class="gain-row"><div class="gain-label">+1 License Rank</div><div class="gain-text">Spend one rank on <strong>any manufacturer's license</strong> (must buy ranks in order: I before II before III). Unlocks new weapons, systems, and frames. GMS gear is always available at no license cost.</div></div>
+    <div class="gain-row" style="border-color:rgba(255,209,102,.4)"><div class="gain-label" style="color:var(--gold)">+GRIT (auto)</div><div class="gain-text"><strong>GRIT = half your LL, rounded up.</strong> Automatically increases as you level. GRIT adds to: pilot HP, mech HP, mech SP, attack rolls, and Save Target. First GRIT point arrives at LL1.</div></div>
+    <div class="gain-row" style="border-color:rgba(57,255,20,.3)"><div class="gain-label" style="color:var(--green)">Core Bonus (LL3/6/9/12)</div><div class="gain-text">At every <strong>third LL</strong>, choose a powerful <strong>Core Bonus</strong> &mdash; a permanent improvement to all mechs you build. GMS bonuses are always available. Manufacturer bonuses require 3 ranks in that manufacturer's licenses to qualify.</div></div>
+  </div>
+
+  <div class="sh">Reallocation Options (choose one per level-up)</div>
+  <div style="background:var(--panel);border:1px solid var(--border2);padding:16px 20px;margin-bottom:14px;font-size:12px;color:var(--text-dim);line-height:1.7">
+    Every time your LL increases, you may <em>optionally</em> choose one of the following reallocations in addition to your normal gains:
+  </div>
+  <div class="realloc-list">
+    <div class="realloc-row"><strong>Reallocate a talent:</strong> Move all rank points from one talent to any other talent (at equivalent rank). If you had Gunslinger II, you could swap to Spotter II instead.</div>
+    <div class="realloc-row"><strong>Reallocate a license:</strong> Move all rank points from one manufacturer's license to any other. If you had IPS-N Raleigh III and want to try HORUS Goblin, you can swap all 3 ranks over. Note: if this causes you to lose a Core Bonus qualification, you must replace that Core Bonus with one you now qualify for.</div>
+    <div class="realloc-row"><strong>Replace a Core Bonus:</strong> Swap one Core Bonus you have for another you qualify for. Useful if your build direction has changed.</div>
+  </div>
+  <div style="background:rgba(255,209,102,.06);border:1px solid rgba(255,209,102,.25);padding:14px 20px;font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:28px">
+    <strong style="color:var(--gold)">Important:</strong> Reallocation is one choice per level-up. You can't reallocate a talent AND a license in the same level-up. Choose strategically.
+  </div>
+
+  <div class="sh">Starting at LL0</div>
+  <div class="rule-grid">
+    <div class="rule-card"><h3>Pilot</h3><ul><li>Choose a <strong>background</strong></li><li><strong>4 triggers at +2</strong> each</li><li><strong>1 point at +2</strong> or <strong>2 points at +1</strong> each in mech skills</li><li><strong>3 rank I talents</strong> of your choice</li></ul></div>
+    <div class="rule-card"><h3>Mech</h3><ul><li>Access to all <strong>GMS gear</strong> (no license needed)</li><li>Only available frame: <strong>GMS-SP1 Everest</strong></li><li>Mech stats from your mech skill distribution</li><li>GRIT = 0 at LL0 (first GRIT at LL1)</li></ul></div>
+    <div class="rule-card"><h3>No License Points Yet</h3><p>At LL0 you have <strong>0 license points</strong>. You get your first at LL1. This is intentional &mdash; LL0 is about learning the Everest and GMS fundamentals before expanding into manufacturer-specific gear.</p></div>
+  </div>
+</div>
+
+<!-- LL TABLE -->
+<div id="tab-lltable" class="section">
+  <div class="sh">Full Progression Table</div>
+  <div style="font-size:12px;color:var(--text-dim);line-height:1.7;background:var(--panel);border:1px solid var(--border2);padding:14px 18px;margin-bottom:20px">
+    <strong style="color:var(--text)">How to read this table:</strong> All values are <em>cumulative totals</em> at that LL, not per-level gains. Trigger and mech skill points have a cap of +6 in any individual trigger/skill, but total points can exceed that cap (allowing you to invest in multiple skills). Gold rows are Core Bonus milestones.
+  </div>
+  <table class="ll-table">
+    <tr>
+      <th>LL</th>
+      <th>GRIT</th>
+      <th>Mech Skill Pts</th>
+      <th>License Pts</th>
+      <th>Talent Pts</th>
+      <th>Core Bonuses</th>
+      <th>Trigger Pts</th>
+    </tr>
+    <tr><td>0</td><td class="grit-val">0</td><td>2</td><td>0</td><td>3</td><td>&mdash;</td><td>8</td></tr>
+    <tr><td>1</td><td class="grit-val">1</td><td>3</td><td>1</td><td>4</td><td>&mdash;</td><td>10</td></tr>
+    <tr><td>2</td><td class="grit-val">1</td><td>4</td><td>2</td><td>5</td><td>&mdash;</td><td>12</td></tr>
+    <tr class="milestone"><td>3 &#11088;</td><td class="grit-val">2</td><td>5</td><td>3</td><td>6</td><td class="bonus-cell">1</td><td>14</td></tr>
+    <tr><td>4</td><td class="grit-val">2</td><td>6</td><td>4</td><td>7</td><td class="bonus-cell">1</td><td>16</td></tr>
+    <tr><td>5</td><td class="grit-val">3</td><td>7</td><td>5</td><td>8</td><td class="bonus-cell">1</td><td>18</td></tr>
+    <tr class="milestone"><td>6 &#11088;</td><td class="grit-val">3</td><td>8</td><td>6</td><td>9</td><td class="bonus-cell">2</td><td>20</td></tr>
+    <tr><td>7</td><td class="grit-val">4</td><td>9</td><td>7</td><td>10</td><td class="bonus-cell">2</td><td>22</td></tr>
+    <tr><td>8</td><td class="grit-val">4</td><td>10</td><td>8</td><td>11</td><td class="bonus-cell">2</td><td>24</td></tr>
+    <tr class="milestone"><td>9 &#11088;</td><td class="grit-val">5</td><td>11</td><td>9</td><td>12</td><td class="bonus-cell">3</td><td>26</td></tr>
+    <tr><td>10</td><td class="grit-val">5</td><td>12</td><td>10</td><td>13</td><td class="bonus-cell">3</td><td>28</td></tr>
+    <tr><td>11</td><td class="grit-val">6</td><td>13</td><td>11</td><td>14</td><td class="bonus-cell">3</td><td>30</td></tr>
+    <tr class="milestone"><td>12 &#11088;</td><td class="grit-val">6</td><td>14</td><td>12</td><td>15</td><td class="bonus-cell">4</td><td>32</td></tr>
+  </table>
+  <div style="font-size:11px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:1px">&#11088; = Core Bonus milestone &mdash; you choose a new Core Bonus at LL 3, 6, 9, and 12.</div>
+</div>
+
+<!-- LICENSES -->
+<div id="tab-licenses" class="section">
+  <div class="sh">How Licenses Work</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>License Structure</h3><p>Each manufacturer offers multiple licenses. Every license has <strong>three ranks (I, II, III)</strong> that must be purchased in order &mdash; you can't buy rank III without first having rank I and II. Each rank unlocks a set of weapons, systems, or frames.</p></div>
+    <div class="rule-card"><h3>Spending License Points</h3><p>Each level-up gives you <strong>+1 license point</strong> to spend on any rank of any manufacturer's license. You can spread points across many manufacturers or go deep on one. GMS gear never costs license points &mdash; it's always available.</p></div>
+    <div class="rule-card"><h3>Access is Permanent</h3><p>You never lose access to licensed gear. You're assumed to always have access through influence, patronage, wealth, or rank. Advanced 3D printing means even a destroyed mech can be reprinted during downtime.</p></div>
+    <div class="rule-card"><h3>Mixing and Matching</h3><p>Licensed gear is fully interchangeable across your mechs. An LL5 pilot with IPS-N Raleigh III and SSC Metalmark II can take any Raleigh weapon and mount it on the Metalmark frame, or vice versa. Your frame doesn't restrict your weapons beyond mount type.</p></div>
+  </div>
+
+  <div class="sh">What Each Rank Unlocks</div>
+  <div class="rank-example">
+    <div class="rank-row"><span class="rank-badge rank-i">Rank I</span><div class="rank-text">Weapons, systems, and gear specific to this manufacturer. First entry point into the license. <strong>Does not unlock the frame.</strong></div></div>
+    <div class="rank-row"><span class="rank-badge rank-ii">Rank II</span><div class="rank-text">More weapons and systems, plus the manufacturer's <strong>mech FRAME</strong> &mdash; this is when you unlock the actual chassis to pilot. Additional Rank I gear also becomes available.</div></div>
+    <div class="rank-row"><span class="rank-badge rank-iii">Rank III</span><div class="rank-text">The most powerful and advanced gear in that license line &mdash; often including unique or legendary weapons and systems. Also qualifies you for that manufacturer's <strong>Core Bonuses</strong>.</div></div>
+  </div>
+
+  <div class="sh">The Five Manufacturers</div>
+  <div class="mfr-grid">
+    <div class="mfr-card" style="color:var(--gms)">
+      <div class="mfr-name" style="color:var(--gms)">GMS</div>
+      <div class="mfr-tag">General Massive Systems &middot; Always Available</div>
+      <div class="mfr-desc">The galactic standard. Reliable, interoperable, broadly available. GMS gear requires <em>no license points</em> &mdash; all pilots have access from LL0. The Everest is the universal starting frame.</div>
+      <div class="mfr-ranks"><strong>Design identity:</strong> Jack-of-all-trades, adaptable, accessible. GMS Core Bonuses are also available to all pilots regardless of licenses held.</div>
+    </div>
+    <div class="mfr-card" style="color:var(--ipsn)">
+      <div class="mfr-name" style="color:var(--ipsn)">IPS-Northstar</div>
+      <div class="mfr-tag">IPS-N &middot; Shipping &amp; Logistics Turned Military</div>
+      <div class="mfr-desc">Originally a shipping consortium. IPS-N mechs are heavy, tough, and built to last. They reward aggressive, in-your-face combat and tankiness over subtlety.</div>
+      <div class="mfr-ranks"><strong>Frames:</strong> Blackbeard, Drake, Lancaster, Nelson, Raleigh, Tortuga, Vlad<br><strong>Design identity:</strong> High HP, armor, close quarters, defender/striker roles.</div>
+    </div>
+    <div class="mfr-card" style="color:var(--ssc)">
+      <div class="mfr-name" style="color:var(--ssc)">Smith-Shimano Corpro</div>
+      <div class="mfr-tag">SSC &middot; Bespoke High-Performance Engineering</div>
+      <div class="mfr-desc">Luxury mechs for discerning pilots. SSC gear is fast, elegant, and often experimental. Favors evasion, stealth, and precision over brute force.</div>
+      <div class="mfr-ranks"><strong>Frames:</strong> Black Witch, Dusk Wing, Metalmark, Monarch, Mourning Cloak, Swallowtail<br><strong>Design identity:</strong> High evasion, E-defense, stealth, support/controller roles.</div>
+    </div>
+    <div class="mfr-card" style="color:var(--horus)">
+      <div class="mfr-name" style="color:var(--horus)">HORUS</div>
+      <div class="mfr-tag">HORUS &middot; Anarchist Paracausal Collective</div>
+      <div class="mfr-desc">Not a corporation &mdash; a hacker collective that distributes weapons and frames through unconventional means. HORUS gear is strange, powerful, and often breaks the rules. Highly technical, high-reward, high-chaos.</div>
+      <div class="mfr-ranks"><strong>Frames:</strong> Goblin, Gorgon, Hydra, Manticore, Minotaur, Pegasus<br><strong>Design identity:</strong> E-war, control, AI systems, reality-bending effects.</div>
+    </div>
+    <div class="mfr-card" style="color:var(--ha)">
+      <div class="mfr-name" style="color:var(--ha)">Harrison Armory</div>
+      <div class="mfr-tag">HA &middot; The Arms Dealer of the Galaxy</div>
+      <div class="mfr-desc">The largest weapons manufacturer in human space. HA mechs are weapons platforms: powerful, aggressive, and designed to end fights fast. Known for extreme heat generation and reactor-pushed performance.</div>
+      <div class="mfr-ranks"><strong>Frames:</strong> Barbarossa, Genghis, Iskander, Napoleon, Saladin, Sherman, Tokugawa<br><strong>Design identity:</strong> High damage, heat mechanics, danger zone synergies, artillery roles.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TALENTS -->
+<div id="tab-talents" class="section">
+  <div class="sh">What Are Talents?</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>Overview</h3><p>Talents are special enhancements representing your ingenuity and experience as a mech pilot. They give benefits and abilities tied to specific weapon types, playstyles, or systems. With a few exceptions, talents only affect your character's capabilities while piloting a mech (not on foot).</p></div>
+    <div class="rule-card"><h3>Talent Ranks</h3><p>Each talent has three ranks (I, II, III) that must be purchased in order. At <strong>LL0</strong>, you start with <strong>three rank I talents</strong> of your choice. Each level-up gives +1 talent rank &mdash; spend it to advance an existing talent or take a new one at rank I.</p></div>
+    <div class="rule-card"><h3>Reallocating Talents</h3><p>Once per level-up, you may <strong>reallocate all points from one talent to any other</strong> at equivalent rank. If you had Gunslinger II and want Spotter II instead, you can make that swap. You lose all benefits from the old talent immediately.</p></div>
+    <div class="rule-card"><h3>License Independence</h3><p>Talents are separate from licenses &mdash; you can take any talent regardless of what manufacturer licenses you hold. A pilot with only IPS-N licenses can still take HORUS-flavored talents. Talent choice is entirely based on your playstyle, not your frame.</p></div>
+  </div>
+
+  <div class="sh">Talent Categories (Examples)</div>
+  <div class="rule-grid">
+    <div class="rule-card"><h3>Combat Talents</h3><p>Enhance your effectiveness with specific weapon types or attack styles. Examples: <strong>Gunslinger</strong> (pistols), <strong>Crack Shot</strong> (ranged attacks), <strong>Duelist</strong> (melee), <strong>Brawler</strong> (grapple &amp; ram).</p></div>
+    <div class="rule-card"><h3>Electronic Warfare</h3><p>Boost your tech attack capabilities and Invade options. Examples: <strong>Hacker</strong> (adds powerful Invade options), <strong>Spotter</strong> (enhances Lock On), <strong>Nuclear Cavalier</strong> (heat and reactor synergies).</p></div>
+    <div class="rule-card"><h3>Mobility &amp; Positioning</h3><p>Improve your mech's movement and position in combat. Examples: <strong>Infiltrator</strong> (stealth and flanking), <strong>Walking Armory</strong> (carry more weapons), <strong>Skirmisher</strong> (movement reactions).</p></div>
+    <div class="rule-card"><h3>Support &amp; Leadership</h3><p>Enhance your ability to assist allies. Examples: <strong>Leader</strong> (inspire nearby allies), <strong>Tactician</strong> (coordinate attacks), <strong>Fabricator</strong> (deploy objects and fortifications).</p></div>
+    <div class="rule-card"><h3>Utility &amp; Survival</h3><p>General resilience and adaptability. Examples: <strong>Empath</strong> (support and read NPCs), <strong>Brutal</strong> (critical hit enhancement), <strong>Exemplar</strong> (defense and counterattack).</p></div>
+    <div class="rule-card"><h3>Drone &amp; Deployable</h3><p>Command autonomous units in combat. Examples: <strong>Drone Commander</strong> (control multiple drones), <strong>Techno</strong> (deployable system synergies). Often pairs well with HORUS licenses.</p></div>
+  </div>
+</div>
+
+<!-- CORE BONUSES -->
+<div id="tab-corebonuses" class="section">
+  <div class="sh">What Are Core Bonuses?</div>
+  <div class="cb-rules">
+    <p>Core Bonuses are <strong>permanent improvements applied to all mechs you build</strong> &mdash; not just one frame. They stack and apply regardless of which frame you're currently piloting. You get to choose a new Core Bonus at <strong>LL 3, 6, 9, and 12</strong> (four total at max level).</p>
+    <p style="margin-top:10px"><strong>GMS Core Bonuses</strong> are always available to all pilots. <strong>Manufacturer Core Bonuses</strong> require you to have at least <strong>3 license ranks</strong> in that manufacturer's licenses to qualify (e.g., Raleigh III counts as 3 ranks, or Raleigh I + Drake I + Nelson I = 3 ranks across IPS-N licenses).</p>
+    <p style="margin-top:10px"><strong>Replacing a Core Bonus:</strong> Once per level-up, you may replace one Core Bonus with another you now qualify for. Useful when reallocating licenses causes you to lose qualification, or when your build direction changes.</p>
+  </div>
+
+  <div class="sh">GMS Core Bonuses (Always Available)</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>Reinforced Frame</h3><p>+5 HP to all mechs you build.</p></div>
+    <div class="rule-card"><h3>Universal Compatibility</h3><p>You may install one additional system or weapon, chosen from any license you hold, without it counting toward your SP limit (once per mech build). The system/weapon must still fit a valid mount.</p></div>
+    <div class="rule-card"><h3>Integrated Weapon</h3><p>Your mech gains one additional Aux/Aux mount, which cannot be modified by talents or core bonuses.</p></div>
+    <div class="rule-card"><h3>Overpower Caliber</h3><p>1/round, when you deal damage with a weapon, you may deal +2 bonus damage. Only usable once per round.</p></div>
+    <div class="rule-card"><h3>Improved Armament</h3><p>Your mech gains one additional Flex mount.</p></div>
+    <div class="rule-card"><h3>Hardened Frame</h3><p>Your mech gains +1 Armor (max 4).</p></div>
+  </div>
+
+  <div class="sh">Manufacturer Core Bonuses (Require 3 Ranks in that Manufacturer)</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card" style="border-top:2px solid var(--ipsn)"><h3 style="color:var(--ipsn)">IPS-N Examples</h3><p><strong>Reinforced Frame:</strong> +5 HP (also a GMS bonus).<br><strong>Full Subjectivity Sync:</strong> Gain +1 Accuracy on all melee attacks and Ram/Grapple checks.<br><strong>The Lesson of the Open Door:</strong> Gain RESISTANCE to a damage type when you damage an enemy with that type.</p></div>
+    <div class="rule-card" style="border-top:2px solid var(--ssc)"><h3 style="color:var(--ssc)">SSC Examples</h3><p><strong>Ghost:</strong> 1/round, when you become Hidden you may also Boost as a free action.<br><strong>Fomorian Drive:</strong> When you Boost, you can fly for that movement.<br><strong>Quantum Entanglement:</strong> 1/scene, teleport up to your Sensor range.</p></div>
+    <div class="rule-card" style="border-top:2px solid var(--horus)"><h3 style="color:var(--horus)">HORUS Examples</h3><p><strong>Lesson of Disbelief:</strong> +1 Accuracy on all SYSTEMS checks, +2 E-Defense.<br><strong>Lesson of the Open Door:</strong> After hitting with a tech attack, your next melee attack vs. same target gains +1 Accuracy and damage cannot be reduced.<br><strong>Autochthonous Map-Body:</strong> You can deploy in any valid space within your Sensors at mission start.</p></div>
+    <div class="rule-card" style="border-top:2px solid var(--ha)"><h3 style="color:var(--ha)">Harrison Armory Examples</h3><p><strong>Tachyon Lance Capacitor:</strong> 1/round, deal +1d6 energy damage on hit with a heavy weapon.<br><strong>Apocalypse Rail:</strong> Your Heavy weapons gain +5 Range.<br><strong>The Hunger:</strong> When you destroy a mech or character, immediately heal 2 HP.</p></div>
+  </div>
+</div>
+
+<!-- BUILDING A MECH -->
+<div id="tab-building" class="section">
+  <div class="sh">Step-by-Step Mech Construction</div>
+  <div class="build-steps">
+    <div class="build-step"><div class="step-num">1</div><div class="step-body"><h4>Choose a Frame</h4><p>Pick a FRAME from your available licenses. The frame determines your mech's base stats (HP, Evasion, Speed, etc.), available mounts, SP, and unique Core System. At LL0, only the <strong>GMS Everest</strong> is available. Each rank II license unlocks a new frame.</p></div></div>
+    <div class="build-step"><div class="step-num">2</div><div class="step-body"><h4>Apply Mech Skill Bonuses</h4><p>Each point in your mech skills improves your mech's stats: <code>HULL: +2 HP/pt, +1 Repair Cap/2pt</code> &middot; <code>AGILITY: +1 Evasion/pt, +1 Speed/2pt</code> &middot; <code>SYSTEMS: +1 Tech Atk &amp; E-Def/pt, +1 SP/2pt</code> &middot; <code>ENGINEERING: +1 Heat Cap/pt, +1 limited use/2pt</code></p></div></div>
+    <div class="build-step"><div class="step-num">3</div><div class="step-body"><h4>Add GRIT</h4><p>GRIT (= half LL, rounded up) adds to your mech's <strong>HP, SP, attack rolls, and Save Target</strong>. At LL0, GRIT is 0. First point arrives at LL1.</p></div></div>
+    <div class="build-step"><div class="step-num">4</div><div class="step-body"><h4>Choose Weapons</h4><p>Assign weapons to your frame's mounts. Any weapon you have a license for can go on any compatible mount &mdash; mixing manufacturers is allowed. Unless a weapon has the <strong>Unique</strong> tag, you can take it multiple times.</p></div></div>
+    <div class="build-step"><div class="step-num">5</div><div class="step-body"><h4>Choose Systems</h4><p>Spend your <strong>SP (System Points)</strong> on systems from any license you hold. Each system lists its SP cost. Unless a system has the <strong>Unique</strong> tag, you can take it multiple times. You cannot exceed your total SP.</p></div></div>
+    <div class="build-step"><div class="step-num">6</div><div class="step-body"><h4>Apply Core Bonuses</h4><p>Write down your active Core Bonuses (gained at LL 3, 6, 9, 12). Core Bonuses apply to all mechs you build &mdash; you don't need to pick new ones per mech.</p></div></div>
+    <div class="build-step"><div class="step-num">7</div><div class="step-body"><h4>Note Talents</h4><p>Record your active talents and their ranks. Talent effects apply while you're piloting any mech &mdash; they're pilot-level abilities, not mech-specific. Done!</p></div></div>
+  </div>
+
+  <div class="sh">Mount Types</div>
+  <table class="mount-table">
+    <tr><th>Mount Type</th><th>What It Can Hold</th></tr>
+    <tr><td><span class="pip pip-main">Main</span></td><td>One Main weapon or one Auxiliary weapon.</td></tr>
+    <tr><td><span class="pip pip-heavy">Heavy</span></td><td>One Heavy, Main, or Auxiliary weapon (larger mounts can hold smaller weapons).</td></tr>
+    <tr><td><span class="pip pip-aux">Aux/Aux</span></td><td>Up to two Auxiliary weapons.</td></tr>
+    <tr><td><span class="pip pip-mainaux">Main/Aux</span></td><td>One Main weapon and one Auxiliary weapon, or two Auxiliary weapons.</td></tr>
+    <tr><td><span class="pip pip-flex">Flex</span></td><td>One Main weapon, or up to two Auxiliary weapons.</td></tr>
+    <tr><td>Integrated</td><td>A specific weapon built into the frame. Cannot be changed, modified, or lost (unless the frame trait specifies otherwise).</td></tr>
+  </table>
+
+  <div class="sh">Key Rules When Building</div>
+  <div class="rule-grid">
+    <div class="rule-card"><h3>Smaller in Larger</h3><p>You can always install a smaller weapon into a larger mount. An Auxiliary weapon can go in any mount. A Main weapon can go in a Heavy mount. Only a Heavy weapon specifically requires a Heavy mount.</p></div>
+    <div class="rule-card"><h3>SP Limit</h3><p>Your SP (System Points) is your total budget for systems. GRIT and SYSTEMS skill both contribute to your SP total. You cannot exceed your SP. Weapons don't cost SP unless they note an SP cost.</p></div>
+    <div class="rule-card"><h3>Unique Tag</h3><p>Items with the <strong>Unique</strong> tag can only be installed <em>once per mech</em> (not once per character). If you build a second mech, you can take it again on that mech, but not twice on the same mech.</p></div>
+    <div class="rule-card"><h3>Reprinting Mechs</h3><p>You can print an entirely new mech configuration during a Full Repair (with proper facilities). You don't lose old mech configurations &mdash; you can maintain multiple builds and switch between missions. Only one mech is active per mission.</p></div>
+  </div>
+</div>
+
+</div>
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

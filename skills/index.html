@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Skills &amp; Narrative Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a0f;--panel:#0b1118;--border:#1a2d3f;--border2:#1e3348;--accent:#00d4ff;--text:#c8dce8;--text-dim:#4a6880;--text-bright:#eaf4ff;--green:#39ff14;--orange:#ff9f43;--purple:#a29bfe;--red:#ff4444;--gold:#ffd166;--ha:#fd79a8}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;font-weight:300;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;z-index:9999}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 24px 80px}
+header{padding:40px 0 28px;border-bottom:1px solid var(--border);margin-bottom:32px;position:relative}
+header::after{content:'';position:absolute;bottom:-1px;left:0;width:280px;height:2px;background:linear-gradient(90deg,var(--green),transparent)}
+.logo-mark{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:4px;opacity:.6;margin-bottom:6px;text-transform:uppercase}
+h1{font-family:'Exo 2',sans-serif;font-weight:900;font-size:clamp(1.8rem,4vw,3rem);line-height:1;letter-spacing:-1px;text-transform:uppercase;background:linear-gradient(135deg,#fff 0%,var(--green) 60%,#006600 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:3px;margin-top:8px;text-transform:uppercase}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.tab{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--border);border-bottom:none;color:var(--text-dim);cursor:pointer;transition:all .15s;position:relative;top:1px}
+.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab.active{background:var(--panel);color:var(--accent);border-color:var(--accent);border-bottom-color:var(--panel)}
+.section{display:none;padding-top:28px}
+.section.active{display:block}
+.sh{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);padding:6px 0;margin-bottom:18px;border-bottom:1px solid var(--border);position:relative}
+.sh::after{content:'';position:absolute;bottom:-1px;left:0;width:60px;height:1px;background:var(--accent)}
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:28px}
+.rule-card{background:var(--panel);border:1px solid var(--border2);padding:20px}
+.rule-card h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--text-bright);margin-bottom:10px}
+.rule-card p,.rule-card li{font-size:12px;color:var(--text-dim);line-height:1.7}
+.rule-card p+p{margin-top:8px}
+.rule-card ul{padding-left:14px;margin-top:6px}
+.rule-card strong{color:var(--text)}
+.outcome-stack{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.outcome-row{display:grid;grid-template-columns:100px 1fr;border:1px solid var(--border2)}
+.outcome-val{font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:bold;padding:12px 14px;display:flex;align-items:center;justify-content:center;text-align:center}
+.outcome-val.fail{background:rgba(255,68,68,.1);color:var(--red);border-right:1px solid rgba(255,68,68,.3)}
+.outcome-val.ok{background:rgba(0,212,255,.07);color:var(--accent);border-right:1px solid rgba(0,212,255,.2)}
+.outcome-val.crit{background:rgba(57,255,20,.07);color:var(--green);border-right:1px solid rgba(57,255,20,.25)}
+.outcome-val.risky{background:rgba(255,159,67,.07);color:var(--orange);border-right:1px solid rgba(255,159,67,.25)}
+.outcome-text{padding:12px 16px;font-size:12px;color:var(--text-dim);line-height:1.65}
+.outcome-text strong{color:var(--text)}
+.diff-row{display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center;margin-bottom:10px;padding:12px 16px;background:var(--panel);border:1px solid var(--border2)}
+.diff-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;padding:4px 8px;border-radius:2px;text-transform:uppercase;text-align:center;border:1px solid currentColor}
+.diff-normal{color:var(--text-dim);border-color:var(--border2)}
+.diff-diff{color:var(--orange);background:rgba(255,159,67,.08)}
+.diff-risky{color:var(--ha);background:rgba(253,121,168,.08)}
+.diff-heroic{color:var(--purple);background:rgba(162,155,254,.08)}
+.diff-text{font-size:12px;color:var(--text-dim);line-height:1.65}
+.diff-text strong{color:var(--text)}
+.trigger-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:28px}
+.trigger-card{background:var(--panel);border:1px solid var(--border2);padding:16px}
+.trigger-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.trigger-desc{font-size:11px;color:var(--text-dim);line-height:1.65}
+.mech-skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px}
+.mech-skill{background:var(--panel);border:1px solid var(--border2);padding:20px}
+.ms-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:var(--text-bright);margin-bottom:4px}
+.ms-bonus{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:12px}
+.ms-desc{font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:10px}
+.ms-when{font-size:11px;color:var(--text-dim);line-height:1.65}
+.ms-when strong{display:block;margin-bottom:4px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim)}
+.dt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:28px}
+.dt-card{background:var(--panel);border:1px solid var(--border2);padding:20px}
+.dt-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.dt-desc{font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:12px}
+.dt-outcomes{display:flex;flex-direction:column;gap:5px}
+.dt-row{display:grid;grid-template-columns:52px 1fr;gap:8px;align-items:start}
+.dt-val{font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 6px;text-align:center;border-radius:2px;border:1px solid currentColor}
+.dt-fail{color:var(--red);background:rgba(255,68,68,.08)}
+.dt-ok{color:var(--accent);background:rgba(0,212,255,.06)}
+.dt-crit{color:var(--green);background:rgba(57,255,20,.06)}
+.dt-text{font-size:11px;color:var(--text-dim);line-height:1.6}
+.dt-text strong{color:var(--text)}
+.res-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:28px}
+.res-table th{background:var(--panel);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.res-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:top}
+.res-table tr:hover td{background:rgba(0,212,255,0.02)}
+.res-table td:first-child{color:var(--text);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;white-space:nowrap}
+.res-table td:nth-child(2){color:var(--text-dim)}
+.con-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:24px}
+.con-card{background:var(--panel);border:1px solid var(--border2);padding:14px 16px}
+.con-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:5px}
+.con-desc{font-size:11px;color:var(--text-dim);line-height:1.65}
+.con-desc strong{color:var(--text)}
+.stat-row-p{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.stat-pill{background:var(--panel);border:1px solid var(--border2);padding:10px 18px;text-align:center}
+.stat-pill .sp-val{font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--accent);display:block}
+.stat-pill .sp-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase}
+.bg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:24px}
+.bg-card{background:var(--panel);border:1px solid var(--border2);padding:12px 14px}
+.bg-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--text-bright);margin-bottom:4px}
+.bg-triggers{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.5px;line-height:1.6}
+#tooltip{display:none;position:fixed;background:#0a1520;border:1px solid var(--border2);box-shadow:0 6px 24px rgba(0,0,0,.7);padding:12px 14px;width:260px;z-index:9000;pointer-events:none;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div id="tooltip"><span id="tip-name" style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#eaf4ff;margin-bottom:6px;display:block"></span><span id="tip-body" style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:300;color:#4a6880;line-height:1.65"></span></div>
+<div class="wrapper">
+
+<header>
+  <div class="logo-mark">Section 2 // Missions, Uptime &amp; Downtime</div>
+  <h1>Skills &amp; Narrative Play</h1>
+  <div class="subtitle">Skill Checks &middot; Triggers &middot; Downtime &middot; Pilot Rules &middot; Mission Structure</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('checks',this)">Skill Checks</button>
+  <button class="tab" onclick="showTab('triggers',this)">Triggers</button>
+  <button class="tab" onclick="showTab('mechskills',this)">Mech Skills</button>
+  <button class="tab" onclick="showTab('downtime',this)">Downtime Actions</button>
+  <button class="tab" onclick="showTab('reserves',this)">Reserves</button>
+  <button class="tab" onclick="showTab('pilotrules',this)">Pilot Rules</button>
+  <button class="tab" onclick="showTab('missions',this)">Mission Structure</button>
+</nav>
+
+<!-- SKILL CHECKS -->
+<div id="tab-checks" class="section active">
+  <div class="sh">Core Mechanic</div>
+  <div class="rule-grid">
+    <div class="rule-card"><h3>The Roll</h3><p>Roll <strong>1d20</strong> and add modifiers. Target number is <strong>10</strong>. On 10+: success. On 9 or less: failure and consequences.</p><p>You don't need a trigger to roll &mdash; you can always roll 1d20 with no bonus. Only roll when there are real <strong>consequences for failure</strong>.</p></div>
+    <div class="rule-card"><h3>When to Roll</h3><p>Only in <strong>tense situations</strong> where failure matters: bar fights, infiltration, hacking, negotiation, dangerous travel, picking pockets. Don't roll for mundane tasks &mdash; pilots succeed automatically at things within their background unless something genuinely complicates it.</p></div>
+    <div class="rule-card"><h3>Modifiers</h3><p><strong>Accuracy (+1d6):</strong> Roll an extra d6, add the highest to your d20.</p><p><strong>Difficulty (+1d6):</strong> Roll an extra d6, subtract the highest from your d20.</p><p>Accuracy and Difficulty cancel out 1:1. Sources: triggers, backgrounds, mech skills (for mech actions), teamwork, and GM judgment.</p></div>
+    <div class="rule-card"><h3>Teamwork</h3><p>When others assist, <strong>only one pilot rolls</strong>. The roller gains <strong>+1 Accuracy</strong> regardless of how many help. However, <strong>all helpers suffer the consequences</strong> of failure.</p></div>
+  </div>
+
+  <div class="sh">Difficulty Levels</div>
+  <div style="margin-bottom:28px">
+    <div class="diff-row"><span class="diff-badge diff-normal">Normal</span><div class="diff-text">No modifier. Roll 1d20, succeed on 10+. Standard for most actions.</div></div>
+    <div class="diff-row"><span class="diff-badge diff-diff">Difficult</span><div class="diff-text"><strong>+1 Difficulty.</strong> The task is harder than normal &mdash; heavy guards, extreme conditions, etc.</div></div>
+    <div class="diff-row"><span class="diff-badge diff-risky">Risky</span><div class="diff-text"><strong>Consequences apply even on success</strong> unless you roll 20+. The action still succeeds on 10+, but something bad also happens on anything under 20.</div></div>
+    <div class="diff-row"><span class="diff-badge diff-heroic">Heroic</span><div class="diff-text"><strong>Success only on 20+.</strong> Near-impossible feats. Consequences still apply on any result under 20. Can also be Difficult on top of Heroic.</div></div>
+  </div>
+
+  <div class="sh">Outcomes</div>
+  <div class="outcome-stack" style="max-width:700px;margin-bottom:28px">
+    <div class="outcome-row"><div class="outcome-val fail">9 or less</div><div class="outcome-text"><strong>Failure.</strong> You do not accomplish your goal and suffer the established consequences. Cannot retry under the same circumstances.</div></div>
+    <div class="outcome-row"><div class="outcome-val ok">10&ndash;19</div><div class="outcome-text"><strong>Success.</strong> You accomplish your goal. On a Risky roll, you also suffer consequences.</div></div>
+    <div class="outcome-row"><div class="outcome-val crit">20+</div><div class="outcome-text"><strong>Full success.</strong> You accomplish your goal with no complications. On a Risky roll, 20+ is the only way to avoid consequences entirely.</div></div>
+    <div class="outcome-row"><div class="outcome-val risky">Risky &lt;20</div><div class="outcome-text"><strong>Success with consequences.</strong> 10&ndash;19 on a Risky roll still accomplishes the goal &mdash; but something bad also happens.</div></div>
+  </div>
+
+  <div class="sh">Pushing It &amp; Trying Again</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>Trying Again</h3><p>A failed check <strong>cannot be retried</strong> under the same circumstances. Circumstances must change: time passes, new equipment, different approach, or outside help.</p></div>
+    <div class="rule-card"><h3>Pushing It</h3><p>On a non-Risky failure, you may retry immediately &mdash; but it <strong>automatically becomes Risky</strong>. If already Risky, can't push further (unless GM allows, making it Heroic). Heroic checks cannot be pushed.</p></div>
+    <div class="rule-card"><h3>Player Initiative</h3><p>In narrative play, players always act first. The GM <strong>cannot ask for a roll</strong> until prompted by player action. If players stall, they hand initiative to the GM who may advance the story without them.</p></div>
+    <div class="rule-card"><h3>Skill Challenges</h3><p>For group objectives, <strong>everyone involved rolls</strong>. More successes than failures = success. More failures = failure. Tie: flip a coin. <strong>Extended challenges</strong> use multiple rounds; majority must succeed.</p></div>
+  </div>
+
+  <div class="sh">Consequences (must be declared before the roll)</div>
+  <div class="con-grid">
+    <div class="con-card"><div class="con-name">Harm</div><div class="con-desc">Physical damage. <strong>Minor 1&ndash;2, Major 3&ndash;5, Lethal 6+.</strong> Only applies when narratively justified.</div></div>
+    <div class="con-card"><div class="con-name">Time</div><div class="con-desc">The action takes <strong>much longer than expected</strong>. Delay cascades into other problems.</div></div>
+    <div class="con-card"><div class="con-name">Resources</div><div class="con-desc">Something is <strong>used up, lost, or exhausted</strong> &mdash; ammo, a map, a social favor, political capital.</div></div>
+    <div class="con-card"><div class="con-name">Collateral</div><div class="con-desc">Someone or something <strong>other than you</strong> takes harm &mdash; a bystander, an ally, an organization.</div></div>
+    <div class="con-card"><div class="con-name">Position</div><div class="con-desc">You end up in a <strong>worse tactical or social position</strong> &mdash; in the line of fire, in the bad graces of a powerful figure.</div></div>
+    <div class="con-card"><div class="con-name">Effect</div><div class="con-desc">Your action is <strong>less effective than intended</strong> &mdash; you wound instead of kill, the door only partially opens.</div></div>
+  </div>
+
+  <div class="sh">Combat in Narrative Play</div>
+  <div class="rule-grid">
+    <div class="rule-card"><h3>No Turns or Attack Rolls</h3><p>Combat uses skill checks, not tactical turns. The whole fight may resolve in a few rolls. NPCs don't act independently &mdash; their behavior is driven by player roll outcomes. If no mechs are involved, always resolve narratively.</p></div>
+    <div class="rule-card"><h3>NPC Resilience</h3><p>Don't track NPC HP. If the goal is "kill the guard" and you succeed, the guard dies. If the NPC is especially tough, the GM makes the roll Difficult or Risky, or demands a different approach.</p></div>
+    <div class="rule-card"><h3>Retrying in Combat</h3><p>Failed combat checks can't be retried until circumstances change. Failed to knock someone out? Change your approach: grab a barstool, get help, change position.</p></div>
+  </div>
+</div>
+
+<!-- TRIGGERS -->
+<div id="tab-triggers" class="section">
+  <div class="sh">How Triggers Work</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>Starting Triggers</h3><p>At LL0, choose <strong>4 triggers at +2 each</strong>. Each level up: add +2 to an existing trigger or take a new trigger at +2. Maximum value: +6.</p></div>
+    <div class="rule-card"><h3>Using Triggers</h3><p>When your action matches a trigger, <strong>add its value</strong> to your 1d20 roll. Your GM can also invoke your <em>background</em> to add +1 Accuracy or +1 Difficulty to relevant rolls.</p></div>
+    <div class="rule-card"><h3>Custom Triggers</h3><p>With GM approval, write your own. Custom triggers can be <strong>more specific</strong> than examples (e.g., "Kill in Cold Blood") but never more general. Must describe specific circumstances or actions.</p></div>
+  </div>
+
+  <div class="sh">All Standard Triggers</div>
+  <div class="trigger-grid">
+    <div class="trigger-card"><div class="trigger-name">Act Unseen or Unheard</div><div class="trigger-desc">Get somewhere or do something without detection: hide, sneak, infiltrate while avoiding patrols/cameras, sleight of hand, pick pockets, cheat at cards, wear a disguise. Not necessarily fast.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Apply Fists to Faces</div><div class="trigger-desc">Open, brutal unarmed combat &mdash; fist fights, martial arts duels, massive brawls. Never subtle, clean, or quiet.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Assault</div><div class="trigger-desc">Direct and overt combat: fight through a building of mercenaries, trade shots across trenches, board a ship in microgravity, engage in smoking urban rubble. Loud, direct action.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Blow Something Up</div><div class="trigger-desc">Use explosives, weapons, or sheer force to totally wreck something or turn it into a fireball.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Charm</div><div class="trigger-desc">Convince using leverage (money, power, personal benefit): smooth-talk past guards, sway benefactors, mediate disputes, talk someone down, blatantly lie, impersonate someone.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Get a Hold of Something</div><div class="trigger-desc">Acquire allies, assets, or connections through wealth or social influence; obtain information, food, materials, soldiers.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Get Somewhere Quickly</div><div class="trigger-desc">Move fast without complications: climb, drive, pilot, swim, acrobatics, dangerous shortcuts, fall safely, zero-g, chase or flee, outpace a target.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Hack or Fix</div><div class="trigger-desc">Repair or wreck/disable/hack a device or system. Access electronic locks, computer systems, omninet servers, secure networks. Sabotage equipment.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Invent or Create</div><div class="trigger-desc">Design or build something using tools and supplies, on the fly or over time. Create new devices, tools, or novel approaches to problems.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Investigate</div><div class="trigger-desc">Research, study, or analyze: learn historical subjects, investigate mysteries, solve puzzles, locate a person or object through detective work.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Lead or Inspire</div><div class="trigger-desc">Give inspiring speeches, motivate groups, efficiently administer organizations, command soldiers in battle &mdash; maybe an entire army.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Patch</div><div class="trigger-desc">Medical work: bandage wounds, staunch bleeding, suture, cauterize, neutralize poison, resuscitate. Diagnose disease, pathogens, symptoms.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Pull Rank</div><div class="trigger-desc">Use authority &mdash; military or otherwise &mdash; to get information, resources, or aid from subordinates, sometimes against their will. Coercion backed by rank.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Read a Situation</div><div class="trigger-desc">Find subtext, motives, or threats: read someone's true motivations, learn who's really in charge, sense who's about to act rashly, detect lies.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Show Off</div><div class="trigger-desc">Flashy, impressive feats: shoot a tiny target, shoot someone's hat off, throw a gun to knock someone out, acrobatic sword flourishes, pin a fleeing target with a thrown spear.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Spot</div><div class="trigger-desc">Notice hidden or difficult-to-see things: ambushes, hidden compartments, disguised individuals; spy on targets at distance; track people or vehicles.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Stay Cool</div><div class="trigger-desc">Precision or concentration under pressure: pick a lock while under fire, carefully disarm an explosive, unjam a weapon in a firefight.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Survive</div><div class="trigger-desc">Endure harsh environments: vacuum, tundra, pirate enclaves, crime-ridden colonies, wilderness, deserts. Includes navigation and avoiding natural hazards.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Take Control</div><div class="trigger-desc">Use force or presence to take control of something concrete (a gun, a keycard) or a situation (forcing people to calm down or stop).</div></div>
+    <div class="trigger-card"><div class="trigger-name">Take Someone Out</div><div class="trigger-desc">Kill or disable someone quickly and quietly &mdash; or from a distance before they notice you. Sniper shots, nerve pinches, gun duels, dropping from ceilings.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Threaten</div><div class="trigger-desc">Use force, threats, blackmail, or leverage to make someone do what you want. Name the demand and the consequence. There's probably no repairing the relationship afterward.</div></div>
+    <div class="trigger-card"><div class="trigger-name">Word on the Street</div><div class="trigger-desc">Gather gossip, news, hearsay from the streets or a particular social scene. Eavesdrop, ask around, tap into local rumor networks.</div></div>
+  </div>
+</div>
+
+<!-- MECH SKILLS -->
+<div id="tab-mechskills" class="section">
+  <div class="sh">Overview</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>What Mech Skills Are</h3><p>Four stats from <strong>+0 to +6</strong> used instead of triggers when making skill checks that <strong>directly utilize a mech</strong>. Also used in mech combat for saves, and provide direct mech stat bonuses when building.</p></div>
+    <div class="rule-card"><h3>Starting Points</h3><p>At LL0 you get <strong>2 mech skill points</strong> to distribute (both in one skill for +2, or split +1 each). Each level up grants +1 additional point. Maximum: +6 per skill.</p></div>
+    <div class="rule-card"><h3>Mech Stat Bonuses</h3><ul><li><strong>HULL:</strong> +2 HP/pt, +1 Repair Cap/2pt</li><li><strong>AGILITY:</strong> +1 Evasion/pt, +1 Speed/2pt</li><li><strong>SYSTEMS:</strong> +1 Tech Atk &amp; E-Def/pt, +1 SP/2pt</li><li><strong>ENGINEERING:</strong> +1 Heat Cap/pt, +1 limited use/2pt</li></ul></div>
+  </div>
+
+  <div class="sh">The Four Mech Skills</div>
+  <div class="mech-skill-grid">
+    <div class="mech-skill"><div class="ms-name">HULL</div><div class="ms-bonus">+2 HP/pt &middot; +1 Repair Cap/2pt</div><div class="ms-desc">Your ability to build and pilot durable, structurally sound mechs that can take punishment and keep fighting.</div><div class="ms-when"><strong>Roll Hull when:</strong> Smashing through obstacles, vehicles, or buildings; lifting/dragging/hurling enormous weight; grappling mechs or mech-sized creatures; resisting massive force; staying upright in cataclysmic weather.</div></div>
+    <div class="mech-skill"><div class="ms-name">AGILITY</div><div class="ms-bonus">+1 Evasion/pt &middot; +1 Speed/2pt</div><div class="ms-desc">Your ability to build and pilot fast, evasive mechs that can outmaneuver threats.</div><div class="ms-when"><strong>Roll Agility when:</strong> Chasing, pursuing, or fleeing at incredible speed; performing acrobatics; hiding or moving silently; feats of fine manual dexterity; dodging danger.</div></div>
+    <div class="mech-skill"><div class="ms-name">SYSTEMS</div><div class="ms-bonus">+1 Tech Atk &amp; E-Def/pt &middot; +1 SP/2pt</div><div class="ms-desc">Your ability to build and pilot mechs with advanced electronic warfare and tech capabilities.</div><div class="ms-when"><strong>Roll Systems when:</strong> Infiltrating hardened electronic systems; boosting/suppressing signals; engaging in e-war; scanning/analyzing information; interacting with electronic life forms; analyzing unfamiliar systems.</div></div>
+    <div class="mech-skill"><div class="ms-name">ENGINEERING</div><div class="ms-bonus">+1 Heat Cap/pt &middot; +1 Limited use/2pt</div><div class="ms-desc">Your ability to build and pilot mechs with effective reactors and endurance under extreme conditions.</div><div class="ms-when"><strong>Roll Engineering when:</strong> Pushing your mech past its limits; withstanding heat, cold, void, or radiation; keeping your mech running far past its breaking point; traveling safely through hazardous conditions; conserving ammo, power, and resources.</div></div>
+  </div>
+</div>
+
+<!-- DOWNTIME ACTIONS -->
+<div id="tab-downtime" class="section">
+  <div class="sh">Downtime Overview</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>What is Downtime?</h3><p>Time between missions. Two parts: <strong>Downtime Actions</strong> (structured, with rolls) and <strong>Freeform Play</strong> (open roleplay, no rules required). There's always at least some downtime between missions, even if just a few hours.</p></div>
+    <div class="rule-card"><h3>How Many Actions?</h3><p>Usually <strong>one downtime action per downtime period</strong>. Long downtimes may allow two. Short downtimes (under siege, etc.) still allow at least one. Triggers can be used on downtime rolls.</p></div>
+    <div class="rule-card"><h3>Outcomes &amp; Reserves</h3><p>Downtime actions have three specific outcomes: <strong>9 or less, 10&ndash;19, and 20+</strong>. Many generate <strong>RESERVES</strong> &mdash; advantages that last only for the next mission.</p></div>
+  </div>
+
+  <div class="sh">All Downtime Actions</div>
+  <div class="dt-grid">
+    <div class="dt-card"><div class="dt-name">Power at a Cost</div><div class="dt-desc">Name what you want. You can get it &mdash; but the GM chooses 1 or 2 complications. No roll required. Good for outlandish requests.</div><div class="dt-outcomes"><div style="font-size:11px;color:var(--text-dim);margin-top:4px"><strong style="color:var(--text)">GM picks 1&ndash;2:</strong> Takes much more time &middot; Very risky &middot; Must give something up &middot; Pisses off someone important &middot; Goes wildly off-plan &middot; Needs more info &middot; Will fall apart soon &middot; Needs more resources &middot; Gets you something lesser</div></div></div>
+    <div class="dt-card"><div class="dt-name">Buy Some Time</div><div class="dt-desc">Stave off a reckoning, extend an opportunity, or buy breathing room. Bought time can become RESERVES.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">Can only buy a little time if <strong>drastic measures are taken right now</strong>. Otherwise the threat catches up.</span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text">Buy enough time but situation becomes precarious. Same result next time = treat as 9&minus;.</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Buy as much time as needed until next downtime. Same result next time = treat as 10&ndash;19.</span></div></div></div>
+    <div class="dt-card"><div class="dt-name">Gather Information</div><div class="dt-desc">Investigate a subject &mdash; research, follow leads, track a target, go undercover. Information can become RESERVES.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">Choose: get what you want but it <strong>causes immediate trouble</strong>, or get out now and learn nothing.</span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text">Find it, but choose one: <strong>leave evidence</strong>, or implicate someone innocent to avoid attention.</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Get what you're looking for <strong>with no complications</strong>.</span></div></div></div>
+    <div class="dt-card"><div class="dt-name">Get a Damn Drink</div><div class="dt-desc">Blow off steam, carouse, make connections, collect gossip, forge a reputation. Requires somewhere to actually drink.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">Wake up in a gutter with only <strong>one of: your dignity / all possessions / your memory.</strong></span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text"><strong>Gain one, lose one:</strong> a good reputation / a friend or connection / a useful item or info / a convenient opportunity.</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Gain <strong>two</strong> from the list as RESERVES and don't lose anything.</span></div></div></div>
+    <div class="dt-card"><div class="dt-name">Get Creative</div><div class="dt-desc">Build or invent something physical or software. Finished product can become RESERVES. Doesn't have to be from the gear list.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">No progress. Same result next time = treat as 10&ndash;19.</span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text">Progress but not finished. Finish next downtime without rolling, but choose <strong>two things needed:</strong> quality materials / specific knowledge / specialized tools / good workspace.</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Finish before next mission. If especially complex, treat as 10&ndash;19 but choose only one.</span></div></div></div>
+    <div class="dt-card"><div class="dt-name">Get Focused</div><div class="dt-desc">Practice, train, meditate, or study a non-martial skill or subject. Results in a new trigger or improved trigger value.</div><div class="dt-outcomes"><div style="font-size:11px;color:var(--text-dim);margin-top:4px">GM gives you a <strong>new +2 trigger</strong> based on what you practiced (e.g., "+2 Playing Chess"). Can also improve an existing trigger: +2&rarr;+4 or +4&rarr;+6.</div></div></div>
+    <div class="dt-card"><div class="dt-name">Get Connected</div><div class="dt-desc">Make connections, call in favors, drum up support. Must be in comms range or face-to-face. Aid becomes RESERVES.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">Contact will help, but you must <strong>fulfill a promise right now</strong>. Don't, and they won't help.</span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text">Contact will help, but <strong>fulfill a promise afterward</strong>. Fail = treated as 9&minus; next time.</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Contact helps <strong>no strings attached</strong>. Next same result treated as 10&ndash;19.</span></div></div></div>
+    <div class="dt-card"><div class="dt-name">Get Organized</div><div class="dt-desc">Start or improve an organization. Choose a FOCUS and distribute starting stats between Efficiency and Influence (+2 total, max +6). Roll every downtime to maintain it.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">Choose: lose 2 Efficiency and 2 Influence, or <strong>organization must pay debts or make aggressive move</strong>.</span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text">Organization stable. Gain <strong>+2 Efficiency or Influence</strong> (max 6).</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Gain <strong>+2 Efficiency and +2 Influence</strong> (max 6 each).</span></div></div></div>
+    <div class="dt-card"><div class="dt-name">Scrounge and Barter</div><div class="dt-desc">Hunt for gear or assets through scrapyards, rumors, or local markets. Must be something physical. Can become RESERVES.</div><div class="dt-outcomes"><div class="dt-row"><span class="dt-val dt-fail">9&minus;</span><span class="dt-text">Get it, but choose one: it's <strong>illicit and dangerous</strong> / paid significantly more than expected / it's <strong>broken or malfunctioning</strong>.</span></div><div class="dt-row"><span class="dt-val dt-ok">10&ndash;19</span><span class="dt-text">Get what you want with some delay or minor complication.</span></div><div class="dt-row"><span class="dt-val dt-crit">20+</span><span class="dt-text">Get exactly what you want <strong>without complications</strong>.</span></div></div></div>
+  </div>
+</div>
+
+<!-- RESERVES -->
+<div id="tab-reserves" class="section">
+  <div class="sh">What are Reserves?</div>
+  <div class="rule-grid" style="margin-bottom:24px">
+    <div class="rule-card"><h3>Definition</h3><p>Anything held as an advantage for the next mission &mdash; supplies, gear, support, allies, information. Established <strong>before the mission starts</strong>. No fixed rules &mdash; GM agreement is all that's required.</p></div>
+    <div class="rule-card"><h3>Duration</h3><p>Reserves <strong>last for one mission only</strong>. Once that mission ends, they're gone. The GM can also grant reserves mid-mission when narratively appropriate.</p></div>
+    <div class="rule-card"><h3>Flexibility</h3><p>The tables below are examples and inspiration. Your reserves don't have to match any list &mdash; if it's plausible and the GM agrees, it counts.</p></div>
+  </div>
+  <div class="sh">Resources</div>
+  <table class="res-table">
+    <tr><th>Reserve</th><th>What It Provides</th></tr>
+    <tr><td>Access</td><td>A keycard, invite, bribes, or insider access to a particular location.</td></tr>
+    <tr><td>Backing</td><td>Useful leverage through political support from a powerful figure.</td></tr>
+    <tr><td>Supplies</td><td>Gear allowing easy crossing of a hazardous or hostile area.</td></tr>
+    <tr><td>Disguise</td><td>An effective cover identity, allowing uncontested access to a location.</td></tr>
+    <tr><td>Diversion</td><td>A distraction providing time to act without fear of consequence.</td></tr>
+    <tr><td>Blackmail</td><td>Sensitive information concerning a particular person.</td></tr>
+    <tr><td>Reputation</td><td>A good name in the mission area; positive first impressions with locals.</td></tr>
+    <tr><td>Safe Harbor</td><td>Guaranteed safety for meeting, planning, or recuperating.</td></tr>
+    <tr><td>Tracking</td><td>Details on the location of important objects or people.</td></tr>
+    <tr><td>Knowledge</td><td>Understanding of local history, customs, culture, or etiquette.</td></tr>
+  </table>
+  <div class="sh">Mech Equipment &amp; Gear</div>
+  <table class="res-table">
+    <tr><th>Reserve</th><th>What It Provides</th></tr>
+    <tr><td>Ammo</td><td>Extra uses (+1 or +2) of a limited weapon or system.</td></tr>
+    <tr><td>Rented Gear</td><td>Temporary access to a new weapon or piece of mech gear.</td></tr>
+    <tr><td>Extra Repairs</td><td>Supplies giving a mech +2 Repair Cap for the mission.</td></tr>
+    <tr><td>CORE Battery</td><td>An extra charge allowing a second use of your mech's CORE SYSTEM.</td></tr>
+    <tr><td>Deployable Shield</td><td>Single-use SIZE 1 deployable granting soft cover in BURST 2 radius.</td></tr>
+    <tr><td>Redundant Repair</td><td>Ability to STABILIZE as a free action once per mission.</td></tr>
+    <tr><td>Systems Reinforcement</td><td>+1 Accuracy to one mech skill (HULL/AGILITY/SYSTEMS/ENGINEERING) for the mission.</td></tr>
+    <tr><td>Smart Ammo</td><td>All weapons of your choice fire as SMART for the mission's duration.</td></tr>
+    <tr><td>Boosted Servos</td><td>Immunity to the SLOWED condition for the mission.</td></tr>
+    <tr><td>Jump Jets</td><td>Your mech can FLY when moving this mission, but must end movement on land.</td></tr>
+  </table>
+  <div class="sh">Tactical Advantages</div>
+  <table class="res-table">
+    <tr><th>Reserve</th><th>What It Provides</th></tr>
+    <tr><td>Scouting</td><td>Detailed intel on enemy mechs and threats: number, type, statistics.</td></tr>
+    <tr><td>Vehicle</td><td>Use of a transport vehicle or starship for the mission duration.</td></tr>
+    <tr><td>Reinforcements</td><td>Ability to call in a friendly NPC mech (tier 1&ndash;3) once per mission.</td></tr>
+    <tr><td>Environmental Shielding</td><td>Equipment to ignore a particular battlefield hazard (extreme heat, cold, etc).</td></tr>
+    <tr><td>Accuracy Bonus</td><td>Training providing +1 Accuracy to a particular mech skill or action for the mission.</td></tr>
+    <tr><td>Bombardment</td><td>Call in artillery or orbital strike once per mission (Full Action, RANGE 30, BLAST 2, 3d6 explosive).</td></tr>
+    <tr><td>Extended Harness</td><td>Carry an extra pilot weapon and two extra pieces of pilot gear.</td></tr>
+    <tr><td>Ambush</td><td>Intel allowing you to choose exactly where the next battle takes place, including terrain layout.</td></tr>
+    <tr><td>Orbital Drop</td><td>Ability to start the mission by dropping from orbit into a fortified or hard-to-reach location.</td></tr>
+    <tr><td>NHP Assistant</td><td>An NHP controlled by the GM that can give tactical advice on the current situation.</td></tr>
+  </table>
+</div>
+
+<!-- PILOT RULES -->
+<div id="tab-pilotrules" class="section">
+  <div class="sh">Pilot Statistics</div>
+  <div class="stat-row-p">
+    <div class="stat-pill"><span class="sp-val">6+GRIT</span><span class="sp-lbl">HP</span></div>
+    <div class="stat-pill"><span class="sp-val">&frac12;</span><span class="sp-lbl">Size</span></div>
+    <div class="stat-pill"><span class="sp-val">10</span><span class="sp-lbl">Evasion</span></div>
+    <div class="stat-pill"><span class="sp-val">10</span><span class="sp-lbl">E-Defense</span></div>
+    <div class="stat-pill"><span class="sp-val">4</span><span class="sp-lbl">Speed</span></div>
+    <div class="stat-pill"><span class="sp-val">0&ndash;2</span><span class="sp-lbl">Armor</span></div>
+  </div>
+  <div style="font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:24px;background:var(--panel);border:1px solid var(--border2);padding:16px 20px"><strong style="color:var(--text)">GRIT</strong> = half your LL rounded up. Added to pilot HP, mech HP, SP, attack rolls, and Save Target. First GRIT arrives at LL1. Armor (0, 1, or 2) subtracts from damage taken unless AP or from dramatic sources (falls, lava, vacuum).</div>
+
+  <div class="sh">Damage Levels</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>Minor Damage (1&ndash;2)</h3><p>Small arms fire, stabs, punches, thrown rocks. Common consequence of low-stakes failed checks.</p></div>
+    <div class="rule-card"><h3>Major Damage (3&ndash;5)</h3><p>Assault and heavy weapons, long falls, toxic gas, exposure to vacuum. Serious but survivable.</p></div>
+    <div class="rule-card"><h3>Lethal Damage (6+)</h3><p>Catastrophic: a mech falling on you, mech-scale weapons, a grenade at point-blank. Usually fatal without significant luck.</p></div>
+  </div>
+
+  <div class="sh">Down and Out</div>
+  <div style="max-width:600px;margin-bottom:28px">
+    <div style="font-size:12px;color:var(--text-dim);line-height:1.7;background:var(--panel);border:1px solid var(--border2);padding:16px 20px;margin-bottom:12px">When a pilot reaches <strong style="color:var(--text)">0 HP</strong>, roll 1d6:</div>
+    <div class="outcome-stack">
+      <div class="outcome-row"><div class="outcome-val crit">6</div><div class="outcome-text"><strong>Close call.</strong> Return to 1 HP &mdash; shrug it off or narrowly escape.</div></div>
+      <div class="outcome-row"><div class="outcome-val ok">2&ndash;5</div><div class="outcome-text"><strong>DOWN AND OUT + STUNNED.</strong> Unconscious or incapacitated at 0 HP. Evasion drops to 5 in mech combat. Any further damage kills immediately. Player may choose death instead.</div></div>
+      <div class="outcome-row"><div class="outcome-val fail">1</div><div class="outcome-text"><strong>Dead.</strong> Pilot dies immediately.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">Recovery</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>1 Hour Rest</h3><p>Regain <strong>half maximum HP</strong>. If DOWN AND OUT, recover consciousness.</p></div>
+    <div class="rule-card"><h3>10+ Hours (Full Repair)</h3><p>Regain <strong>all HP</strong>. Full mech repair. Clears all conditions, statuses, and resets Overcharge counter.</p></div>
+  </div>
+
+  <div class="sh">Backgrounds</div>
+  <div style="font-size:12px;color:var(--text-dim);line-height:1.7;background:var(--panel);border:1px solid var(--border2);padding:16px 20px;margin-bottom:18px"><strong style="color:var(--text)">Invoking a Background:</strong> Outside combat, you or the GM can invoke your pilot's background to receive <strong>+1 Accuracy or +1 Difficulty</strong> on a relevant skill check. If there's disagreement, the other players (excluding you and the GM) decide.</div>
+  <div class="bg-grid">
+    <div class="bg-card"><div class="bg-name">Celebrity</div><div class="bg-triggers">Charm &middot; Pull Rank &middot; Lead or Inspire &middot; Threaten</div></div>
+    <div class="bg-card"><div class="bg-name">Colonist</div><div class="bg-triggers">Word on the Street &middot; Spot &middot; Survive &middot; Patch</div></div>
+    <div class="bg-card"><div class="bg-name">Criminal</div><div class="bg-triggers">Act Unseen &middot; Charm &middot; Take Someone Out &middot; Get a Hold of Something</div></div>
+    <div class="bg-card"><div class="bg-name">Far-Field Team</div><div class="bg-triggers">Survive &middot; Investigate &middot; Spot &middot; Charm</div></div>
+    <div class="bg-card"><div class="bg-name">Hacker</div><div class="bg-triggers">Hack or Fix &middot; Act Unseen &middot; Investigate &middot; Stay Cool</div></div>
+    <div class="bg-card"><div class="bg-name">Mechanic</div><div class="bg-triggers">Hack or Fix &middot; Invent or Create &middot; Stay Cool &middot; Blow Something Up</div></div>
+    <div class="bg-card"><div class="bg-name">Medic</div><div class="bg-triggers">Patch &middot; Stay Cool &middot; Investigate &middot; Word on the Street</div></div>
+    <div class="bg-card"><div class="bg-name">Mercenary</div><div class="bg-triggers">Assault &middot; Take Someone Out &middot; Get a Hold of Something &middot; Survive</div></div>
+    <div class="bg-card"><div class="bg-name">NHP Specialist</div><div class="bg-triggers">Hack or Fix &middot; Investigate &middot; Read a Situation &middot; Stay Cool</div></div>
+    <div class="bg-card"><div class="bg-name">Noble</div><div class="bg-triggers">Charm &middot; Pull Rank &middot; Get a Hold of Something &middot; Lead or Inspire</div></div>
+    <div class="bg-card"><div class="bg-name">Outlaw</div><div class="bg-triggers">Act Unseen &middot; Take Someone Out &middot; Threaten &middot; Survive</div></div>
+    <div class="bg-card"><div class="bg-name">Penal Colonist</div><div class="bg-triggers">Survive &middot; Assault &middot; Apply Fists to Faces &middot; Take Control</div></div>
+    <div class="bg-card"><div class="bg-name">Priest</div><div class="bg-triggers">Lead or Inspire &middot; Charm &middot; Read a Situation &middot; Word on the Street</div></div>
+    <div class="bg-card"><div class="bg-name">Scientist</div><div class="bg-triggers">Investigate &middot; Invent or Create &middot; Hack or Fix &middot; Read a Situation</div></div>
+    <div class="bg-card"><div class="bg-name">Soldier</div><div class="bg-triggers">Assault &middot; Stay Cool &middot; Spot &middot; Take Someone Out</div></div>
+    <div class="bg-card"><div class="bg-name">Spaceborn</div><div class="bg-triggers">Get Somewhere Quickly &middot; Hack or Fix &middot; Survive &middot; Stay Cool</div></div>
+    <div class="bg-card"><div class="bg-name">Spec Ops</div><div class="bg-triggers">Act Unseen &middot; Take Someone Out &middot; Stay Cool &middot; Assault</div></div>
+    <div class="bg-card"><div class="bg-name">Supersoldier</div><div class="bg-triggers">Assault &middot; Apply Fists to Faces &middot; Take Control &middot; Threaten</div></div>
+    <div class="bg-card"><div class="bg-name">Starship Pilot</div><div class="bg-triggers">Get Somewhere Quickly &middot; Stay Cool &middot; Read a Situation &middot; Spot</div></div>
+    <div class="bg-card"><div class="bg-name">Worker</div><div class="bg-triggers">Hack or Fix &middot; Invent or Create &middot; Survive &middot; Get a Hold of Something</div></div>
+  </div>
+
+  <div class="sh">Pilot Gear</div>
+  <div style="font-size:12px;color:var(--text-dim);line-height:1.7;background:var(--panel);border:1px solid var(--border2);padding:16px 20px;margin-bottom:24px">Before a mission, pilots choose gear from the gear list. Standard loadout: <strong style="color:var(--text)">1 piece of armor</strong>, <strong style="color:var(--text)">up to 2 weapons</strong>, and <strong style="color:var(--text)">up to 3 other pieces of gear</strong>. Access depends on what's available in the field &mdash; trading, bartering, and acquiring mid-mission is possible through the narrative.</div>
+</div>
+
+<!-- MISSION STRUCTURE -->
+<div id="tab-missions" class="section">
+  <div class="sh">The Five Stages</div>
+  <div class="rule-grid" style="margin-bottom:28px">
+    <div class="rule-card"><h3>1. Briefing</h3><p>Establish the mission <strong>goal</strong> and <strong>stakes</strong> &mdash; what success and failure look like. Best framed as a question: "Will we save the colony before the Iron Tigers arrive?" Both goal and stakes can shift mid-mission.</p></div>
+    <div class="rule-card"><h3>2. Preparation</h3><p>Choose your <strong>mechs and gear</strong>. Not necessarily final &mdash; opportunities may arise to change gear mid-mission &mdash; but establishes starting resources. Each pilot: one mech, armor, up to 2 weapons, up to 3 gear.</p></div>
+    <div class="rule-card"><h3>3. Reserves</h3><p>Establish <strong>Reserves</strong> being brought on the mission. Must be done before play begins &mdash; prevents mid-mission disputes about who has access to what.</p></div>
+    <div class="rule-card"><h3>4. Boots on the Ground</h3><p>Play cuts immediately to pilots arriving on scene. No planning montages. The GM describes the situation and you respond. Doesn't have to be combat &mdash; could be approaching a checkpoint, creeping toward a facility at night, or walking into an event as something goes wrong.</p></div>
+    <div class="rule-card"><h3>5. Debrief</h3><p>After the mission: <strong>level up</strong> (all characters advance one LL) and optionally <strong>talk about it</strong> (what worked, notable moments, feedback for the GM). Be respectful &mdash; every session might be someone's first.</p></div>
+  </div>
+  <div class="sh">Narrative vs. Mech Combat</div>
+  <div class="rule-grid">
+    <div class="rule-card"><h3>Narrative Play</h3><p>Freeform. Players always have initiative &mdash; the GM can't ask for a roll until prompted by player action. NPCs don't take independent actions; their behavior is driven entirely by player roll outcomes.</p></div>
+    <div class="rule-card"><h3>Mech Combat</h3><p>Turn-based, tactical. HP is tracked precisely, NPCs act independently on initiative, attack rolls are made per attack. Switching is as simple as the GM declaring it on and drawing a map.</p></div>
+    <div class="rule-card"><h3>Switching Modes</h3><p>Move between modes freely. A fight that starts as a narrative skill check can escalate into full mech combat if mechs become involved. Small on-foot fights without mechs should almost always stay narrative.</p></div>
+  </div>
+</div>
+
+</div>
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
