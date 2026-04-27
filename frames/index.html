@@ -350,6 +350,27 @@
     letter-spacing: 2px;
     display: none;
   }
+
+  /* Mount cells */
+  .col-mounts { min-width: 180px; }
+  .mounts-display { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+  .mount-pip {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: 1px solid currentColor;
+  }
+  .mp-flex     { color: #a29bfe; background: rgba(162,155,254,0.1); }
+  .mp-main     { color: #00d4ff; background: rgba(0,212,255,0.08); }
+  .mp-heavy    { color: #ff9f43; background: rgba(255,159,67,0.08); }
+  .mp-aux      { color: #6c8ea0; background: rgba(108,142,160,0.1); }
+  .mp-mainaux  { color: #7ec8e3; background: rgba(126,200,227,0.08); }
+  .mp-auxaux   { color: #5a7a90; background: rgba(90,122,144,0.1); }
+  .mp-integrated { color: #55efc4; background: rgba(85,239,196,0.08); font-size: 8px; letter-spacing: 0.5px; }
 </style>
 </head>
 <body>
@@ -399,6 +420,7 @@
     <button class="col-btn on" onclick="toggleCol('col-tech', this)">Tech Atk</button>
     <button class="col-btn on" onclick="toggleCol('col-sp', this)">SP</button>
     <button class="col-btn on" onclick="toggleCol('col-heat', this)">Heat Cap</button>
+    <button class="col-btn on" onclick="toggleCol('col-mounts', this)">Mounts</button>
   </div>
 
   <div class="table-wrap">
@@ -420,6 +442,7 @@
           <th class="col-tech" onclick="sortTable(12)" title="Tech Attack bonus added to 1d20 for tech attacks">Tech Atk <span class="sort-icon"></span></th>
           <th class="col-sp" onclick="sortTable(13)" title="System Points — for equipping systems">SP <span class="sort-icon"></span></th>
           <th class="col-heat" onclick="sortTable(14)" title="Heat Cap — maximum heat before overheating">Heat Cap <span class="sort-icon"></span></th>
+          <th class="col-mounts" title="Weapon mount points (not sortable)">Mounts</th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -433,35 +456,36 @@
 
 <script>
 const frames = [
-  // name, mfr, role, size, armor, hp, repair, evasion, speed, save, sensors, edef, tech, sp, heat
+  // name, mfr, role, size, armor, hp, repair, evasion, speed, save, sensors, edef, tech, sp, heat, mounts
+  // mounts: array of mount strings. Types: flex, main, heavy, aux, main/aux, aux/aux, integrated:X
   // Size: 0.5 = 1/2 for sorting
-  ["Everest",       "GMS",   "Striker/Support",    1,   0, 10, 5,  8,  4, 10, 10,  8,  0, 6, 6],
-  ["Blackbeard",    "IPS-N", "Striker",            1,   1, 12, 5,  8,  5, 10,  5,  6, -2, 5, 4],
-  ["Drake",         "IPS-N", "Defender",           2,   3,  8, 5,  6,  3, 10, 10,  6,  0, 5, 5],
-  ["Lancaster",     "IPS-N", "Support",            2,   1,  6,10,  8,  6, 10,  8,  8, +1, 8, 6],
-  ["Nelson",        "IPS-N", "Striker",            1,   0,  8, 5, 11,  5, 10,  5,  7,  0, 6, 6],
-  ["Raleigh",       "IPS-N", "Striker",            1,   1, 10, 5,  8,  4, 10, 10,  7, -1, 5, 5],
-  ["Tortuga",       "IPS-N", "Defender/Striker",   2,   2,  8, 6,  6,  3, 10, 15, 10, +1, 6, 6],
-  ["Vlad",          "IPS-N", "Striker/Controller", 1,   2,  8, 4,  8,  4, 11,  5,  8, -2, 5, 6],
-  ["Black Witch",   "SSC",   "Support/Controller", 1,   1,  6, 3, 10,  5, 11, 15, 12,  0, 8, 6],
-  ["Dusk Wing",     "SSC",   "Controller/Support", 0.5, 0,  6, 3, 12,  6, 11, 10,  8, +1, 6, 4],
-  ["Metalmark",     "SSC",   "Striker/Support",    1,   1,  8, 4, 10,  5, 10, 10,  6,  0, 5, 5],
-  ["Monarch",       "SSC",   "Artillery",          2,   1,  8, 3,  8,  5, 10, 15,  8, +1, 5, 6],
-  ["Mourning Cloak","SSC",   "Striker",            1,   0,  8, 3, 12,  5, 10, 15,  6,  0, 6, 4],
-  ["Swallowtail",   "SSC",   "Support/Controller", 1,   0,  6, 5, 10,  6, 10, 20, 10, +1, 6, 4],
-  ["Goblin",        "HORUS", "Controller",         0.5, 0,  6, 2, 10,  5, 11, 20, 12, +2, 8, 4],
-  ["Gorgon",        "HORUS", "Defender/Controller",2,   0, 12, 3,  8,  4, 12,  8, 12, +1, 6, 5],
-  ["Hydra",         "HORUS", "Controller",         1,   1,  8, 4,  7,  5, 10, 10, 10, +1, 8, 5],
-  ["Manticore",     "HORUS", "Striker",            1,   2,  8, 3,  6,  3, 10, 10, 10, +1, 6, 7],
-  ["Minotaur",      "HORUS", "Controller",         1,   0, 12, 4,  8,  4, 11,  8, 10, +1, 8, 5],
-  ["Pegasus",       "HORUS", "Artillery",          1,   0,  8, 3,  8,  4, 10, 10, 10, +1, 7, 6],
-  ["Barbarossa",    "HA",    "Artillery/Defender", 3,   2, 10, 4,  6,  2, 10, 10,  6, -2, 5, 8],
-  ["Genghis",       "HA",    "Striker",            1,   3,  6, 4,  6,  3, 10,  5,  8, -2, 5,10],
-  ["Iskander",      "HA",    "Controller",         2,   1,  8, 3,  8,  3, 12, 15, 10, +1, 6, 7],
-  ["Napoleon",      "HA",    "Striker/Support",    0.5, 2,  6, 3,  8,  4, 11,  5,  8,  0, 7, 8],
-  ["Saladin",       "HA",    "Defender/Support",   2,   1, 12, 4,  6,  3, 10, 10,  8,  0, 8, 8],
-  ["Sherman",       "HA",    "Striker/Artillery",  1,   1, 10, 4,  7,  3, 10, 10,  8, -1, 5, 8],
-  ["Tokugawa",      "HA",    "Striker",            1,   1,  8, 4,  8,  4, 11, 10,  6, -1, 6, 8],
+  ["Everest",       "GMS",   "Striker/Support",    1,   0, 10, 5,  8,  4, 10, 10,  8,  0, 6, 6,  ["flex","main","heavy"]],
+  ["Blackbeard",    "IPS-N", "Striker",            1,   1, 12, 5,  8,  5, 10,  5,  6, -2, 5, 4,  ["flex","main","heavy"]],
+  ["Drake",         "IPS-N", "Defender",           2,   3,  8, 5,  6,  3, 10, 10,  6,  0, 5, 5,  ["main","main","heavy"]],
+  ["Lancaster",     "IPS-N", "Support",            2,   1,  6,10,  8,  6, 10,  8,  8, +1, 8, 6,  ["main/aux","integrated:Latch Drone"]],
+  ["Nelson",        "IPS-N", "Striker",            1,   0,  8, 5, 11,  5, 10,  5,  7,  0, 6, 6,  ["flex","main/aux"]],
+  ["Raleigh",       "IPS-N", "Striker",            1,   1, 10, 5,  8,  4, 10, 10,  7, -1, 5, 5,  ["aux/aux","flex","heavy","integrated:M35 Mjolnir"]],
+  ["Tortuga",       "IPS-N", "Defender/Striker",   2,   2,  8, 6,  6,  3, 10, 15, 10, +1, 6, 6,  ["main","heavy"]],
+  ["Vlad",          "IPS-N", "Striker/Controller", 1,   2,  8, 4,  8,  4, 11,  5,  8, -2, 5, 6,  ["flex","main","heavy"]],
+  ["Black Witch",   "SSC",   "Support/Controller", 1,   1,  6, 3, 10,  5, 11, 15, 12,  0, 8, 6,  ["main/aux"]],
+  ["Dusk Wing",     "SSC",   "Controller/Support", 0.5, 0,  6, 3, 12,  6, 11, 10,  8, +1, 6, 4,  ["aux/aux","flex"]],
+  ["Metalmark",     "SSC",   "Striker/Support",    1,   1,  8, 4, 10,  5, 10, 10,  6,  0, 5, 5,  ["aux","main","heavy"]],
+  ["Monarch",       "SSC",   "Artillery",          2,   1,  8, 3,  8,  5, 10, 15,  8, +1, 5, 6,  ["main","flex","heavy"]],
+  ["Mourning Cloak","SSC",   "Striker",            1,   0,  8, 3, 12,  5, 10, 15,  6,  0, 6, 4,  ["flex","main/aux"]],
+  ["Swallowtail",   "SSC",   "Support/Controller", 1,   0,  6, 5, 10,  6, 10, 20, 10, +1, 6, 4,  ["flex","aux/aux"]],
+  ["Goblin",        "HORUS", "Controller",         0.5, 0,  6, 2, 10,  5, 11, 20, 12, +2, 8, 4,  ["flex"]],
+  ["Gorgon",        "HORUS", "Defender/Controller",2,   0, 12, 3,  8,  4, 12,  8, 12, +1, 6, 5,  ["flex","main","main"]],
+  ["Hydra",         "HORUS", "Controller",         1,   1,  8, 4,  7,  5, 10, 10, 10, +1, 8, 5,  ["main","heavy"]],
+  ["Manticore",     "HORUS", "Striker",            1,   2,  8, 3,  6,  3, 10, 10, 10, +1, 6, 7,  ["heavy"]],
+  ["Minotaur",      "HORUS", "Controller",         1,   0, 12, 4,  8,  4, 11,  8, 10, +1, 8, 5,  ["main/aux"]],
+  ["Pegasus",       "HORUS", "Artillery",          1,   0,  8, 3,  8,  4, 10, 10, 10, +1, 7, 6,  ["flex","flex","heavy"]],
+  ["Barbarossa",    "HA",    "Artillery/Defender", 3,   2, 10, 4,  6,  2, 10, 10,  6, -2, 5, 8,  ["main","main","heavy"]],
+  ["Genghis",       "HA",    "Striker",            1,   3,  6, 4,  6,  3, 10,  5,  8, -2, 5,10,  ["flex","main","heavy"]],
+  ["Iskander",      "HA",    "Controller",         2,   1,  8, 3,  8,  3, 12, 15, 10, +1, 6, 7,  ["flex","heavy"]],
+  ["Napoleon",      "HA",    "Striker/Support",    0.5, 2,  6, 3,  8,  4, 11,  5,  8,  0, 7, 8,  ["main/aux"]],
+  ["Saladin",       "HA",    "Defender/Support",   2,   1, 12, 4,  6,  3, 10, 10,  8,  0, 8, 8,  ["flex"]],
+  ["Sherman",       "HA",    "Striker/Artillery",  1,   1, 10, 4,  7,  3, 10, 10,  8, -1, 5, 8,  ["flex","main","heavy","integrated:ZF4 Solidcore"]],
+  ["Tokugawa",      "HA",    "Striker",            1,   1,  8, 4,  8,  4, 11, 10,  6, -1, 6, 8,  ["flex","main","main"]],
 ];
 
 // Stat ranges for color coding
@@ -516,11 +540,29 @@ function nameColor(mfr) {
   return mfrBgColor(mfr);
 }
 
+function renderMounts(mounts) {
+  return mounts.map(m => {
+    if (m.startsWith('integrated:')) {
+      const label = m.replace('integrated:', '');
+      return `<span class="mount-pip mp-integrated" title="Integrated weapon mount">⚙ ${label}</span>`;
+    }
+    const cls = {
+      'flex': 'mp-flex', 'main': 'mp-main', 'heavy': 'mp-heavy',
+      'aux': 'mp-aux', 'main/aux': 'mp-mainaux', 'aux/aux': 'mp-auxaux'
+    }[m] || 'mp-main';
+    const label = {
+      'flex': 'Flex', 'main': 'Main', 'heavy': 'Heavy',
+      'aux': 'Aux', 'main/aux': 'Main/Aux', 'aux/aux': 'Aux/Aux'
+    }[m] || m;
+    return `<span class="mount-pip ${cls}">${label}</span>`;
+  }).join('');
+}
+
 function buildTable(data) {
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '';
   data.forEach(f => {
-    const [name, mfr, role, size, armor, hp, repair, evasion, speed, save, sensors, edef, tech, sp, heat] = f;
+    const [name, mfr, role, size, armor, hp, repair, evasion, speed, save, sensors, edef, tech, sp, heat, mounts] = f;
     const tr = document.createElement('tr');
     tr.dataset.mfr = mfr;
     tr.dataset.role = role;
@@ -541,6 +583,7 @@ function buildTable(data) {
       <td class="num col-tech"><span class="${techClass(tech)}">${techStr(tech)}</span></td>
       <td class="num col-sp"><span class="${colorVal(12,sp)}">${sp}</span></td>
       <td class="num col-heat"><span class="${colorVal(13,heat)}">${heat}</span></td>
+      <td class="col-mounts"><div class="mounts-display">${renderMounts(mounts || [])}</div></td>
     `;
     tbody.appendChild(tr);
   });
