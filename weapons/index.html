@@ -179,22 +179,60 @@
     font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px;
     padding: 1px 5px; border: 1px solid var(--border2); color: var(--text-dim);
     text-transform: uppercase; border-radius: 2px; white-space: nowrap;
+    position: relative; cursor: help;
   }
-  .tag-ap     { border-color: rgba(255,68,68,0.4); color: #ff6666; }
-  .tag-overkill { border-color: rgba(255,107,53,0.4); color: var(--explosive); }
-  .tag-smart  { border-color: rgba(0,212,255,0.3); color: var(--accent); }
-  .tag-seeking{ border-color: rgba(57,255,20,0.3); color: #39ff14; }
-  .tag-loading{ border-color: rgba(255,215,0,0.3); color: #ffd700; }
-  .tag-ordnance{border-color: rgba(253,121,168,0.3);color: var(--ha); }
-  .tag-arcing { border-color: rgba(162,155,254,0.3);color: var(--ssc); }
-  .tag-reliable{border-color: rgba(85,239,196,0.3); color: var(--horus); }
-  .tag-accurate{border-color: rgba(0,212,255,0.3);  color: var(--accent); }
-  .tag-inaccurate{border-color: rgba(255,68,68,0.3);color: #ff6666; }
-  .tag-thrown { border-color: rgba(255,159,67,0.3); color: var(--ipsn); }
-  .tag-unique { border-color: rgba(162,155,254,0.3);color: var(--ssc); }
-  .tag-limited{ border-color: rgba(255,215,0,0.3);  color: #ffd700; }
-  .tag-knockback{border-color: rgba(255,107,53,0.3);color: var(--explosive); }
-  .tag-drone  { border-color: rgba(85,239,196,0.3); color: var(--horus); }
+  .tag-ap       { border-color: rgba(255,68,68,0.4);   color: #ff6666; }
+  .tag-overkill { border-color: rgba(255,107,53,0.4);  color: var(--explosive); }
+  .tag-smart    { border-color: rgba(0,212,255,0.3);   color: var(--accent); }
+  .tag-seeking  { border-color: rgba(57,255,20,0.3);   color: #39ff14; }
+  .tag-loading  { border-color: rgba(255,215,0,0.3);   color: #ffd700; }
+  .tag-ordnance { border-color: rgba(253,121,168,0.3); color: var(--ha); }
+  .tag-arcing   { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
+  .tag-reliable { border-color: rgba(85,239,196,0.3);  color: var(--horus); }
+  .tag-accurate { border-color: rgba(0,212,255,0.3);   color: var(--accent); }
+  .tag-inaccurate{border-color: rgba(255,68,68,0.3);   color: #ff6666; }
+  .tag-thrown   { border-color: rgba(255,159,67,0.3);  color: var(--ipsn); }
+  .tag-unique   { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
+  .tag-limited  { border-color: rgba(255,215,0,0.3);   color: #ffd700; }
+  .tag-knockback{ border-color: rgba(255,107,53,0.3);  color: var(--explosive); }
+  .tag-drone    { border-color: rgba(85,239,196,0.3);  color: var(--horus); }
+  .tag-threat   { border-color: rgba(255,107,53,0.3);  color: var(--explosive); }
+  .tag-mod      { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
+  .tag-heat     { border-color: rgba(255,68,68,0.4);   color: #ff4444; }
+
+  /* Tooltip popup */
+  .tag-tip {
+    visibility: hidden; opacity: 0;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
+    background: #0a1520;
+    border: 1px solid var(--border2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    padding: 10px 12px;
+    width: 240px;
+    z-index: 1000;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    border-radius: 2px;
+  }
+  .tag-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border2);
+  }
+  .tag:hover .tag-tip { visibility: visible; opacity: 1; }
+  .tip-name {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-bright);
+    margin-bottom: 5px; display: block;
+  }
+  .tip-body {
+    font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 300;
+    color: var(--text-dim); line-height: 1.6; text-transform: none; letter-spacing: 0;
+  }
 
   /* Self heat */
   .self-heat { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #ff4444; white-space: nowrap; }
@@ -392,7 +430,8 @@ const knownTags = {
   'ap':'tag-ap','overkill':'tag-overkill','smart':'tag-smart','seeking':'tag-seeking',
   'loading':'tag-loading','ordnance':'tag-ordnance','arcing':'tag-arcing','unique':'tag-unique',
   'accurate':'tag-accurate','inaccurate':'tag-inaccurate','knockback':'tag-knockback',
-  'drone':'tag-drone','thrown':'tag-thrown','limited':'tag-limited',
+  'drone':'tag-drone','thrown':'tag-thrown','limited':'tag-limited','threat':'tag-threat',
+  'reliable':'tag-reliable','mod':'tag-mod','heat':'tag-heat',
 };
 function tagClass(t) {
   const l = t.toLowerCase();
@@ -400,7 +439,41 @@ function tagClass(t) {
   return '';
 }
 
-function renderTag(t) { return `<span class="tag ${tagClass(t)}">${t}</span>`; }
+const tagDefs = {
+  'ap':         { name: 'Armor Piercing (AP)', body: 'Damage dealt by this weapon ignores ARMOR.' },
+  'accurate':   { name: 'Accurate', body: 'Attacks made with this weapon receive +1 Accuracy (bonus die).' },
+  'inaccurate': { name: 'Inaccurate', body: 'Attacks made with this weapon receive +1 Difficulty.' },
+  'arcing':     { name: 'Arcing', body: 'Can be fired over obstacles — doesn\'t require line of sight, as long as a path can be traced to the target. Still affected by cover.' },
+  'loading':    { name: 'Loading', body: 'Must be reloaded after each use via the Reload Quick Action or Stabilize. Cannot be fired again until reloaded.' },
+  'ordnance':   { name: 'Ordnance', body: 'Can only be fired before the user moves or takes any other actions (except Protocols). Cannot target characters in engagement with the user, and cannot be used for Overwatch.' },
+  'overkill':   { name: 'Overkill', body: 'When rolling damage, any die that rolls a 1 deals 1 heat to the attacker and is rerolled. Additional 1s continue to trigger this effect.' },
+  'reliable':   { name: 'Reliable X', body: 'Always deals at least X damage, even on a miss or if the damage roll is lower. Reliable damage inherits AP and base damage type but not hit-required tags like Knockback.' },
+  'seeking':    { name: 'Seeking', body: 'Has limited self-guidance. Ignores cover and doesn\'t require line of sight, as long as a path can be traced to the target.' },
+  'smart':      { name: 'Smart', body: 'Has self-guidance systems or nanorobotic ammunition. Attacks target E-Defense instead of Evasion. Targets with no E-Defense count as E-Defense 8.' },
+  'knockback':  { name: 'Knockback X', body: 'On a hit, knocks the target X spaces directly away from the point of origin. Multiple Knockback effects stack.' },
+  'thrown':     { name: 'Thrown X', body: 'This melee weapon can be thrown at targets within X spaces. Thrown attacks follow melee rules but are affected by cover. The weapon lands adjacent to its target and must be retrieved as a free action before reuse.' },
+  'limited':    { name: 'Limited X', body: 'Can only be used X times before requiring a Full Repair. Uses are tracked as "charges".' },
+  'unique':     { name: 'Unique', body: 'Cannot be duplicated — each character can only have one copy installed at a time.' },
+  'drone':      { name: 'Drone', body: 'A self-propelled semi-autonomous unit. Size 1/2, allied to user, 10 Evasion, 5 HP, 0 Armor by default. Must be deployed to a free space within Sensors and LoS. Restored to full HP on rest or Full Repair.' },
+  'threat':     { name: 'Threat X', body: 'This weapon can make Overwatch attacks within X spaces. Melee weapons with Threat can attack within X spaces instead of adjacent only.' },
+  'mod':        { name: 'Mod', body: 'Can be applied to a weapon to modify it. Each weapon can only have one Mod. Mods are applied during mech construction or Full Repair.' },
+  'heat':       { name: 'Heat X (Self)', body: 'Immediately after using this weapon or system, the user takes X heat.' },
+};
+
+function getTagDef(t) {
+  const l = t.toLowerCase();
+  for (const k in tagDefs) if (l.startsWith(k)) return tagDefs[k];
+  return null;
+}
+
+function renderTag(t) {
+  const cls = tagClass(t);
+  const def = getTagDef(t);
+  const tip = def
+    ? `<span class="tag-tip"><span class="tip-name">${def.name}</span><span class="tip-body">${def.body}</span></span>`
+    : '';
+  return `<span class="tag ${cls}">${t}${tip}</span>`;
+}
 
 function buildRow(w) {
   const [name,mfr,lic,size,type,dmg,dt,range,sh,tags,special] = w;
