@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Tech Attack Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a0f;
+    --panel: #0b1118;
+    --border: #1a2d3f;
+    --border2: #1e3348;
+    --accent: #00d4ff;
+    --text: #c8dce8;
+    --text-dim: #4a6880;
+    --text-bright: #eaf4ff;
+    --gms: #7ec8e3;
+    --ipsn: #ff9f43;
+    --ssc: #a29bfe;
+    --horus: #55efc4;
+    --ha: #fd79a8;
+    --invade:  #ff6b35;
+    --quick:   #00d4ff;
+    --full:    #a29bfe;
+    --passive: #55efc4;
+    --heat:    #ff4444;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Exo 2', sans-serif; font-weight: 300;
+    min-height: 100vh; overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.012) 2px, rgba(0,212,255,0.012) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+  .grid-bg {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
+  }
+  .wrapper { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; position: relative;
+  }
+  header::after {
+    content: ''; position: absolute; bottom: -1px; left: 0;
+    width: 280px; height: 2px;
+    background: linear-gradient(90deg, var(--full), transparent);
+  }
+  .logo-mark { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 4px; opacity: 0.6; margin-bottom: 6px; text-transform: uppercase; }
+  h1 {
+    font-family: 'Exo 2', sans-serif; font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1; letter-spacing: -1px; text-transform: uppercase;
+    background: linear-gradient(135deg, #fff 0%, var(--full) 50%, #6644cc 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .subtitle { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 3px; margin-top: 8px; text-transform: uppercase; }
+
+  /* LEGEND */
+  .legend {
+    display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px;
+    padding: 12px 16px; background: var(--panel); border: 1px solid var(--border);
+    align-items: center;
+  }
+  .legend-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+  .legend-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .action-badge {
+    font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
+    padding: 3px 9px; border-radius: 2px; text-transform: uppercase; border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .ab-invade  { color: var(--invade); background: rgba(255,107,53,0.1); }
+  .ab-quick   { color: var(--quick);  background: rgba(0,212,255,0.08); }
+  .ab-full    { color: var(--full);   background: rgba(162,155,254,0.1); }
+  .ab-passive { color: var(--passive);background: rgba(85,239,196,0.08); }
+
+  /* CONTROLS */
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+  .filter-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+  .filter-btn {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 4px 14px; background: transparent;
+    border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .filter-btn.active { background: rgba(0,212,255,0.08); color: var(--accent); border-color: var(--accent); }
+  .filter-btn.f-invade.active  { background: rgba(255,107,53,0.1); color: var(--invade); border-color: var(--invade); }
+  .filter-btn.f-quick.active   { background: rgba(0,212,255,0.08); color: var(--quick);  border-color: var(--quick); }
+  .filter-btn.f-full.active    { background: rgba(162,155,254,0.1);color: var(--full);   border-color: var(--full); }
+  .filter-btn.f-passive.active { background: rgba(85,239,196,0.08);color: var(--passive);border-color: var(--passive); }
+  .filter-btn.f-gms.active   { background: rgba(126,200,227,0.1); color: var(--gms);  border-color: var(--gms); }
+  .filter-btn.f-ipsn.active  { background: rgba(255,159,67,0.1);  color: var(--ipsn); border-color: var(--ipsn); }
+  .filter-btn.f-ssc.active   { background: rgba(162,155,254,0.1); color: var(--ssc);  border-color: var(--ssc); }
+  .filter-btn.f-horus.active  { background: rgba(85,239,196,0.1); color: var(--horus);border-color: var(--horus); }
+  .filter-btn.f-ha.active    { background: rgba(253,121,168,0.1); color: var(--ha);   border-color: var(--ha); }
+  .search-box {
+    font-family: 'Share Tech Mono', monospace; font-size: 12px;
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 5px 12px; outline: none; width: 240px; transition: border-color 0.15s;
+  }
+  .search-box::placeholder { color: var(--text-dim); }
+  .search-box:focus { border-color: var(--accent); }
+  .result-count { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); margin-left: auto; letter-spacing: 2px; }
+  .result-count span { color: var(--accent); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1100px; }
+  thead th {
+    background: var(--panel); font-family: 'Share Tech Mono', monospace; font-size: 9px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
+    padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 10;
+    transition: color 0.15s;
+  }
+  thead th:hover { color: var(--accent); }
+  thead th.sorted-asc, thead th.sorted-desc { color: var(--accent); }
+  thead th .si { margin-left: 3px; font-size: 8px; opacity: 0.5; }
+  thead th.sorted-asc .si::after  { content: '▲'; opacity: 1; }
+  thead th.sorted-desc .si::after { content: '▼'; opacity: 1; }
+  thead th:not(.sorted-asc):not(.sorted-desc) .si::after { content: '⇅'; }
+  thead th.no-sort { cursor: default; }
+  thead th.no-sort:hover { color: var(--text-dim); }
+
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.035); transition: background 0.1s; }
+  tbody tr:hover { background: rgba(0,212,255,0.03); }
+  tbody tr.hidden { display: none; }
+  td { padding: 10px 12px; vertical-align: top; }
+
+  /* Option name */
+  td.opt-name {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text-bright);
+    white-space: nowrap; vertical-align: middle;
+  }
+
+  /* Source */
+  td.source { vertical-align: middle; }
+  .src-system {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text); white-space: nowrap;
+  }
+  .src-license { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; margin-top: 2px; }
+
+  /* Mfr badge */
+  .mfr { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1.5px; padding: 2px 7px; border-radius: 2px; text-transform: uppercase; border: 1px solid currentColor; white-space: nowrap; }
+  .mfr-gms   { color: var(--gms);  background: rgba(126,200,227,0.07); }
+  .mfr-ipsn  { color: var(--ipsn); background: rgba(255,159,67,0.07); }
+  .mfr-ssc   { color: var(--ssc);  background: rgba(162,155,254,0.07); }
+  .mfr-horus { color: var(--horus);background: rgba(85,239,196,0.07); }
+  .mfr-ha    { color: var(--ha);   background: rgba(253,121,168,0.07); }
+  .mfr-all   { color: var(--text-dim); background: rgba(255,255,255,0.04); border-color: var(--border2); }
+
+  /* Action type cell */
+  td.atype { vertical-align: middle; white-space: nowrap; }
+
+  /* Effect description */
+  td.effect { font-size: 12px; color: var(--text-dim); line-height: 1.7; max-width: 500px; }
+  td.effect strong { color: var(--text); }
+  td.effect .heat-inline { color: var(--heat); font-family: 'Share Tech Mono', monospace; font-size: 11px; }
+
+  /* Tags cell */
+  td.tags-cell { vertical-align: middle; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1px;
+    padding: 2px 6px; border: 1px solid var(--border2); color: var(--text-dim);
+    text-transform: uppercase; border-radius: 2px; white-space: nowrap; cursor: help;
+  }
+  .tag-heat-self { border-color: rgba(255,68,68,0.4); color: var(--heat); }
+  .tag-stun      { border-color: rgba(255,215,0,0.3); color: #ffd700; }
+  .tag-control   { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
+  .tag-damage    { border-color: rgba(255,107,53,0.3); color: var(--invade); }
+  .tag-support   { border-color: rgba(85,239,196,0.3); color: var(--horus); }
+  .tag-info      { border-color: rgba(0,212,255,0.3); color: var(--accent); }
+  .tag-debuff    { border-color: rgba(253,121,168,0.3); color: var(--ha); }
+  .tag-defensive { border-color: rgba(126,200,227,0.3); color: var(--gms); }
+  .tag-crit      { border-color: rgba(255,215,0,0.4); color: #ffd700; }
+  .tag-ally      { border-color: rgba(85,239,196,0.3); color: var(--horus); }
+
+  /* Left color stripe on invade rows */
+  tbody tr[data-atype="invade"] td:first-child { border-left: 3px solid var(--invade); }
+  tbody tr[data-atype="quick"]  td:first-child { border-left: 3px solid var(--quick); }
+  tbody tr[data-atype="full"]   td:first-child { border-left: 3px solid var(--full); }
+  tbody tr[data-atype="passive"]td:first-child { border-left: 3px solid var(--passive); }
+
+  /* Tooltip */
+  #tooltip {
+    display: none; position: fixed;
+    background: #0a1520; border: 1px solid var(--border2);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.7);
+    padding: 12px 14px; width: 260px; z-index: 9000;
+    pointer-events: none; border-radius: 2px;
+  }
+  #tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 20px;
+    border: 5px solid transparent; border-top-color: var(--border2);
+  }
+  .tip-name {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-bright);
+    margin-bottom: 6px; display: block; white-space: normal;
+  }
+  .tip-body {
+    font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 300;
+    color: var(--text-dim); line-height: 1.65; text-transform: none;
+    letter-spacing: 0; white-space: normal;
+  }
+
+  /* No results */
+  .no-results { text-align: center; padding: 40px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text-dim); letter-spacing: 2px; display: none; }
+
+  /* How it works box */
+  .rules-box {
+    background: var(--panel); border: 1px solid var(--border); padding: 20px 24px;
+    margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
+  }
+  .rules-section h3 {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
+  .rules-section p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .rules-section p strong { color: var(--text); }
+  .rules-section p + p { margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div id="tooltip"><span class="tip-name" id="tip-name"></span><span class="tip-body" id="tip-body"></span></div>
+<div class="wrapper">
+
+<header>
+  <div class="logo-mark">Section 3 & 4 // Mech Combat // Electronic Warfare</div>
+  <h1>Tech Attack Reference</h1>
+  <div class="subtitle">All Quick Tech Options, Full Tech Options, Invade Options & Passive Tech Systems</div>
+</header>
+
+<!-- HOW IT WORKS -->
+<div class="rules-box">
+  <div class="rules-section">
+    <h3>How Tech Attacks Work</h3>
+    <p>Roll <strong>1d20 + TECH ATTACK</strong>. Compare to the target's <strong>E-DEFENSE</strong> (default 8). On a success, the effect resolves. Tech attacks require the target to be within <strong>SENSORS</strong> and line of sight.</p>
+    <p>Some options automatically succeed against <strong>willing allies</strong> and deal no heat.</p>
+  </div>
+  <div class="rules-section">
+    <h3>Quick Tech vs Full Tech</h3>
+    <p><strong style="color:var(--quick)">Quick Tech</strong> — costs one Quick Action. Can be taken more than once per turn, but each use must choose a different option (unless granted as a free action).</p>
+    <p><strong style="color:var(--full)">Full Tech</strong> — costs one Full Action. Lets you perform two Quick Tech options, or one system that requires Full Tech.</p>
+  </div>
+  <div class="rules-section">
+    <h3>Invade Options</h3>
+    <p>When you use the <strong style="color:var(--invade)">Invade</strong> Quick Tech option, make a tech attack. On hit: target takes <strong style="color:var(--heat)">2 heat</strong>, then choose one Invade option you have access to.</p>
+    <p>All mechs have <strong>Fragment Signal</strong> by default. Additional options come from systems and talents. Only one option is chosen per Invade use.</p>
+  </div>
+  <div class="rules-section">
+    <h3>Passive Tech Systems</h3>
+    <p><strong style="color:var(--passive)">Passive</strong> systems modify how tech attacks work for you or your allies — boosting accuracy, adding effects, or granting defensive benefits. They don't require an action to activate.</p>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <span class="filter-label">Type:</span>
+  <button class="filter-btn active" data-at="all"    onclick="setF('at','all',this)">All</button>
+  <button class="filter-btn f-invade"  data-at="invade"  onclick="setF('at','invade',this)">Invade Options</button>
+  <button class="filter-btn f-quick"   data-at="quick"   onclick="setF('at','quick',this)">Quick Tech</button>
+  <button class="filter-btn f-full"    data-at="full"    onclick="setF('at','full',this)">Full Tech</button>
+  <button class="filter-btn f-passive" data-at="passive" onclick="setF('at','passive',this)">Passive</button>
+  <span class="filter-label" style="margin-left:8px">Mfr:</span>
+  <button class="filter-btn active"  data-mfr="all"   onclick="setF('mfr','all',this)">All</button>
+  <button class="filter-btn f-gms"   data-mfr="All"   onclick="setF('mfr','All',this)">Base</button>
+  <button class="filter-btn f-ipsn"  data-mfr="IPS-N" onclick="setF('mfr','IPS-N',this)">IPS-N</button>
+  <button class="filter-btn f-ssc"   data-mfr="SSC"   onclick="setF('mfr','SSC',this)">SSC</button>
+  <button class="filter-btn f-horus" data-mfr="HORUS" onclick="setF('mfr','HORUS',this)">HORUS</button>
+  <button class="filter-btn f-ha"    data-mfr="HA"    onclick="setF('mfr','HA',this)">HA</button>
+  <input type="text" class="search-box" placeholder="Search options..." oninput="doSearch(this.value)">
+  <div class="result-count">Showing <span id="count">0</span> options</div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="legend-label">Action Type:</span>
+  <div class="legend-group">
+    <span class="action-badge ab-invade">Invade Option</span>
+    <span class="action-badge ab-quick">Quick Tech</span>
+    <span class="action-badge ab-full">Full Tech</span>
+    <span class="action-badge ab-passive">Passive</span>
+  </div>
+  <span class="legend-label" style="margin-left:12px">Effect Tags:</span>
+  <div class="legend-group">
+    <span class="tag tag-damage">Damage</span>
+    <span class="tag tag-heat-self">Self-Heat</span>
+    <span class="tag tag-stun">Stun</span>
+    <span class="tag tag-control">Control</span>
+    <span class="tag tag-debuff">Debuff</span>
+    <span class="tag tag-support">Support</span>
+    <span class="tag tag-info">Intel</span>
+    <span class="tag tag-defensive">Defensive</span>
+    <span class="tag tag-ally">Ally</span>
+    <span class="tag tag-crit">Crit</span>
+  </div>
+</div>
+
+<div class="table-wrap">
+<table id="tbl">
+  <thead>
+    <tr>
+      <th onclick="sortBy(0)">Option / Name <span class="si"></span></th>
+      <th onclick="sortBy(1)">Source System <span class="si"></span></th>
+      <th onclick="sortBy(2)">Mfr <span class="si"></span></th>
+      <th onclick="sortBy(3)">License <span class="si"></span></th>
+      <th onclick="sortBy(4)">Action Type <span class="si"></span></th>
+      <th class="no-sort">Effect</th>
+      <th class="no-sort">Tags</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+<div class="no-results" id="nores">NO OPTIONS MATCH CURRENT FILTERS</div>
+</div>
+
+</div>
+<script>
+// Data: [name, system, mfr, license, actionType, effect, tags[]]
+// actionType: invade | quick | full | passive
+// tags: damage | heat-self | stun | control | debuff | support | info | defensive | ally | crit
+const T = [
+  // ── BASE (ALL MECHS) ──────────────────────────────────────────────
+  ["Bolster",           "Quick Tech",  "All", "Base", "quick",
+   "Choose a character within SENSORS. They receive <strong>+1 Accuracy</strong> on their next skill check or save before the end of their next turn. Only one Bolster active at a time.",
+   ["support","ally"]],
+
+  ["Scan",              "Quick Tech",  "All", "Base", "quick",
+   "Choose a character or object within SENSORS and LoS. Ask the GM one of: full stats/weapons/systems; one piece of hidden info; public records. Info is current at time of scan only.",
+   ["info"]],
+
+  ["Lock On",           "Quick Tech",  "All", "Base", "quick",
+   "Choose a character within SENSORS and LoS. They gain the <strong>LOCK ON</strong> condition. Any character attacking them may consume it for <strong>+1 Accuracy</strong> on that attack.",
+   ["debuff","info"]],
+
+  ["Invade",            "Quick Tech",  "All", "Base", "quick",
+   "Make a tech attack vs a target within SENSORS and LoS. On hit: target takes <strong style='color:var(--heat)'>2 heat</strong>, then choose one available Invade option. Willing allies: auto-succeed, no heat.",
+   ["damage"]],
+
+  ["Fragment Signal",   "Quick Tech (Invade)", "All", "Base", "invade",
+   "You feed false information or phantom signals to your target's core. They become <strong>IMPAIRED</strong> and <strong>SLOWED</strong> until the end of their next turn.",
+   ["debuff","control"]],
+
+  // ── HACKER TALENT ─────────────────────────────────────────────────
+  ["Jam Cockpit",       "Safe_Cracker (Hacker II)", "All", "Talent: Hacker II", "invade",
+   "Characters may not MOUNT or DISMOUNT your target until the cockpit is fixed with a successful <strong>ENGINEERING check</strong> (Full Action).",
+   ["control","debuff"]],
+
+  ["Disable Life Support","Safe_Cracker (Hacker II)", "All", "Talent: Hacker II", "invade",
+   "Your target receives <strong>+1 Difficulty on all saves</strong> until life support is rebooted with a successful <strong>SYSTEMS check</strong> (Quick Action).",
+   ["debuff"]],
+
+  ["Hack./Slash",       "Safe_Cracker (Hacker II)", "All", "Talent: Hacker II", "invade",
+   "Your target <strong>cannot benefit from or take Quick or Full Tech actions</strong> until the mech is SHUT DOWN or its core computer is rebooted with a successful <strong>SYSTEMS check</strong> (Quick Action).",
+   ["control","debuff"]],
+
+  ["Last Argument of Kings", "Hacker III", "All", "Talent: Hacker III", "full",
+   "Tech attack within SENSORS and LoS. On hit: target immediately takes <strong>BURN equal to their current heat</strong>. If this causes an overheat, it resolves before the heat cap resets.",
+   ["damage","control"]],
+
+  // ── SSC ───────────────────────────────────────────────────────────
+  ["Tracking Bug",      "Tracking Bug", "SSC", "Death's Head Lic. I", "quick",
+   "Tech attack within SENSORS. On hit: you know the target's exact <strong>location, HP, STRUCTURE, and SPEED</strong> for the scene. They can't HIDE and you ignore their INVISIBLE. Removed by ENGINEERING check (Quick Action) or end of scene.",
+   ["info","debuff"]],
+
+  ["Black ICE Module",  "Black ICE Module", "SSC", "Black Witch Lic. III", "passive",
+   "Tech attacks against you or adjacent allies receive <strong>+1 Difficulty</strong>, increasing by +1 per subsequent tech attack (max +3). Resets at +4 or end of scene. Allies lose benefit on breaking adjacency.",
+   ["defensive"]],
+
+  ["Markerlight",       "Markerlight",  "SSC", "Swallowtail Lic. II", "full",
+   "Tech attack within LoS and SENSORS. On hit: target takes <strong style='color:var(--heat)'>2 heat</strong> and gains <strong>LOCK ON</strong>. Once before your next turn, when an ally successfully attacks your target, you may declare as a reaction that they scored a <strong>critical hit</strong>.",
+   ["damage","debuff","crit","info"]],
+
+  ["Stalk Prey",        "Hunter Logic Suite", "SSC", "Mourning Cloak Lic. II", "invade",
+   "You infect the target with viral logic that wipes your image from their sensors. They treat you as <strong>INVISIBLE</strong> until you next take damage from them. Only one target at a time.",
+   ["control","support"]],
+
+  ["Terrify",           "Hunter Logic Suite", "SSC", "Mourning Cloak Lic. II", "invade",
+   "Target becomes <strong>IMPAIRED</strong> and <strong>cannot voluntarily move closer to you</strong> until the end of their next turn.",
+   ["control","debuff"]],
+
+  ["Shrike Code",       "Neurospike Mk1", "SSC", "Dusk Wing Lic. I", "invade",
+   "Each time the invaded target <strong>attacks</strong> until the end of their next turn, they first take <strong style='color:var(--heat)'>2 heat</strong>.",
+   ["damage","debuff"]],
+
+  ["Mirage",            "Neurospike Mk1", "SSC", "Dusk Wing Lic. I", "invade",
+   "Choose yourself or an allied character. Your systems relay blurred illusory images over their silhouette. Your target treats the chosen character as <strong>INVISIBLE</strong> until the end of their next turn.",
+   ["support","ally"]],
+
+  // ── HORUS ─────────────────────────────────────────────────────────
+  ["Puppet System",     "H0R_OS Upgrade I",  "HORUS", "Goblin Lic. I", "invade",
+   "Your target moves its maximum SPEED in a direction of your choice. Movement is involuntary, provokes reactions and engagement normally, and doesn't count as knockback, push, or pull.",
+   ["control"]],
+
+  ["Construct Other: Ideal Image", "Metahook", "HORUS", "Goblin Lic. II", "quick",
+   "Create a SIZE 2 data construct in a free adjacent space. Appears real to all systems. Provides <strong>hard cover</strong>, blocks LoS, has IMMUNITY to all damage. Lasts rest of scene or until destroyed. Only one at a time.",
+   ["support","control"]],
+
+  ["Construct Other: False Idol", "Metahook", "HORUS", "Goblin Lic. II", "quick",
+   "Create an illusory decoy of yourself or an ally in a space within SENSORS. Before targeting the original, enemies in LoS of the idol must pass a <strong>SYSTEMS save</strong> or be forced to target the idol instead until end of next turn.",
+   ["support","control","ally"]],
+
+  ["Link Systems",      "H0R_OS Upgrade II", "HORUS", "Goblin Lic. II", "quick",
+   "Link systems with an allied character within SENSORS and LoS. While linked: you may use their SENSORS/LoS for tech actions; they may use your SYSTEMS for checks/saves. Both characters also share any heat or conditions taken. One link at a time.",
+   ["support","ally"]],
+
+  ["Dimensional Emblems","H0R_OS Upgrade III","HORUS","Goblin Lic. III","invade",
+   "Create <strong>3 SIZE 1 data constructs</strong> in free spaces adjacent to your target (not adjacent to each other). Characters passing through take <strong>2 energy</strong> and the construct disappears. Last rest of scene. Destroyed by adjacent SYSTEMS check (Quick Action).",
+   ["damage","control"]],
+
+  ["Celestial Shackles","H0R_OS Upgrade III","HORUS","Goblin Lic. III","invade",
+   "Mark your target's current space. If they leave it, you may <strong>teleport them back</strong> as a free action once per turn. They may end the effect with a <strong>SYSTEMS save</strong> (Quick Action), otherwise lasts rest of scene.",
+   ["control"]],
+
+  ["Hurl Into the Duat","OSIRIS-Class NHP","HORUS","Goblin Lic. III","quick",
+   "<strong>1/round</strong>. Tech attack within SENSORS. On hit: target takes <strong style='color:var(--heat)'>2 heat</strong> and you inflict a GATE effect that <em>escalates with each successful hit on any target</em> (resets on rest/Full Repair):<br>• <strong>1st Gate:</strong> Control target's standard move next turn<br>• <strong>2nd Gate:</strong> SLOWED + IMPAIRED until end of next turn<br>• <strong>3rd Gate:</strong> STUNNED until end of next turn<br>• <strong>4th Gate:</strong> Target temporarily switches allegiance until end of next turn",
+   ["damage","control","stun"]],
+
+  ["Guide the Flock",   "H0R_OS-RV60 Puppetmaster","HORUS","Hydra Lic. I","quick",
+   "Move any number of drones within SENSORS — including drones belonging to other characters — up to <strong>4 spaces</strong> in any direction.",
+   ["control","support"]],
+
+  ["Electropulse",      "H0R_OS-RV60 Puppetmaster","HORUS","Hydra Lic. I","quick",
+   "Characters of your choice within SENSORS that are adjacent to <strong>any drone or deployable</strong> (even their own) take <strong style='color:var(--heat)'>2 heat</strong>. Can hit multiple targets simultaneously.",
+   ["damage"]],
+
+  ["Beckon",            "Beckoner",  "HORUS", "Manticore Lic. I", "invade",
+   "You take <strong style='color:var(--heat)'>1d6+2 AP self-heat</strong> and <strong>swap places</strong> with your target (both teleport). Target must be a MECH of equal or larger SIZE. Fails if either space is invalid.",
+   ["control","heat-self"]],
+
+  ["Summon",            "Beckoner",  "HORUS", "Manticore Lic. I", "invade",
+   "All characters within <strong>Burst 3 of your target</strong> are pulled adjacent to them, or as close as possible.",
+   ["control"]],
+
+  ["Smite",             "Smite",     "HORUS", "Manticore Lic. II", "invade",
+   "You take <strong style='color:var(--heat)'>1d6 AP self-heat</strong>. Target must pass a <strong>SYSTEMS save</strong> or be <strong>STUNNED</strong> until the end of their next turn. Each character can only be STUNNED by this effect once per scene.",
+   ["stun","heat-self"]],
+
+  ["Sear",              "Smite",     "HORUS", "Manticore Lic. II", "invade",
+   "You take <strong style='color:var(--heat)'>1d6 AP self-heat</strong>. Deal <strong style='color:var(--heat)'>2 heat</strong> to your target for each character of SIZE 1+ <strong>ENGAGED by them</strong> (including you), up to a maximum of <strong>6 heat</strong>.",
+   ["damage","heat-self"]],
+
+  ["Logic Bomb",        "Viral Logic Suite","HORUS","Minotaur Lic. I","invade",
+   "All characters of your choice within <strong>Burst 2 of your target</strong> must pass a <strong>SYSTEMS save</strong> or become <strong>SLOWED</strong> until they end a turn not adjacent to any character.",
+   ["control","debuff"]],
+
+  ["Banish",            "Viral Logic Suite","HORUS","Minotaur Lic. I","invade",
+   "Until the end of your target's next turn, they take <strong style='color:var(--heat)'>2 heat for every space they voluntarily move</strong>, up to a maximum of 6 heat.",
+   ["damage","control"]],
+
+  ["Ophidian Trek",     "Metafold Carver","HORUS","Minotaur Lic. II","invade",
+   "Your target is <strong>teleported 1d6+1 spaces directly toward you</strong>, or as close as possible. Fails if destination is occupied.",
+   ["control"]],
+
+  ["Fold Space",        "Metafold Carver","HORUS","Minotaur Lic. II","invade",
+   "Your target <strong>disappears from the battlefield</strong> until the start of its next turn. It returns in the same space, or the nearest free space of their choice.",
+   ["control"]],
+
+  ["Chains of Prometheus","Aggressive System Sync","HORUS","Minotaur Lic. II","full",
+   "Tech attack within SENSORS. On hit: target takes <strong style='color:var(--heat)'>4 heat</strong>, then for the rest of the scene takes <strong>2 heat</strong> each time they end their turn more than <strong>3 spaces from you</strong>. Ended by SYSTEMS save (Full Action). One target at a time.",
+   ["damage","control"]],
+
+  ["Excommunicate",     "Aggressive System Sync","HORUS","Minotaur Lic. II","full",
+   "Tech attack within SENSORS. On hit: for the rest of the scene, the first time per round they <strong>start or move adjacent to an ally</strong>, both characters take <strong>3 heat</strong>. Ended by SYSTEMS save (Full Action). One target at a time.",
+   ["damage","control","debuff"]],
+
+  ["Predator/Prey Concepts","Law of Blades","HORUS","Minotaur Lic. III","full",
+   "Tech attack within SENSORS. On hit: target <strong>immediately attacks a character or object of your choice</strong> with a single weapon as a reaction. You choose the target and weapon, but they count as attacking.",
+   ["control"]],
+
+  ["Slave Systems",     "Law of Blades","HORUS","Minotaur Lic. III","full",
+   "Tech attack within SENSORS. On hit: target <strong>immediately performs one of the following as a reaction</strong> — chosen by you: BOOST, STABILIZE, IMPROVISED ATTACK, GRAPPLE, or RAM.",
+   ["control"]],
+
+  ["Bend Probability",  "SISYPHUS-Class NHP","HORUS","Pegasus Lic. III","full",
+   "Roll 2d20 and note results X and Y. Gain the <strong>Probabilistic Cannibalism</strong> reaction until end of next turn — spend X or Y to make an attack against a character within SENSORS automatically hit or miss.",
+   ["control","support"]],
+
+  ["Tesseract",         "Tesseract",  "HA",    "Iskander Lic. III", "quick",
+   "<em>Spread Focus:</em> A <strong>Burst 3 area within SENSORS</strong> becomes a zero-g zone until reused or end of scene.<br><em>Pinpoint Focus:</em> Tech attack — target must pass an <strong>ENGINEERING save</strong> or float 6 spaces up, becoming IMMOBILIZED in the air until end of next turn.",
+   ["control","debuff"]],
+
+  // ── SPOTTER TALENT ────────────────────────────────────────────────
+  ["Panopticon Lock On","Spotter (Rank II)", "All", "Talent: Spotter II", "passive",
+   "At the end of your turn, if you didn't move and used the Lock On Quick Tech, you may <strong>Lock On once as a free action</strong>. When you Lock On, you also learn target's ARMOR, SPEED, EVASION, E-DEFENSE, MECH SKILLS, and current HP.",
+   ["info","support"]],
+
+  ["Bentham/Foucault Elimination","Spotter (Rank III)","All","Talent: Spotter III","passive",
+   "When you Lock On, nominate an adjacent ally as a Quick Action. They may <strong>immediately make any Quick Action as a reaction</strong>, consuming your target's Lock On condition.",
+   ["support","ally"]],
+
+  // ── LESSON OF DISBELIEF (HORUS Core Bonus) ────────────────────────
+  ["The Lesson of Disbelief","HORUS Core Bonus","HORUS","Core Bonus","passive",
+   "Your mech gains <strong>+1 Accuracy on all SYSTEMS checks and saves</strong> and <strong>+2 E-Defense</strong>.",
+   ["support","defensive"]],
+
+  ["The Lesson of the Open Door","HORUS Core Bonus","HORUS","Core Bonus","passive",
+   "When you hit a target with a tech attack, your <strong>next melee attack</strong> against the same target gains +1 Accuracy and its damage <strong>cannot be reduced</strong>.",
+   ["support","damage"]],
+];
+
+const mfrClass = {
+  'All':'mfr-all','IPS-N':'mfr-ipsn','SSC':'mfr-ssc','HORUS':'mfr-horus','HA':'mfr-ha','All':'mfr-all'
+};
+const atBadge = {
+  invade:  '<span class="action-badge ab-invade">Invade Option</span>',
+  quick:   '<span class="action-badge ab-quick">Quick Tech</span>',
+  full:    '<span class="action-badge ab-full">Full Tech</span>',
+  passive: '<span class="action-badge ab-passive">Passive</span>',
+};
+
+const tagDefs = {
+  'damage':    { name: 'Damage', body: 'This option deals damage or heat directly to enemies.' },
+  'heat-self': { name: 'Self-Heat', body: 'Using this option costs the user heat from their own reactor. Plan accordingly.' },
+  'stun':      { name: 'Stun', body: 'Can inflict the STUNNED condition — target cannot act, move, take reactions, or Overcharge. Max Evasion 5. Auto-fails HULL and AGILITY saves.' },
+  'control':   { name: 'Control', body: 'Forces involuntary movement, restricts actions, or overrides enemy decisions.' },
+  'debuff':    { name: 'Debuff', body: 'Applies a negative condition or status effect to the target (IMPAIRED, SLOWED, etc.).' },
+  'support':   { name: 'Support', body: 'Provides benefits to yourself or allied characters.' },
+  'info':      { name: 'Intel', body: 'Reveals hidden information about enemies — stats, location, heat levels, etc.' },
+  'defensive': { name: 'Defensive', body: 'Protects you or allies from incoming tech attacks or other effects.' },
+  'ally':      { name: 'Ally', body: 'Primarily affects or benefits allied characters.' },
+  'crit':      { name: 'Crit', body: 'Involves critical hit mechanics — either triggering, forcing, or enhancing crits.' },
+};
+
+function renderTags(tags) {
+  return tags.map(t => {
+    const def = tagDefs[t];
+    if (!def) return `<span class="tag">${t}</span>`;
+    return `<span class="tag tag-${t}" data-tip-name="${def.name}" data-tip-body="${def.body}">${t}</span>`;
+  }).join('');
+}
+
+function mfrCls(m) {
+  const map = { 'All':'mfr-all','IPS-N':'mfr-ipsn','SSC':'mfr-ssc','HORUS':'mfr-horus','HA':'mfr-ha' };
+  return map[m] || 'mfr-all';
+}
+
+const tbody = document.getElementById('tbody');
+T.forEach(row => {
+  const [name, system, mfr, license, at, effect, tags] = row;
+  const tr = document.createElement('tr');
+  tr.dataset.at  = at;
+  tr.dataset.mfr = mfr;
+  tr.dataset.search = [name, system, mfr, license, at, tags.join(' ')].join(' ').toLowerCase();
+  tr.setAttribute('data-atype', at);
+  tr.innerHTML = `
+    <td class="opt-name">${name}</td>
+    <td class="source">
+      <div class="src-system">${system}</div>
+      <div class="src-license">${license}</div>
+    </td>
+    <td><span class="mfr ${mfrCls(mfr)}">${mfr === 'All' ? 'Base / Talent' : mfr}</span></td>
+    <td style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);white-space:nowrap;vertical-align:middle">${license}</td>
+    <td class="atype">${atBadge[at] || at}</td>
+    <td class="effect">${effect}</td>
+    <td class="tags-cell"><div class="tags">${renderTags(tags)}</div></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+// Filters
+let fAt = 'all', fMfr = 'all', fSearch = '';
+
+function setF(type, val, btn) {
+  if (type === 'at')  { fAt  = val; document.querySelectorAll('[data-at]').forEach(b => b.classList.remove('active')); }
+  if (type === 'mfr') { fMfr = val; document.querySelectorAll('[data-mfr]').forEach(b => b.classList.remove('active')); }
+  btn.classList.add('active');
+  applyFilters();
+}
+function doSearch(v) { fSearch = v.trim().toLowerCase(); applyFilters(); }
+
+function applyFilters() {
+  let n = 0;
+  document.querySelectorAll('#tbody tr').forEach(r => {
+    const matchAt  = fAt  === 'all' || r.dataset.at  === fAt;
+    const matchMfr = fMfr === 'all' || r.dataset.mfr === fMfr;
+    const matchQ   = !fSearch || r.dataset.search.includes(fSearch);
+    const show = matchAt && matchMfr && matchQ;
+    r.classList.toggle('hidden', !show);
+    if (show) n++;
+  });
+  document.getElementById('count').textContent = n;
+  document.getElementById('nores').style.display = n === 0 ? 'block' : 'none';
+}
+
+// Sort
+let sortCol = -1, sortDir = 1;
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('thead th').forEach((th, i) => {
+    th.classList.remove('sorted-asc','sorted-desc');
+    if (i === col) th.classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+  });
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a, b) => {
+    const at = a.cells[col].textContent.trim();
+    const bt = b.cells[col].textContent.trim();
+    return at.localeCompare(bt) * sortDir;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+// Init
+applyFilters();
+
+// Global tooltip
+const ttEl   = document.getElementById('tooltip');
+const ttName = document.getElementById('tip-name');
+const ttBody = document.getElementById('tip-body');
+
+document.addEventListener('mouseover', e => {
+  const tag = e.target.closest('[data-tip-name]');
+  if (!tag) return;
+  ttName.textContent = tag.dataset.tipName;
+  ttBody.textContent = tag.dataset.tipBody;
+  ttEl.style.display = 'block';
+  positionTip(e);
+});
+document.addEventListener('mousemove', e => {
+  if (ttEl.style.display === 'block') positionTip(e);
+});
+document.addEventListener('mouseout', e => {
+  if (!e.target.closest('[data-tip-name]')) return;
+  ttEl.style.display = 'none';
+});
+function positionTip(e) {
+  const pad = 12, tw = ttEl.offsetWidth, th = ttEl.offsetHeight;
+  let x = e.clientX + pad, y = e.clientY - th - pad;
+  if (x + tw > window.innerWidth - pad) x = e.clientX - tw - pad;
+  if (y < pad) y = e.clientY + pad;
+  ttEl.style.left = x + 'px';
+  ttEl.style.top  = y + 'px';
+}
+</script>
+</body>
+</html>
