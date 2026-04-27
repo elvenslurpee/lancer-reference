@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Systems Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#060a0f;--panel:#0b1118;--panel2:#0d1520;
+    --border:#1a2d3f;--border2:#1e3348;
+    --accent:#00d4ff;--accent2:#ff6b35;
+    --text:#c8dce8;--text-dim:#4a6880;--text-bright:#eaf4ff;
+    --gms:#7ec8e3;--ipsn:#ff9f43;--ssc:#a29bfe;--horus:#55efc4;--ha:#fd79a8;
+    --success:#39ff14;--warn:#ffd700;--danger:#ff4444;
+    --cat-mobility:#00d4ff;--cat-defense:#39ff14;--cat-utility:#ffd700;
+    --cat-drone:#55efc4;--cat-support:#a29bfe;--cat-offensive:#ff6b35;
+    --cat-ai:#fd79a8;--cat-mod:#7ec8e3;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:"Exo 2",sans-serif;font-weight:300;min-height:100vh;}
+  body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;z-index:9999;}
+  .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+  .wrapper{position:relative;z-index:1;max-width:1600px;margin:0 auto;padding:0 24px 80px;}
+  header{padding:40px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px;position:relative;}
+  header::after{content:"";position:absolute;bottom:-1px;left:0;width:240px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+  .logo-mark{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--accent);letter-spacing:4px;opacity:.6;margin-bottom:6px;text-transform:uppercase;}
+  h1{font-family:"Exo 2",sans-serif;font-weight:900;font-size:clamp(1.8rem,4vw,3rem);line-height:1;letter-spacing:-1px;text-transform:uppercase;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,#0088aa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .subtitle{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--text-dim);letter-spacing:3px;margin-top:8px;text-transform:uppercase;}
+
+  /* CONTROLS */
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  .filter-label{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;}
+  .filter-btn{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all .15s;}
+  .filter-btn:hover{color:var(--accent);border-color:var(--accent);}
+  .filter-btn.active{background:rgba(0,212,255,.08);color:var(--accent);border-color:var(--accent);}
+  .filter-btn.f-gms.active{background:rgba(126,200,227,.1);color:var(--gms);border-color:var(--gms);}
+  .filter-btn.f-ipsn.active{background:rgba(255,159,67,.1);color:var(--ipsn);border-color:var(--ipsn);}
+  .filter-btn.f-ssc.active{background:rgba(162,155,254,.1);color:var(--ssc);border-color:var(--ssc);}
+  .filter-btn.f-horus.active{background:rgba(85,239,196,.1);color:var(--horus);border-color:var(--horus);}
+  .filter-btn.f-ha.active{background:rgba(253,121,168,.1);color:var(--ha);border-color:var(--ha);}
+  .filter-btn.f-mob.active{background:rgba(0,212,255,.08);color:var(--cat-mobility);border-color:var(--cat-mobility);}
+  .filter-btn.f-def.active{background:rgba(57,255,20,.08);color:var(--cat-defense);border-color:var(--cat-defense);}
+  .filter-btn.f-util.active{background:rgba(255,215,0,.08);color:var(--cat-utility);border-color:var(--cat-utility);}
+  .filter-btn.f-drone.active{background:rgba(85,239,196,.08);color:var(--cat-drone);border-color:var(--cat-drone);}
+  .filter-btn.f-sup.active{background:rgba(162,155,254,.08);color:var(--cat-support);border-color:var(--cat-support);}
+  .filter-btn.f-off.active{background:rgba(255,107,53,.08);color:var(--cat-offensive);border-color:var(--cat-offensive);}
+  .filter-btn.f-ai.active{background:rgba(253,121,168,.08);color:var(--cat-ai);border-color:var(--cat-ai);}
+  .filter-btn.f-mod.active{background:rgba(126,200,227,.08);color:var(--cat-mod);border-color:var(--cat-mod);}
+  .search-box{font-family:"Share Tech Mono",monospace;font-size:12px;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:5px 12px;outline:none;width:240px;transition:border-color .15s;}
+  .search-box::placeholder{color:var(--text-dim);}
+  .search-box:focus{border-color:var(--accent);}
+  .result-count{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--text-dim);margin-left:auto;letter-spacing:2px;}
+  .result-count span{color:var(--accent);}
+
+  /* TABLE */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:1200px;}
+  thead th{background:var(--panel);font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0;z-index:10;transition:color .15s;}
+  thead th:hover{color:var(--accent);}
+  thead th.sorted-asc,thead th.sorted-desc{color:var(--accent);}
+  thead th .si{margin-left:3px;font-size:8px;opacity:.5;}
+  thead th.sorted-asc .si::after{content:"▲";opacity:1;}
+  thead th.sorted-desc .si::after{content:"▼";opacity:1;}
+  thead th:not(.sorted-asc):not(.sorted-desc) .si::after{content:"⇅";}
+  thead th.no-sort{cursor:default;}
+  thead th.no-sort:hover{color:var(--text-dim);}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.035);transition:background .1s;}
+  tbody tr:hover{background:rgba(0,212,255,.03);}
+  tbody tr.hidden{display:none;}
+  td{padding:9px 12px;vertical-align:top;}
+
+  /* MFR badge */
+  .mfr{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1.5px;padding:2px 7px;border-radius:2px;text-transform:uppercase;border:1px solid currentColor;white-space:nowrap;}
+  .mfr-gms{color:var(--gms);background:rgba(126,200,227,.07);}
+  .mfr-ipsn{color:var(--ipsn);background:rgba(255,159,67,.07);}
+  .mfr-ssc{color:var(--ssc);background:rgba(162,155,254,.07);}
+  .mfr-horus{color:var(--horus);background:rgba(85,239,196,.07);}
+  .mfr-ha{color:var(--ha);background:rgba(253,121,168,.07);}
+
+  /* Category pip */
+  .cat{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;text-transform:uppercase;border:1px solid currentColor;white-space:nowrap;}
+  .cat-mob{color:var(--cat-mobility);background:rgba(0,212,255,.07);}
+  .cat-def{color:var(--cat-defense);background:rgba(57,255,20,.07);}
+  .cat-util{color:var(--cat-utility);background:rgba(255,215,0,.07);}
+  .cat-drone{color:var(--cat-drone);background:rgba(85,239,196,.07);}
+  .cat-sup{color:var(--cat-support);background:rgba(162,155,254,.07);}
+  .cat-off{color:var(--cat-offensive);background:rgba(255,107,53,.07);}
+  .cat-ai{color:var(--cat-ai);background:rgba(253,121,168,.07);}
+  .cat-mod{color:var(--cat-mod);background:rgba(126,200,227,.07);}
+
+  /* Action type */
+  .act{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;white-space:nowrap;}
+  .act-proto{color:#a0c4ff;border:1px solid rgba(160,196,255,.3);background:rgba(160,196,255,.07);}
+  .act-quick{color:var(--accent);border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.07);}
+  .act-full{color:var(--ssc);border:1px solid rgba(162,155,254,.3);background:rgba(162,155,254,.07);}
+  .act-passive{color:var(--horus);border:1px solid rgba(85,239,196,.3);background:rgba(85,239,196,.07);}
+  .act-react{color:var(--warn);border:1px solid rgba(255,215,0,.3);background:rgba(255,215,0,.07);}
+  .act-free{color:var(--success);border:1px solid rgba(57,255,20,.3);background:rgba(57,255,20,.07);}
+
+  /* SP */
+  .sp-val{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--ssc);}
+
+  /* System name */
+  td.sname{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--text-bright);white-space:nowrap;}
+
+  /* License */
+  .lic{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--text-dim);white-space:nowrap;}
+
+  /* Tags */
+  .tags{display:flex;flex-wrap:wrap;gap:3px;}
+  .tag{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1px;padding:2px 5px;border:1px solid var(--border2);color:var(--text-dim);text-transform:uppercase;border-radius:2px;white-space:nowrap;cursor:help;}
+  .tag-shield{border-color:rgba(0,212,255,.3);color:var(--accent);}
+  .tag-drone{border-color:rgba(85,239,196,.3);color:var(--horus);}
+  .tag-deployable{border-color:rgba(255,215,0,.3);color:var(--warn);}
+  .tag-ai{border-color:rgba(253,121,168,.3);color:var(--ha);}
+  .tag-limited{border-color:rgba(255,215,0,.3);color:var(--warn);}
+  .tag-unique{border-color:rgba(162,155,254,.3);color:var(--ssc);}
+  .tag-mod{border-color:rgba(126,200,227,.3);color:var(--gms);}
+  .tag-heat{border-color:rgba(255,68,68,.4);color:#ff4444;}
+  .tag-dz{border-color:rgba(255,107,53,.4);color:var(--accent2);}
+
+  /* Effect desc */
+  td.effect{font-size:12px;color:var(--text-dim);line-height:1.7;max-width:500px;}
+  td.effect strong{color:var(--text);}
+
+  /* No results */
+  .no-results{text-align:center;padding:40px;font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--text-dim);letter-spacing:2px;display:none;}
+
+  /* Tooltip */
+  #tooltip{display:none;position:fixed;background:#0a1520;border:1px solid var(--border2);box-shadow:0 6px 24px rgba(0,0,0,.7);padding:12px 14px;width:260px;z-index:9000;pointer-events:none;border-radius:2px;}
+  #tooltip::after{content:"";position:absolute;top:100%;left:20px;border:5px solid transparent;border-top-color:var(--border2);}
+  #tip-name{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-bright);margin-bottom:6px;display:block;white-space:normal;}
+  #tip-body{font-family:"Exo 2",sans-serif;font-size:11px;font-weight:300;color:var(--text-dim);line-height:1.65;white-space:normal;}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div id="tooltip"><span id="tip-name"></span><span id="tip-body"></span></div>
+<div class="wrapper">
+
+<header>
+  <div class="logo-mark">Section 4 // Compendium // Mech Systems</div>
+  <h1>Systems Reference</h1>
+  <div class="subtitle">All Non-Weapon, Non-Tech Mech Systems &mdash; Mobility &bull; Defense &bull; Utility &bull; Drones &bull; AI &bull; Mods</div>
+</header>
+
+<div class="controls">
+  <span class="filter-label">Mfr:</span>
+  <button class="filter-btn active"  data-f="mfr" data-v="all"   onclick="setF(this,'mfr','all')">All</button>
+  <button class="filter-btn f-gms"   data-f="mfr" data-v="GMS"   onclick="setF(this,'mfr','GMS')">GMS</button>
+  <button class="filter-btn f-ipsn"  data-f="mfr" data-v="IPS-N" onclick="setF(this,'mfr','IPS-N')">IPS-N</button>
+  <button class="filter-btn f-ssc"   data-f="mfr" data-v="SSC"   onclick="setF(this,'mfr','SSC')">SSC</button>
+  <button class="filter-btn f-horus" data-f="mfr" data-v="HORUS" onclick="setF(this,'mfr','HORUS')">HORUS</button>
+  <button class="filter-btn f-ha"    data-f="mfr" data-v="HA"    onclick="setF(this,'mfr','HA')">HA</button>
+  <span class="filter-label" style="margin-left:8px">Category:</span>
+  <button class="filter-btn active"  data-f="cat" data-v="all"    onclick="setF(this,'cat','all')">All</button>
+  <button class="filter-btn f-mob"   data-f="cat" data-v="mob"    onclick="setF(this,'cat','mob')">Mobility</button>
+  <button class="filter-btn f-def"   data-f="cat" data-v="def"    onclick="setF(this,'cat','def')">Defense</button>
+  <button class="filter-btn f-off"   data-f="cat" data-v="off"    onclick="setF(this,'cat','off')">Offensive</button>
+  <button class="filter-btn f-drone" data-f="cat" data-v="drone"  onclick="setF(this,'cat','drone')">Drone</button>
+  <button class="filter-btn f-sup"   data-f="cat" data-v="sup"    onclick="setF(this,'cat','sup')">Support</button>
+  <button class="filter-btn f-util"  data-f="cat" data-v="util"   onclick="setF(this,'cat','util')">Utility</button>
+  <button class="filter-btn f-ai"    data-f="cat" data-v="ai"     onclick="setF(this,'cat','ai')">AI/NHP</button>
+  <button class="filter-btn f-mod"   data-f="cat" data-v="mod"    onclick="setF(this,'cat','mod')">Mod</button>
+  <input type="text" class="search-box" placeholder="Search systems, effects, tags..." oninput="doSearch(this.value)">
+  <div class="result-count">Showing <span id="count">0</span> systems</div>
+</div>
+
+<div class="table-wrap">
+<table id="tbl">
+  <thead>
+    <tr>
+      <th onclick="sortBy(0)">System <span class="si"></span></th>
+      <th onclick="sortBy(1)">Mfr <span class="si"></span></th>
+      <th onclick="sortBy(2)">License <span class="si"></span></th>
+      <th onclick="sortBy(3)">SP <span class="si"></span></th>
+      <th onclick="sortBy(4)">Category <span class="si"></span></th>
+      <th onclick="sortBy(5)">Activation <span class="si"></span></th>
+      <th class="no-sort">Tags</th>
+      <th class="no-sort">Effect</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+<div class="no-results" id="nores">NO SYSTEMS MATCH CURRENT FILTERS</div>
+</div>
+
+</div>
+<script>
+// Data: [name, mfr, license, sp, cat, activation, tags[], effect]
+// cat: mob|def|off|drone|sup|util|ai|mod
+// activation: passive|protocol|quick|full|react|free
+// tags: shield|drone|deployable|ai|limited:X|unique|mod|heat:X|dz
+const S = [
+  // ── GMS GENERAL MARKET ────────────────────────────────────────────
+  ["Comp/Con Assistant Unit", "GMS","GMS",2,"ai","protocol",["ai","unique"],
+   "Grants the AI tag. On your turn, hand control to the comp/con as a protocol — it acts on basic instructions (attack this, defend here). Can issue new commands at start of each turn within R50. Cannot cascade."],
+  ["Custom Paint Job",        "GMS","GMS",1,"util","passive",["unique"],
+   "When your mech takes structure damage, roll 1d6. On a 6, return to 1 HP and ignore the damage. Usable once between full repairs."],
+  ["Expanded Compartment",    "GMS","GMS",1,"util","passive",["unique"],
+   "Carries one extra non-mech SIZE 1/2 passenger. They are untargetable while inside. If they take the controls, the mech becomes IMPAIRED and SLOWED."],
+  ["Manipulators",            "GMS","GMS",1,"util","passive",["unique"],
+   "Extra small limbs allow interaction with pilot-scale objects and controls. No combat benefit."],
+  ["Personalizations",        "GMS","GMS",1,"util","passive",["unique"],
+   "+2 HP. Establish one minor narrative modification with GM approval. If relevant to a skill check, grants +1 Accuracy."],
+  ["Pattern-A Smoke Charges", "GMS","GMS",2,"def","quick",["limited:3","unique"],
+   "Expend a charge: Smoke Grenade (Bl5 Rng5) or Smoke Mine (Bu3) — all characters in area gain soft cover until end of your next turn."],
+  ["Pattern-A Jericho Deployable Cover","GMS","GMS",2,"def","quick",["deployable","unique"],
+   "Deploy two SIZE 1 hard cover sections in adjacent free spaces. Each has 5 EVA / 10 HP. One Full Action to pick up both. Restores on rest/repair."],
+  ["Pattern-B HEX Charges",   "GMS","GMS",2,"off","quick",["limited:3","unique"],
+   "Frag Grenade (Bl5): AGILITY save or 1d6 explosive (half on success). Explosive Mine (Bu1): AGILITY save or 2d6 explosive (half on success)."],
+  ["Stable Structure",        "GMS","GMS",2,"def","passive",["unique"],
+   "+1 Accuracy on saves to avoid PRONE or KNOCKBACK."],
+  ["Turret Drones",           "GMS","GMS",2,"drone","quick",["drone","limited:3","unique"],
+   "Deploy a turret drone (SIZE 1/2, 5 HP) to any surface within SENSORS. Gain TURRET ATTACK reaction (1/round per turret): when an ally within R10 hits, the turret deals 3 kinetic to their target. Expires end of scene."],
+  ["Type-I Shield",           "GMS","GMS",2,"def","protocol",["shield","unique","heat:1"],
+   "Nominate a character in LoS. All ranged/melee attacks between you and them gain +2 Difficulty until start of your next turn. 1 heat self on activation."],
+  ["EVA Module",              "GMS","GMS",1,"mob","passive",["unique"],
+   "In zero/low gravity and underwater: you can fly and are not SLOWED."],
+  ["Rapid Burst Jump Jet System","GMS","GMS",2,"mob","passive",["unique"],
+   "You can fly when you BOOST. Must end movement on the ground or begin falling."],
+  ["Type-I Flight System",    "GMS","GMS",3,"mob","passive",["unique"],
+   "Fly when you BOOST or make a standard move. Take SIZE+1 Difficulty at end of any turn in which you fly."],
+
+  // ── IPS-N ─────────────────────────────────────────────────────────
+  ["Synthetic Muscle Netting","IPS-N","Blackbeard I",2,"util","passive",["unique"],
+   "RAM targets larger than you. When grappling/ramming larger targets, count as their SIZE. Against same or smaller, count as one SIZE larger. Lifting/dragging capacity doubled."],
+  ["Reinforced Grapples",     "IPS-N","Blackbeard III",2,"mob","passive",[],
+   "GRAPPLE SWING: 1/turn, fly your SPEED in a straight line when making a standard move — must end on a surface. Can secure to vertical/overhanging surfaces.\nDRAG DOWN: Quick Action — contested HULL check vs character within R5; loser is knocked PRONE."],
+  ["SEKHMET-Class NHP",       "IPS-N","Blackbeard III",3,"ai","protocol",["ai","unique"],
+   "Grants AI tag and SEKHMET Protocol. While active: all melee crits deal +1d6; 1/round free Skirmish with melee. Downside: NHP takes over, attacking nearest character (ally or enemy). Retake control as protocol (then STUNNED until your next turn)."],
+  ["Argonaut Shield",         "IPS-N","Drake I",2,"def","quick",["unique"],
+   "Provide cover for an adjacent character as a quick action: they gain RESISTANCE to all damage, but you take half of what they would have taken (before ARMOR/RESISTANCE). Lasts until adjacency breaks."],
+  ["Aegis Shield Generator",  "IPS-N","Drake II",2,"def","quick",["shield","deployable","limited:1","unique"],
+   "Deploy a SIZE 1 shield generator in an adjacent space creating a Bu1 shield. 3d6 dice represent power. As a reaction when a character in the area takes damage, roll one die to reduce by that amount. Lasts until all dice spent or generator destroyed."],
+  ["Portable Bunker",         "IPS-N","Drake III",2,"def","quick",["deployable","limited:1","unique"],
+   "Deploy a 4x4 fortified emplacement (SIZE 4, 40 HP, EVA 5) to an adjacent area. Unfolds at start of your next turn. Characters inside gain hard cover from all directions and RESISTANCE to Blast/Line/Burst/Cone damage from outside. Open-topped; cannot be moved."],
+  ["Cable Winch System",      "IPS-N","Lancaster I",1,"util","quick",[],
+   "Attach cables to an adjacent character (HULL save to resist if hostile). Neither can move more than 5 spaces apart; either may tow the other (SLOWED). Cables can also climb surfaces without SPEED penalty. Supports combined SIZE 6, 5 spaces long."],
+  ["Restock Drone",           "IPS-N","Lancaster I",2,"drone","quick",["drone","limited:2","unique"],
+   "Deploy a restock drone to an adjacent space (arms end of turn). Adjacent allies activate it as a quick action: clear 1d6 heat, clear one condition, reload one LOADING weapon. Disintegrates after activation."],
+  ["MULE Harness",            "IPS-N","Lancaster II",2,"sup","passive",["unique"],
+   "Adjacent non-IMMOBILIZED characters can climb on your mech as a quick action. Riders occupy your space, move with you, gain soft cover. Carry combined SIZE equal to your SIZE minus 1/2."],
+  ["Whitewash Sealant Spray", "IPS-N","Lancaster II",2,"util","quick",[],
+   "Spray within R5 LoS. Hostile: AGILITY save or SLOWED + clears burn. Allied: clears burn but SLOWED. Free space: extinguishes fires, creates difficult terrain rest of scene."],
+  ["Aceso Stabilizer",        "IPS-N","Lancaster III",3,"sup","quick",["shield","limited:3","unique"],
+   "Fire onto an allied mech within R5. They gain OVERSHIELD equal to GRIT+4 and IMMUNITY to IMPAIRED and JAMMED while they have this OVERSHIELD."],
+  ["Bulwark Mods",            "IPS-N","Nelson I",1,"mob","passive",[],
+   "Ignore difficult terrain."],
+  ["Armor Lock System",       "IPS-N","Nelson I",1,"def","passive",["unique","heat:2"],
+   "BRACE while GRAPPLING (ends all grapples on you). After BRACing: attacks receive +1 Difficulty, can't fail AGILITY or HULL saves/checks, IMMUNITY to KNOCKBACK/GRAPPLE/PRONE/involuntary movement from SIZE <5. Lasts until end of following turn. 2 heat self."],
+  ["Thermal Charge",          "IPS-N","Nelson II",2,"off","free",["mod","limited:3"],
+   "Mod for one melee weapon. On hit, expend a charge as a free action to deal +1d6 explosive bonus damage."],
+  ["Ramjet",                  "IPS-N","Nelson III",3,"mob","protocol",["unique","heat:2"],
+   "Until start of next turn: +2 spaces when BOOSTing, melee attacks gain KNOCKBACK 2. Must move full SPEED in a straight line each movement (can stop at obstructions/hostiles, can change direction between separate moves). 2 heat self."],
+  ["BB Breach/Blast Charges", "IPS-N","Raleigh I",2,"off","quick",["limited:3","unique"],
+   "Thermal Grenade (Bl5 R5): AGILITY save or 1d6 kinetic (half on success); objects auto-hit for 10 AP kinetic.\nBreaching Charge (Bu1): Remotely detonated; AGILITY save or 2d6 AP explosive (half on success); objects take 30 AP kinetic."],
+  ["'Roland' Chamber",        "IPS-N","Raleigh II",2,"util","passive",["unique"],
+   "After reloading any weapon, your next LOADING weapon attack deals +1d6 kinetic bonus damage on hit, and targets must pass a HULL save or be knocked PRONE."],
+  ["UNCLE-Class Comp/Con",    "IPS-N","Raleigh III",3,"ai","passive",["ai","mod","unique"],
+   "Choose one AUX/MAIN/HEAVY weapon: your UNCLE comp/con controls it. 1/turn, attack at +2 Accuracy with UNCLE's weapon as a free action. UNCLE's weapon can't be used again until your next turn. Cannot cascade."],
+  ["Siege Ram",               "IPS-N","Tortuga I",2,"off","passive",["unique"],
+   "When you RAM, deal 2 kinetic on hit. Against objects/terrain, deal 10 AP kinetic."],
+  ["Throughbolt Rounds",      "IPS-N","Tortuga III",2,"off","passive",["mod","unique"],
+   "Mod for CQB/Cannon/Rifle. May fire a throughbolt: draw a L3 path, characters in path take 2 AP kinetic. RANGE and LoS then measured from end of path in same direction."],
+  ["HyperDense Armor",        "IPS-N","Tortuga III",3,"def","quick",["shield","unique"],
+   "Gain RESISTANCE to all damage and heat from attacks beyond R3. Become SLOWED and deal half damage/heat to targets beyond R3. Deactivate as a quick action."],
+  ["Caltrop Launcher",        "IPS-N","Vlad I",1,"off","quick",["unique"],
+   "Blanket a free Bl1 area within R5 with caltrops. Becomes difficult terrain rest of scene. Mechs take 1d3 AP kinetic on first entry per round or when ending turn within."],
+  ["Webjaw Snare",            "IPS-N","Vlad II",1,"off","quick",["deployable","limited:2","unique"],
+   "Deploy a snare (SIZE 1, 10 HP, EVA 5) to an adjacent space (arms end of turn). When a character moves over it: HULL save or 1d6 AP kinetic and IMMOBILIZED (persists until snare destroyed). Can't be attacked until triggered."],
+  ["Charged Stake",           "IPS-N","Vlad III",2,"off","full",[],
+   "Attack adjacent character: HULL save or impaled (1d6 AP kinetic, IMMOBILIZED). Full Action to save; otherwise save at end of each turn (fail = 2d6 AP kinetic + IMMOBILIZED). One target at a time."],
+
+  // ── SSC ───────────────────────────────────────────────────────────
+  ["Ferrous Lash",            "SSC","Black Witch I",2,"util","quick",[],
+   "Choose a character within R8 and LoS. Allied: pull 5 spaces in any direction. Hostile: AGILITY save or pulled 5 spaces (your choice). Ignores engagement, no reactions. Hostile collision with obstruction → PRONE."],
+  ["ICEOUT Drone",            "SSC","Black Witch I",2,"drone","quick",["drone","limited:2"],
+   "Deploy drone to free space within SENSORS. Generates Bu1 field: characters inside gain IMMUNITY to all tech actions and can't make tech actions. Move or recall as a quick action. Expires end of scene."],
+  ["Mag Deployer",            "SSC","Black Witch II",2,"off","quick",["deployable","unique"],
+   "Flash-print and deploy a SIZE 2 PCP (20 HP, EVA 5) within R5. Lasts rest of scene. Choose setting:\n• REPULSE: Hostile characters HULL save or pushed 3 spaces; allied characters fly 3 spaces free.\n• ATTRACT: Characters HULL save or IMMOBILIZED (cleared by repeat save as quick action or PCP destroyed)."],
+  ["Black ICE Module",        "SSC","Black Witch III",3,"def","passive",["unique"],
+   "Tech attacks against you or adjacent allies receive +1 Difficulty. Each subsequent tech attack gains +1 more Difficulty (max +3). Resets when it would reach +4 or at end of scene. Allies lose benefit when they break adjacency."],
+  ["Magnetic Shield",         "SSC","Black Witch III",2,"def","quick",["shield","unique"],
+   "Create a L4, 4-spaces-high forcefield (adjacent to you) that blocks metal characters/objects. Doesn't block LoS. Provides soft cover and RESISTANCE to kinetic/explosive damage for characters benefiting from it. Lasts rest of scene."],
+  ["High-Stress Mag Clamps",  "SSC","Death's Head I",1,"mob","passive",["unique"],
+   "Treat all solid surfaces as flat ground for movement (walk on walls/ceilings). Begin falling if knocked PRONE."],
+  ["Sightline Protocol",      "SSC","Death's Head II",2,"util","protocol",["unique"],
+   "+1 Accuracy on your first attack this turn, but +1 Difficulty on all other attacks until end of turn."],
+  ["Tracking Bug",            "SSC","Death's Head II",2,"sup","passive",["unique"],
+   "Quick Tech action: tech attack within SENSORS. On hit: know target's exact location, HP, STRUCTURE, and SPEED for the scene. They can't HIDE, you ignore their INVISIBLE. Remove with ENGINEERING check (quick action)."],
+  ["Kinetic Compensator",     "SSC","Dusk Wing I",2,"util","passive",["unique"],
+   "When you miss with a ranged attack, your next ranged attack gains +1 Accuracy (doesn't stack)."],
+  ["Neurospike Mk1",          "SSC","Dusk Wing I",2,"util","passive",["unique"],
+   "Grants two new Invade options — see Tech Attack reference for SHRIKE CODE and MIRAGE."],
+  ["Flicker Field Projector", "SSC","Dusk Wing II",1,"def","passive",["unique"],
+   "Whenever you BOOST or make a standard move, you count as INVISIBLE the next time you're attacked. Only one instance active at a time."],
+  ["StunCrown",               "SSC","Dusk Wing II",2,"off","quick",["limited:2"],
+   "Bu3 flash of light. Hostile characters with LoS to you: AGILITY save or JAMMED; SYSTEMS save or IMPAIRED. Both last until end of their next turn. Characters in cover from you are unaffected."],
+  ["OASIS Wall",              "SSC","Dusk Wing III",3,"def","protocol",["shield","unique","heat:2"],
+   "Until start of next turn: can only move in straight lines, but create a holographic trail granting hard cover and RESISTANCE to energy for adjacent characters. Barrier has IMMUNITY to damage. 2 heat self."],
+  ["Flash Charges",           "SSC","Metalmark II",2,"off","quick",["limited:2","unique"],
+   "Flash Grenade (Bu3 R5): creates blinding zone — characters inside can't draw LoS out until end of your next turn.\nFlash Mine (Bu1): AGILITY save or LoS limited to adjacent spaces until end of next turn."],
+  ["Reactive Weave",          "SSC","Metalmark I",1,"def","passive",["unique"],
+   "When you BRACE, become INVISIBLE until end of your next turn and immediately move up to your SPEED."],
+  ["Active Camouflage",       "SSC","Metalmark III",3,"def","protocol",["unique","heat:2"],
+   "Become INVISIBLE until you take damage or until end of your next turn. 2 heat self."],
+  ["Shock Wreath",            "SSC","Metalmark III",2,"off","passive",["mod"],
+   "Mod for one melee weapon. Deals extra burn damage: AUX = +1 burn, MAIN = +2 burn, HEAVY/SH = +3 burn."],
+  ["Hunter Logic Suite",      "SSC","Mourning Cloak I",2,"util","passive",["unique"],
+   "Grants two new Invade options — see Tech Attack reference for STALK PREY and TERRIFY."],
+  ["Singularity Motivator",   "SSC","Mourning Cloak II",2,"def","react",["unique"],
+   "Gain EXPOSED SINGULARITY reaction (1/round): Trigger: mech takes damage. Effect: teleport to a free space within 1d6 spaces."],
+  ["FADE Cloak",              "SSC","Mourning Cloak III",2,"def","quick",["unique"],
+   "Become intangible: can move through obstructions, can't interact with or be interacted with (no damage). Roll 1d6 at start of each turn: 3- = return to realspace until next turn; 4+ = remain intangible. Lasts rest of scene or until deactivated."],
+  ["Javelin Rockets",         "SSC","Monarch I",2,"off","quick",["unique"],
+   "Choose 3 non-adjacent free spaces within R15 and LoS. Until start of your next turn, when a character enters or passes over a chosen space (up to 10 spaces up), they're hit for 3 explosive. Each space triggers once."],
+  ["Stabilizer Mod",          "SSC","Monarch III",2,"util","passive",["mod"],
+   "Mod for a LAUNCHER or CANNON: it gains +5 Range and ORDNANCE."],
+  ["TLALOC-Class NHP",        "SSC","Monarch III",3,"ai","passive",["ai","unique"],
+   "Grants AI tag and TLALOC Protocol. Advanced multi-system targeting co-pilot. See core book for full TLALOC Protocol details."],
+  ["Lotus Projector",         "SSC","Swallowtail I",2,"drone","quick",["drone"],
+   "Deploy an INVISIBLE scout drone (SIZE 1/2) within SENSORS/LoS generating a Bu2 field. You know HP/EVA/E-DEF/HEAT of characters inside; hostiles can't HIDE or benefit from INVISIBLE within. Recall and redeploy as a quick action."],
+  ["Markerlight",             "SSC","Swallowtail I",2,"sup","passive",["unique"],
+   "Full Tech action: tech attack within SENSORS/LoS. On hit: 2 heat to target + LOCK ON. Once before your next turn, when an ally hits your target, you may declare it a critical hit as a reaction."],
+  ["Retractable Profile",     "SSC","Swallowtail II",1,"def","protocol",["unique"],
+   "While active: hidden rolls vs you +1 Difficulty; ranged/tech attacks +1 Difficulty; SLOWED; can't attack. Can still HIDE, ACTIVATE, etc. Deactivate as a quick action."],
+  ["ATHENA-Class NHP",        "SSC","Swallowtail III",3,"ai","quick",["ai","unique"],
+   "Grants AI tag and SIMULACRUM quick action: construct a perfect 3D model of a Bu3 area within R50. Full visibility (not LoS); know all stats of characters inside; hostiles can't hide/INVISIBLE; hostile characters ending turn there gain LOCK ON. Lasts rest of scene."],
+  ["LB/OC Cloaking Field",    "SSC","Swallowtail III",4,"def","quick",["heat:2"],
+   "Allied characters within Bu2 become INVISIBLE while completely inside the area. You become SLOWED. Lasts until end of your next turn, or until you're STUNNED, take damage, or deactivate. 2 heat self."],
+
+  // ── HORUS ─────────────────────────────────────────────────────────
+  ["Hive Drone",              "HORUS","Balor II",2,"drone","quick",["drone"],
+   "Deploy a cloud-form drone (SIZE 1/2, 5 HP). Creates a Bu1 field — characters inside take 2 energy per turn. Can be repositioned. See book for full details."],
+  ["Nanocomposite Adaptation","HORUS","Balor II",2,"util","passive",["mod"],
+   "Mod for a weapon: it gains SMART and SEEKING."],
+  ["Scanner Swarm",           "HORUS","Balor I",1,"sup","passive",["unique"],
+   "+1 Accuracy on all tech attacks made against characters affected by a condition."],
+  ["Swarm Body",              "HORUS","Balor III",2,"off","quick",["unique"],
+   "Activate to create a Bu1 swarm around you. Characters that start or enter the area take 2 AP energy. Lasts until you move."],
+  ["H0R_OS Upgrade I",        "HORUS","Goblin I",2,"util","passive",["unique"],
+   "Grants PUPPET SYSTEM Invade option — see Tech Attack reference."],
+  ["Metahook",                "HORUS","Goblin II",2,"util","quick",["unique"],
+   "Grants two Quick Tech options — CONSTRUCT OTHER: IDEAL IMAGE (SIZE 2 hard cover construct with IMMUNITY, blocks LoS, lasts rest of scene) and CONSTRUCT OTHER: FALSE IDOL (decoy of you or ally — enemies must pass SYSTEMS save before targeting the original)."],
+  ["H0R_OS Upgrade II",       "HORUS","Goblin II",2,"sup","quick",["unique"],
+   "Quick Tech: Link systems with an allied character within SENSORS/LoS. While linked: use their SENSORS/LoS for tech actions; they use your SYSTEMS for checks/saves. Any heat or condition taken by one is shared by both. One link at a time."],
+  ["H0R_OS Upgrade III",      "HORUS","Goblin III",2,"off","passive",["unique"],
+   "Grants DIMENSIONAL EMBLEMS and CELESTIAL SHACKLES Invade options — see Tech Attack reference."],
+  ["OSIRIS-Class NHP",        "HORUS","Goblin III",3,"ai","quick",["ai","unique"],
+   "Grants AI tag. Grants HURL INTO THE DUAT Quick Tech action — escalating gate effects (control movement, SLOWED/IMPAIRED, STUNNED, switch allegiance) on repeated hits. Resets on rest/Full Repair."],
+  ["Mimic Mesh",              "HORUS","Gorgon II",2,"sup","quick",[],
+   "Choose an allied character within SENSORS. Until end of your next turn, gain the BATTLEFIELD AWARENESS reaction: when a hostile action targets that character, move 3 spaces toward them as an interrupt (ignores engagement, no reactions). Can trigger multiple times per round."],
+  ["//SCORPION v70.1",        "HORUS","Gorgon II",2,"def","passive",["unique"],
+   "Any time you or adjacent allies are missed by tech attacks or succeed on a tech save, choose one: the attacker becomes IMPAIRED (2 heat) until end of their next turn, OR the attacker becomes JAMMED until end of their next turn."],
+  ["Monitor Module",          "HORUS","Gorgon III",2,"sup","quick",[],
+   "Activate to gain 1d3 CHARGES and choose an adjacent ally. Until end of next turn: when your target is attacked while adjacent to you, expend a CHARGE to SKIRMISH the attacker as a reaction (half damage/heat on hit). All charges lost when effect ends."],
+  ["SCYLLA-Class NHP",        "HORUS","Gorgon III",3,"ai","passive",["ai","unique"],
+   "Grants AI tag and UNLEASH SCYLLA. The Vorpal Gun fires unpredictable reality-bending attacks. See book for full SCYLLA details."],
+  ["H0R_OS-RV60 Puppetmaster","HORUS","Hydra I",2,"sup","quick",["unique"],
+   "Grants two Quick Tech options — GUIDE THE FLOCK (move any number of drones within SENSORS up to 4 spaces) and ELECTROPULSE (characters adjacent to any drone/deployable take 2 heat)."],
+  ["Tempest Drone",           "HORUS","Hydra II",2,"drone","quick",["drone"],
+   "Deploy armored drone (SIZE 1/2, 5 HP, RESISTANCE to all damage). Characters starting or moving adjacent: HULL save or 4 kinetic + knocked 3 spaces away. Recall/redeploy as quick action. Lasts rest of scene."],
+  ["Assassin Drone",          "HORUS","Hydra III",2,"drone","quick",["drone"],
+   "Deploy drone in adjacent space. Targets a Bu2 area within SENSORS/LoS. Gain AREA DENIAL reaction (unlimited/round): when a hostile starts/enters the area, make a ranged attack (GRIT bonus) for 3 kinetic. Recall/redeploy as quick action."],
+  ["Beckoner",                "HORUS","Manticore I",2,"off","passive",["unique"],
+   "Grants BECKON and SUMMON Invade options — see Tech Attack reference."],
+  ["Smite",                   "HORUS","Manticore II",3,"off","passive",["unique"],
+   "Grants SMITE and SEAR Invade options — see Tech Attack reference."],
+  ["EMP Pulse",               "HORUS","Manticore III",2,"off","quick",["unique"],
+   "You become STUNNED until end of your next turn. All non-BIOLOGICAL characters within Bu1: SYSTEMS save or also STUNNED. Each character can only be STUNNED by this effect 1/scene."],
+  ["Viral Logic Suite",       "HORUS","Minotaur I",2,"off","passive",["unique"],
+   "Grants LOGIC BOMB and BANISH Invade options — see Tech Attack reference."],
+  ["Metafold Carver",         "HORUS","Minotaur II",2,"off","passive",["unique"],
+   "Grants OPHIDIAN TREK (teleport target 1d6+1 spaces toward you) and FOLD SPACE (target disappears until start of their next turn) Invade options — see Tech Attack reference."],
+  ["Aggressive System Sync",  "HORUS","Minotaur II",2,"off","full",["unique"],
+   "Grants CHAINS OF PROMETHEUS and EXCOMMUNICATE Full Tech options — see Tech Attack reference for full tethering and proximity-damage effects."],
+  ["Interdiction Field",      "HORUS","Minotaur III",3,"off","quick",[],
+   "Create a Bu3 field around you (lasts until deactivated as quick action; you become SLOWED). Hostile characters starting/entering: SYSTEMS save or SLOWED until end of their next turn. Only chosen characters can teleport within the field."],
+  ["Law of Blades",           "HORUS","Minotaur III",2,"off","full",["unique"],
+   "Grants PREDATOR/PREY CONCEPTS (force target to attack a character of your choice) and SLAVE SYSTEMS (force target to take BOOST/STABILIZE/IMPROVISED ATTACK/GRAPPLE/RAM of your choice) Full Tech options."],
+  ["Hunter Lock",             "HORUS","Pegasus I",2,"off","quick",["unique"],
+   "Choose a character within SENSORS: your first successful ranged or melee attack against them each round deals +3 bonus damage. One target at a time until destroyed or scene ends."],
+  ["Eye of HORUS",            "HORUS","Pegasus II",3,"sup","quick",["unique"],
+   "Until end of your next turn: characters within SENSORS don't benefit from HIDDEN or INVISIBLE against you; you can check HP/EVA/E-DEF/heat of hostile characters within SENSORS. Allied characters don't gain this benefit."],
+  ["SISYPHUS-Class NHP",      "HORUS","Pegasus III",2,"ai","full",["ai","unique"],
+   "Grants AI tag and BEND PROBABILITY Full Tech option: roll 2d20 (X and Y). Gain PROBABILISTIC CANNIBALISM reaction — spend X or Y to make any attack within SENSORS automatically hit or miss. Lasts until end of next turn."],
+
+  // ── HA ────────────────────────────────────────────────────────────
+  ["'Roller' Directed Payload Charges","HA","Barbarossa I",2,"off","quick",["limited:2","unique"],
+   "Roller Grenade (R10 path): AGILITY save or 1d6+3 explosive + knocked 3 spaces; half on success.\nBouncing Mine (Smart, Bu1): detonates when flying characters pass over — SYSTEMS save or 2d6 explosive + land immediately + can't fly until end of next turn."],
+  ["Siege Stabilizers",       "HA","Barbarossa I",1,"util","quick",["unique"],
+   "Extend stabilizers: ranged attacks gain +5 Range, but you're IMMOBILIZED, can't make melee attacks, and can't target within R5. Retract as a quick action."],
+  ["Autoloader Drone",        "HA","Barbarossa II",2,"drone","quick",["drone","limited:1"],
+   "Deploy autoloader drone to adjacent space. 1/round, one adjacent character may reload a LOADING weapon as a quick action. Deactivates end of scene."],
+  ["External Ammo Feed",      "HA","Barbarossa III",3,"util","quick",["unique"],
+   "1/round, activate to take 1d3+1 heat and reload a LOADING weapon."],
+  ["Flak Launcher",           "HA","Barbarossa II",2,"off","quick",[],
+   "Choose a flying character within R15 and LoS: AGILITY save or SLOWED + immediately land (counts as falling, no damage) + can't fly until end of their next turn."],
+  ["Explosive Vents",         "HA","Genghis II",2,"off","passive",["unique"],
+   "Whenever you clear all heat or take stress, open cooling vents: Bu1 explosion deals 2 kinetic and 2 burn to characters within."],
+  ["HAVOK Charges",           "HA","Genghis II",2,"off","quick",["limited:2","unique"],
+   "Napalm Grenade (Bl5 R5): AGILITY save or 2 burn; 1 burn on success.\nHAVOK Mine: detonates when triggered — L5 explosion in direction of trigger character; AGILITY save or 4 burn, 2 burn on success."],
+  ["Auto-Cooler",             "HA","Genghis II",2,"util","protocol",["unique"],
+   "As long as you don't take damage, move, or exceed Heat Cap, clear all heat at the start of your next turn."],
+  ["AGNI-Class NHP",          "HA","Genghis III",3,"ai","passive",["ai","unique"],
+   "Grants AI tag and AGNI Protocol (Limited 1): expend charge — clear all heat; deal 2 burn to all characters in a Bu2 area around you; until end of your next turn, characters in that area take 2 burn when entering or starting their turn there."],
+  ["Grounding Charges",       "HA","Iskander I",2,"off","quick",["limited:2","unique"],
+   "Gravity Grenade (Bl5 R5): AGILITY save or SLOWED until making no voluntary movements for a full turn.\nGrounding Mine (remotely detonated quick action): HULL save or pulled to mine + PRONE. Flying characters also forced to land."],
+  ["Repulsor Field",          "HA","Iskander II",1,"off","quick",["unique","heat:1"],
+   "Emit a Bu2 pulse: HULL save or knocked 2 spaces directly away. All mines in the area simultaneously detonate. IMMUNITY to their immediate effects. 1 heat self."],
+  ["Clamp Mines",             "HA","Iskander III",2,"off","quick",["limited:4","unique"],
+   "Fire a cluster at a character within SENSORS: ENGINEERING save or clamped. Detonates end of their turn for 1d6+3 AP kinetic (half to adjacent). Can disarm by voluntarily moving 4+ spaces before end of turn."],
+  ["Tesseract",               "HA","Iskander III",2,"util","quick",["unique"],
+   "Two modes — SPREAD FOCUS: create a Bu3 zero-g area within SENSORS (objects float, forced movement becomes harmless landing). PINPOINT FOCUS: tech attack — target floats 6 spaces up, IMMOBILIZED in air until end of next turn (ENGINEERING save to resist for hostiles)."],
+  ["Stasis Generator",        "HA","Napoleon I",2,"def","quick",["shield","unique"],
+   "Choose a character within R5 and LoS: STUNNED, IMMUNITY to all damage/effects, can't be moved or targeted until end of their next turn. 1/scene per character. Hostile: ENGINEERING save to ignore."],
+  ["Phase-Ready Mod",         "HA","Napoleon II",2,"util","passive",["mod"],
+   "Mod for a weapon: can fire through walls (no LoS needed, ignores cover) as long as you know roughly where the target is. Targets count as INVISIBLE."],
+  ["Blackshield",             "HA","Napoleon III",2,"def","full",["shield","unique","heat:4"],
+   "Create a Bu4 blinkspace bubble around your mech: nothing can enter or exit (including light). IMMUNITY to all damage and effects inside. LoS can't cross the border. Partially-inside characters make AGILITY save to choose which side. Lasts until end of your next turn. 4 heat self."],
+  ["Flash Anchor",            "HA","Saladin I",2,"def","quick",["shield","unique"],
+   "Generate a Bu3 dome until end of your next turn (you become IMMOBILIZED). Ranged/melee attacks against characters inside from outside: +1 Difficulty. Gain BLINKFIELD INTERVENTION reaction while active: when a character inside is attacked, grant them RESISTANCE to all damage (2 heat self)."],
+  ["Flash Lock",              "HA","Saladin I",1,"def","react",["shield","unique","heat:2"],
+   "Reaction (1/round, 2 heat): Trigger: you or ally in LoS/SENSORS is pushed, pulled, knocked back or knocked PRONE. Effect: prevent the movement/status; target gains IMMUNITY to those effects until start of their next turn."],
+  ["Hardlight Defense System","HA","Saladin II",3,"def","full",["shield","unique","heat:2"],
+   "Create a Bu3 hardlight shield (you're IMMOBILIZED). Blocks LoS both ways; nothing passes through. Characters on the border ignore the effect. Characters crossing the perimeter take 2 energy. Lasts rest of scene or until deactivated as protocol. 2 heat self."],
+  ["Paracausal Mod",          "HA","Saladin III",4,"off","passive",["mod"],
+   "Mod for a weapon: gains OVERKILL, and its damage can't be reduced by any means (RESISTANCE, ARMOR, etc.)."],
+  ["VISHNU-Class NHP",        "HA","Saladin III",3,"ai","passive",["ai","unique"],
+   "Grants AI tag and DHARMA WALL. VISHNU constructs an adaptive defensive network. See book for full details."],
+  ["Reactor Stabilizer",      "HA","Sherman I",3,"util","passive",["unique"],
+   "May reroll overheating checks. Must keep the second result even if worse."],
+  ["Redundant Systems Upgrade","HA","Sherman II",3,"util","quick",["limited:1","unique"],
+   "Expend a charge to STABILIZE as a quick action."],
+  ["ASURA-Class NHP",         "HA","Sherman III",3,"ai","protocol",["ai","unique"],
+   "Grants AI tag and ASURA Protocol (Limited 1, 3 heat): as a protocol, take the full suite of actions twice over this turn (separate attacks, movements, etc.). 3 heat self. See book for restrictions."],
+  ["External Batteries",      "HA","Tokugawa I",2,"off","passive",["unique"],
+   "All weapons dealing energy gain +5 Range (ranged) or +1 Accuracy (melee). When you take structure damage, this system is destroyed and you take 1d6 AP kinetic (can't be prevented)."],
+  ["Deep Well Experimental Heat Sink","HA","Tokugawa II",4,"def","passive",["unique","dz"],
+   "When you start your turn in the DANGER ZONE, gain RESISTANCE to kinetic damage for the rest of your turn (persists even if you leave DZ)."],
+  ["AMATERASU-Class NHP",     "HA","Tokugawa III",3,"ai","passive",["ai","unique"],
+   "Grants AI tag and AMATERASU Protocol. Aggressive tactical co-pilot — see book for full protocol effects."],
+];
+
+const mfrCls = {GMS:"mfr-gms","IPS-N":"mfr-ipsn",SSC:"mfr-ssc",HORUS:"mfr-horus",HA:"mfr-ha"};
+const catCls = {mob:"cat-mob",def:"cat-def",off:"cat-off",drone:"cat-drone",sup:"cat-sup",util:"cat-util",ai:"cat-ai",mod:"cat-mod"};
+const catLabel = {mob:"Mobility",def:"Defense",off:"Offensive",drone:"Drone",sup:"Support",util:"Utility",ai:"AI/NHP",mod:"Mod"};
+const actCls = {protocol:"act-proto",quick:"act-quick",full:"act-full",passive:"act-passive",react:"act-react",free:"act-free"};
+const actLabel = {protocol:"Protocol",quick:"Quick",full:"Full",passive:"Passive",react:"Reaction",free:"Free"};
+
+const tagCls = {shield:"tag-shield",drone:"tag-drone",deployable:"tag-deployable",ai:"tag-ai",unique:"tag-unique",mod:"tag-mod",dz:"tag-dz"};
+const tagDefs = {
+  shield:     {name:"Shield",body:"An energy shield system. Can only interact with shield-based effects and reductions as specified."},
+  drone:      {name:"Drone",body:"A self-propelled semi-autonomous unit. SIZE 1/2, allied to user, 10 Evasion, 5 HP, 0 Armor by default. Restored to full HP on rest or Full Repair."},
+  deployable: {name:"Deployable",body:"Can be deployed to a free, valid adjacent space as a quick action unless otherwise specified. Has 5 Evasion and 10 HP per SIZE."},
+  ai:         {name:"AI",body:"A mech can only have one AI-tagged system installed at a time. May enter cascade on structure/stress damage (roll 1d20; on 1, the NHP cascades and becomes an NPC)."},
+  unique:     {name:"Unique",body:"Cannot be duplicated — each character can only have one copy installed at a time."},
+  mod:        {name:"Mod",body:"Applied to a weapon during mech construction or Full Repair. Each weapon can only have one Mod."},
+  dz:         {name:"Danger Zone",body:"Can only be used or activates when in the DANGER ZONE (heat equal to at least half of HEAT CAP)."},
+};
+
+function renderTags(tags) {
+  return tags.map(t => {
+    const key = t.split(":")[0];
+    const val = t.includes(":") ? t.split(":")[1] : null;
+    const cls = tagCls[key] || "";
+    const def = tagDefs[key];
+    const label = val ? key+" "+val : key;
+    if (def) return `<span class="tag ${cls}" data-tip-name="${def.name}" data-tip-body="${def.body}">${label}</span>`;
+    return `<span class="tag ${cls}">${label}</span>`;
+  }).join("");
+}
+
+const tbody = document.getElementById("tbody");
+S.forEach(row => {
+  const [name,mfr,lic,sp,cat,act,tags,effect] = row;
+  const tr = document.createElement("tr");
+  tr.dataset.mfr = mfr;
+  tr.dataset.cat = cat;
+  tr.dataset.search = [name,mfr,lic,cat,act,...tags,effect].join(" ").toLowerCase();
+  tr.innerHTML = `
+    <td class="sname">${name}</td>
+    <td><span class="mfr ${mfrCls[mfr]}">${mfr}</span></td>
+    <td class="lic">${lic}</td>
+    <td class="sp-val">${sp} SP</td>
+    <td><span class="cat ${catCls[cat]}">${catLabel[cat]}</span></td>
+    <td><span class="act ${actCls[act]}">${actLabel[act]}</span></td>
+    <td><div class="tags">${renderTags(tags)}</div></td>
+    <td class="effect">${effect.replace(/\n/g,"<br>")}</td>
+  `;
+  tbody.appendChild(tr);
+});
+
+// Filters
+let fMfr="all", fCat="all", fSearch="";
+function setF(btn, type, val) {
+  if (type==="mfr") { fMfr=val; document.querySelectorAll("[data-f=mfr]").forEach(b=>b.classList.remove("active")); }
+  if (type==="cat") { fCat=val; document.querySelectorAll("[data-f=cat]").forEach(b=>b.classList.remove("active")); }
+  btn.classList.add("active");
+  applyFilters();
+}
+function doSearch(v) { fSearch=v.trim().toLowerCase(); applyFilters(); }
+function applyFilters() {
+  let n=0;
+  document.querySelectorAll("#tbody tr").forEach(r => {
+    const m = fMfr==="all" || r.dataset.mfr===fMfr;
+    const c = fCat==="all" || r.dataset.cat===fCat;
+    const q = !fSearch || r.dataset.search.includes(fSearch);
+    const show = m && c && q;
+    r.classList.toggle("hidden",!show);
+    if (show) n++;
+  });
+  document.getElementById("count").textContent = n;
+  document.getElementById("nores").style.display = n===0?"block":"none";
+}
+
+// Sort
+let sortCol=-1, sortDir=1;
+function sortBy(col) {
+  if (sortCol===col) sortDir*=-1; else { sortCol=col; sortDir=1; }
+  document.querySelectorAll("thead th").forEach((th,i) => {
+    th.classList.remove("sorted-asc","sorted-desc");
+    if (i===col) th.classList.add(sortDir===1?"sorted-asc":"sorted-desc");
+  });
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  rows.sort((a,b) => {
+    const at=a.cells[col].textContent.trim(), bt=b.cells[col].textContent.trim();
+    const an=parseFloat(at), bn=parseFloat(bt);
+    if (!isNaN(an)&&!isNaN(bn)) return (an-bn)*sortDir;
+    return at.localeCompare(bt)*sortDir;
+  });
+  rows.forEach(r=>tbody.appendChild(r));
+}
+
+applyFilters();
+
+// Tooltip
+const ttEl=document.getElementById("tooltip");
+const ttName=document.getElementById("tip-name");
+const ttBody=document.getElementById("tip-body");
+document.addEventListener("mouseover",e=>{
+  const t=e.target.closest("[data-tip-name]");
+  if (!t) return;
+  ttName.textContent=t.dataset.tipName;
+  ttBody.textContent=t.dataset.tipBody;
+  ttEl.style.display="block"; pos(e);
+});
+document.addEventListener("mousemove",e=>{ if(ttEl.style.display==="block") pos(e); });
+document.addEventListener("mouseout",e=>{ if(!e.target.closest("[data-tip-name]")) ttEl.style.display="none"; });
+function pos(e) {
+  const pad=12,tw=ttEl.offsetWidth,th=ttEl.offsetHeight;
+  let x=e.clientX+pad, y=e.clientY-th-pad;
+  if (x+tw>window.innerWidth-pad) x=e.clientX-tw-pad;
+  if (y<pad) y=e.clientY+pad;
+  ttEl.style.left=x+"px"; ttEl.style.top=y+"px";
+}
+</script>
+</body>
+</html>
