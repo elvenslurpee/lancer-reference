@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LANCER // Weapons Database</title>
+<title>LANCER Weapons Database</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -25,565 +25,997 @@
     --explosive: #ff6b35;
     --burn: #ff4444;
     --mixed: #ffd166;
-    --aux: #6c8ea0;
-    --main: #00d4ff;
-    --heavy: #ff9f43;
-    --superheavy: #fd79a8;
+    --gold: #ffd166;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 300;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
     min-height: 100vh;
     overflow-x: hidden;
   }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.012) 2px, rgba(0,212,255,0.012) 4px);
-    pointer-events: none;
-    z-index: 9999;
-  }
-  .grid-bg {
-    position: fixed;
-    inset: 0;
-    background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .wrapper { position: relative; z-index: 1; max-width: 1700px; margin: 0 auto; padding: 0 20px 60px; }
 
-  header {
-    padding: 40px 0 28px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, #080e16 0%, var(--panel) 100%);
+    border-bottom: 2px solid var(--border2);
+    padding: 28px 32px 20px;
     position: relative;
+    overflow: hidden;
   }
-  header::after {
+
+  .header::before {
     content: '';
     position: absolute;
-    bottom: -1px; left: 0;
-    width: 260px; height: 2px;
-    background: linear-gradient(90deg, var(--explosive), transparent);
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
   }
-  .logo-mark { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 4px; opacity: 0.6; margin-bottom: 6px; text-transform: uppercase; }
-  h1 {
-    font-family: 'Exo 2', sans-serif; font-weight: 900;
-    font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1; letter-spacing: -1px; text-transform: uppercase;
-    background: linear-gradient(135deg, #fff 0%, var(--explosive) 50%, #cc3300 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+
+  .header-grid {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
   }
-  .subtitle { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 3px; margin-top: 8px; text-transform: uppercase; }
+
+  .header-left {}
+
+  .logo-mark {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-mark::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--text-dim);
+  }
+
+  .header h1 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+    color: var(--text-bright);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .header h1 span {
+    color: var(--accent);
+  }
+
+  .header-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .header-deco {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--border2);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  .header-accent-line {
+    margin-top: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.4;
+  }
+
+  /* CONTROLS */
+  .controls {
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    min-width: 42px;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .filter-btn.active {
+    background: rgba(0,212,255,0.08);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  .filter-btn[data-mfr="GMS"].active { border-color: var(--gms); color: var(--gms); background: rgba(126,200,227,0.08); }
+  .filter-btn[data-mfr="IPS-N"].active { border-color: var(--ipsn); color: var(--ipsn); background: rgba(255,159,67,0.08); }
+  .filter-btn[data-mfr="SSC"].active { border-color: var(--ssc); color: var(--ssc); background: rgba(162,155,254,0.08); }
+  .filter-btn[data-mfr="HORUS"].active { border-color: var(--horus); color: var(--horus); background: rgba(85,239,196,0.08); }
+  .filter-btn[data-mfr="HA"].active { border-color: var(--ha); color: var(--ha); background: rgba(253,121,168,0.08); }
+
+  .search-box {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 5px 12px;
+    border-radius: 2px;
+    outline: none;
+    width: 220px;
+    transition: border-color 0.15s;
+  }
+
+  .search-box::placeholder { color: var(--text-dim); }
+  .search-box:focus { border-color: var(--accent); }
+
+  .result-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    margin-left: auto;
+  }
+
+  .result-count span {
+    color: var(--accent);
+    font-weight: bold;
+  }
 
   /* LEGEND */
   .legend {
-    display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px;
-    padding: 12px 16px; background: var(--panel); border: 1px solid var(--border);
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
   }
-  .legend-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .legend-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-right: 4px; }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-family: 'Share Tech Mono', monospace; font-size: 10px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
-  /* CONTROLS */
-  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
-  .filter-group { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-  .filter-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
-  .filter-btn {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px;
-    text-transform: uppercase; padding: 4px 12px; background: transparent;
-    border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s;
+  .legend-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
-  .filter-btn:hover { color: var(--accent); border-color: var(--accent); }
-  .filter-btn.active { background: rgba(0,212,255,0.1); color: var(--accent); border-color: var(--accent); }
-  .filter-btn.gms.active   { background: rgba(126,200,227,0.1); color: var(--gms);  border-color: var(--gms); }
-  .filter-btn.ipsn.active  { background: rgba(255,159,67,0.1);  color: var(--ipsn); border-color: var(--ipsn); }
-  .filter-btn.ssc.active   { background: rgba(162,155,254,0.1); color: var(--ssc);  border-color: var(--ssc); }
-  .filter-btn.horus.active { background: rgba(85,239,196,0.1);  color: var(--horus);border-color: var(--horus); }
-  .filter-btn.ha.active    { background: rgba(253,121,168,0.1); color: var(--ha);   border-color: var(--ha); }
-  .filter-btn.aux-btn.active   { background: rgba(108,142,160,0.1); color: var(--aux);  border-color: var(--aux); }
-  .filter-btn.main-btn.active  { background: rgba(0,212,255,0.1);  color: var(--main); border-color: var(--main); }
-  .filter-btn.heavy-btn.active { background: rgba(255,159,67,0.1); color: var(--heavy);border-color: var(--heavy); }
-  .filter-btn.sh-btn.active    { background: rgba(253,121,168,0.1);color: var(--superheavy);border-color: var(--superheavy); }
-  .search-box {
-    font-family: 'Share Tech Mono', monospace; font-size: 12px; background: var(--panel);
-    border: 1px solid var(--border); color: var(--text); padding: 5px 12px; outline: none; width: 220px; transition: border-color 0.15s;
+
+  .legend-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-right: 2px;
   }
-  .search-box::placeholder { color: var(--text-dim); }
-  .search-box:focus { border-color: var(--accent); }
-  .result-count { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); margin-left: auto; letter-spacing: 2px; }
-  .result-count span { color: var(--accent); }
 
-  /* TABLE */
-  .table-wrap { overflow-x: auto; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1200px; }
-  thead th {
-    background: var(--panel); font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
-    padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border);
-    white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 10; transition: color 0.15s;
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
   }
-  thead th:hover { color: var(--accent); }
-  thead th.sorted-asc, thead th.sorted-desc { color: var(--accent); }
-  thead th .si { margin-left: 3px; font-size: 8px; opacity: 0.5; }
-  thead th.sorted-asc .si::after { content: '▲'; opacity: 1; }
-  thead th.sorted-desc .si::after { content: '▼'; opacity: 1; }
-  thead th:not(.sorted-asc):not(.sorted-desc) .si::after { content: '⇅'; }
 
-  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.035); transition: background 0.1s; }
-  tbody tr:hover { background: rgba(0,212,255,0.035); }
-  tbody tr.hidden { display: none; }
-  td { padding: 8px 10px; vertical-align: middle; }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
 
-  /* Name column */
-  td.wname { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.5px; color: var(--text-bright); white-space: nowrap; }
+  .legend-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border2);
+  }
 
-  /* Mfr badge */
-  .mfr { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1.5px; padding: 2px 6px; border-radius: 2px; text-transform: uppercase; border: 1px solid currentColor; white-space: nowrap; }
-  .mfr-gms   { color: var(--gms);  background: rgba(126,200,227,0.07); }
-  .mfr-ipsn  { color: var(--ipsn); background: rgba(255,159,67,0.07); }
-  .mfr-ssc   { color: var(--ssc);  background: rgba(162,155,254,0.07); }
-  .mfr-horus { color: var(--horus);background: rgba(85,239,196,0.07); }
-  .mfr-ha    { color: var(--ha);   background: rgba(253,121,168,0.07); }
+  /* SIZE BADGES */
+  .badge-sz {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    border-radius: 2px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
 
-  /* Size badge */
-  .sz { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 2px 7px; border-radius: 2px; text-transform: uppercase; white-space: nowrap; }
-  .sz-aux  { color: var(--aux);        background: rgba(108,142,160,0.1); border: 1px solid var(--aux); }
-  .sz-main { color: var(--main);       background: rgba(0,212,255,0.08);  border: 1px solid var(--main); }
-  .sz-heavy{ color: var(--heavy);      background: rgba(255,159,67,0.08); border: 1px solid var(--heavy); }
-  .sz-sh   { color: var(--superheavy); background: rgba(253,121,168,0.08);border: 1px solid var(--superheavy); }
+  .badge-aux { border-color: #6c8ea0; color: #6c8ea0; background: rgba(108,142,160,0.1); }
+  .badge-main { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.08); }
+  .badge-heavy { border-color: var(--ipsn); color: var(--ipsn); background: rgba(255,159,67,0.08); }
+  .badge-sh { border-color: var(--ha); color: var(--ha); background: rgba(253,121,168,0.08); }
 
-  /* Type badge */
-  .wtype { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--text-dim); white-space: nowrap; }
+  /* MFR BADGES */
+  .badge-mfr {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    border-radius: 2px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
 
-  /* Damage */
-  .dmg { font-family: 'Share Tech Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .badge-gms { border-color: var(--gms); color: var(--gms); background: rgba(126,200,227,0.07); }
+  .badge-ipsn { border-color: var(--ipsn); color: var(--ipsn); background: rgba(255,159,67,0.07); }
+  .badge-ssc { border-color: var(--ssc); color: var(--ssc); background: rgba(162,155,254,0.07); }
+  .badge-horus { border-color: var(--horus); color: var(--horus); background: rgba(85,239,196,0.07); }
+  .badge-ha { border-color: var(--ha); color: var(--ha); background: rgba(253,121,168,0.07); }
+
+  /* TABLE WRAPPER */
+  .table-wrap {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 280px);
+    margin: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  thead tr {
+    background: #0d1520;
+    border-bottom: 2px solid var(--border2);
+  }
+
+  th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    border-right: 1px solid var(--border);
+    transition: color 0.15s, background 0.15s;
+  }
+
+  th:last-child { border-right: none; }
+
+  th:hover {
+    color: var(--text-bright);
+    background: rgba(0,212,255,0.04);
+  }
+
+  th.sort-asc::after { content: ' ↑'; color: var(--accent); }
+  th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+
+  /* ROWS */
+  tbody tr {
+    border-bottom: 1px solid rgba(26,45,63,0.6);
+    transition: background 0.1s;
+    position: relative;
+  }
+
+  tbody tr:hover {
+    background: rgba(0,212,255,0.04);
+  }
+
+  tbody tr[data-mfr="GMS"] { border-left: 3px solid var(--gms); }
+  tbody tr[data-mfr="IPS-N"] { border-left: 3px solid var(--ipsn); }
+  tbody tr[data-mfr="SSC"] { border-left: 3px solid var(--ssc); }
+  tbody tr[data-mfr="HORUS"] { border-left: 3px solid var(--horus); }
+  tbody tr[data-mfr="HA"] { border-left: 3px solid var(--ha); }
+
+  td {
+    padding: 8px 12px;
+    vertical-align: middle;
+    border-right: 1px solid rgba(26,45,63,0.4);
+    color: var(--text);
+  }
+
+  td:last-child { border-right: none; }
+
+  /* WEAPON NAME */
+  .weapon-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-bright);
+    white-space: nowrap;
+  }
+
+  /* LICENSE */
+  .license-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* DAMAGE */
   .dmg-k { color: var(--kinetic); }
   .dmg-e { color: var(--energy); }
   .dmg-x { color: var(--explosive); }
   .dmg-b { color: var(--burn); }
   .dmg-m { color: var(--mixed); }
 
-  /* Range */
-  .rng { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text-dim); white-space: nowrap; }
-  .rng span { color: var(--text); }
+  .dmg-cell {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    font-weight: bold;
+  }
 
-  /* Tags */
-  .tags { display: flex; flex-wrap: wrap; gap: 3px; }
+  .dmg-type-icon {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    margin-left: 3px;
+  }
+
+  /* RANGE */
+  .range-cell {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  /* HEAT */
+  .heat-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--burn);
+    white-space: nowrap;
+  }
+
+  .heat-none {
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* SP */
+  .sp-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .sp-none {
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* TAGS */
+  .tags-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    min-width: 120px;
+  }
+
   .tag {
-    font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px;
-    padding: 1px 5px; border: 1px solid var(--border2); color: var(--text-dim);
-    text-transform: uppercase; border-radius: 2px; white-space: nowrap;
-    position: relative; cursor: help;
-  }
-  .tag-ap       { border-color: rgba(255,68,68,0.4);   color: #ff6666; }
-  .tag-overkill { border-color: rgba(255,107,53,0.4);  color: var(--explosive); }
-  .tag-smart    { border-color: rgba(0,212,255,0.3);   color: var(--accent); }
-  .tag-seeking  { border-color: rgba(57,255,20,0.3);   color: #39ff14; }
-  .tag-loading  { border-color: rgba(255,215,0,0.3);   color: #ffd700; }
-  .tag-ordnance { border-color: rgba(253,121,168,0.3); color: var(--ha); }
-  .tag-arcing   { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
-  .tag-reliable { border-color: rgba(85,239,196,0.3);  color: var(--horus); }
-  .tag-accurate { border-color: rgba(0,212,255,0.3);   color: var(--accent); }
-  .tag-inaccurate{border-color: rgba(255,68,68,0.3);   color: #ff6666; }
-  .tag-thrown   { border-color: rgba(255,159,67,0.3);  color: var(--ipsn); }
-  .tag-unique   { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
-  .tag-limited  { border-color: rgba(255,215,0,0.3);   color: #ffd700; }
-  .tag-knockback{ border-color: rgba(255,107,53,0.3);  color: var(--explosive); }
-  .tag-drone    { border-color: rgba(85,239,196,0.3);  color: var(--horus); }
-  .tag-threat   { border-color: rgba(255,107,53,0.3);  color: var(--explosive); }
-  .tag-mod      { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
-  .tag-heat     { border-color: rgba(255,68,68,0.4);   color: #ff4444; }
-
-  /* Tooltip popup - single global floater */
-  #tooltip {
-    display: none;
-    position: fixed;
-    background: #0a1520;
-    border: 1px solid var(--border2);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.7);
-    padding: 12px 14px;
-    width: 260px;
-    z-index: 9000;
-    pointer-events: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    padding: 2px 5px;
     border-radius: 2px;
-  }
-  #tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%; left: 20px;
-    border: 5px solid transparent;
-    border-top-color: var(--border2);
-  }
-  .tip-name {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--text-bright);
-    margin-bottom: 6px; display: block; white-space: normal;
-  }
-  .tip-body {
-    font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 300;
-    color: var(--text-dim); line-height: 1.65; text-transform: none;
-    letter-spacing: 0; white-space: normal;
+    border: 1px solid rgba(100,120,140,0.4);
+    background: rgba(0,0,0,0.3);
+    color: var(--text-dim);
+    cursor: default;
+    white-space: nowrap;
+    transition: opacity 0.1s;
   }
 
-  /* Self heat */
-  .self-heat { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #ff4444; white-space: nowrap; }
+  .tag:hover { opacity: 0.8; }
 
-  /* Special note */
-  td.special { font-size: 11px; color: var(--text-dim); max-width: 260px; line-height: 1.5; }
+  .tag-AP { border-color: rgba(255,68,68,0.5); color: #ff4444; background: rgba(255,68,68,0.07); }
+  .tag-Accurate { border-color: rgba(0,212,255,0.5); color: var(--accent); background: rgba(0,212,255,0.07); }
+  .tag-Inaccurate { border-color: rgba(255,68,68,0.4); color: #ff6b6b; background: rgba(255,68,68,0.06); }
+  .tag-Arcing { border-color: rgba(162,155,254,0.5); color: var(--ssc); background: rgba(162,155,254,0.07); }
+  .tag-Loading { border-color: rgba(255,209,102,0.5); color: var(--gold); background: rgba(255,209,102,0.07); }
+  .tag-Ordnance { border-color: rgba(253,121,168,0.5); color: var(--ha); background: rgba(253,121,168,0.07); }
+  .tag-Overkill { border-color: rgba(255,107,53,0.5); color: var(--explosive); background: rgba(255,107,53,0.07); }
+  .tag-Reliable { border-color: rgba(85,239,196,0.4); color: #55efc4; background: rgba(85,239,196,0.06); }
+  .tag-Seeking { border-color: rgba(100,220,100,0.4); color: #6edd6e; background: rgba(100,220,100,0.06); }
+  .tag-Smart { border-color: rgba(0,212,255,0.4); color: var(--accent); background: rgba(0,212,255,0.06); }
+  .tag-Knockback { border-color: rgba(255,107,53,0.4); color: var(--explosive); background: rgba(255,107,53,0.06); }
+  .tag-Thrown { border-color: rgba(255,107,53,0.4); color: var(--explosive); background: rgba(255,107,53,0.06); }
+  .tag-Limited { border-color: rgba(255,209,102,0.4); color: var(--gold); background: rgba(255,209,102,0.06); }
+  .tag-Unique { border-color: rgba(162,155,254,0.4); color: var(--ssc); background: rgba(162,155,254,0.06); }
+  .tag-Drone { border-color: rgba(85,239,196,0.4); color: #55efc4; background: rgba(85,239,196,0.06); }
 
-  /* License */
-  .lic { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); white-space: nowrap; }
+  /* SPECIAL */
+  .special-cell {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    min-width: 160px;
+    max-width: 240px;
+    line-height: 1.4;
+  }
 
-  /* No results */
-  .no-results { text-align: center; padding: 40px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text-dim); letter-spacing: 2px; display: none; }
+  /* TYPE */
+  .type-cell {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* TOOLTIP */
+  #tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: #0d1a26;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 7px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    max-width: 260px;
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+
+  #tooltip.visible { opacity: 1; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-accent {
+    color: var(--accent);
+  }
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
-<div id="tooltip"><span class="tip-name" id="tip-name"></span><span class="tip-body" id="tip-body"></span></div>
-<div class="wrapper">
 
-<header>
-  <div class="logo-mark">Section 4 // Compendium // Mech Weapons</div>
-  <h1>Weapons Database</h1>
-  <div class="subtitle">All Player-Accessible Mech Weapons // Core Book // Sortable Reference</div>
-</header>
-
-<div class="legend">
-  <div class="legend-group">
-    <span class="legend-label">Damage:</span>
-    <span class="legend-item"><span class="dot" style="background:var(--kinetic)"></span> Kinetic</span>
-    <span class="legend-item"><span class="dot" style="background:var(--energy)"></span> Energy</span>
-    <span class="legend-item"><span class="dot" style="background:var(--explosive)"></span> Explosive</span>
-    <span class="legend-item"><span class="dot" style="background:var(--burn)"></span> Burn</span>
-    <span class="legend-item"><span class="dot" style="background:var(--mixed)"></span> Mixed</span>
+<div class="header">
+  <div class="header-grid">
+    <div class="header-left">
+      <div class="logo-mark">Section 4 // Compendium // Mech Weapons</div>
+      <h1>WEAPONS <span>DATABASE</span></h1>
+      <div class="header-subtitle">All Player-Accessible Mech Weapons // Core Book // Sortable Reference</div>
+    </div>
+    <div class="header-deco">
+      LANCER RPG // CORE RULEBOOK<br>
+      MASSIF PRESS // v1.9.4<br>
+      CLASSIFICATION: OPEN<br>
+      ENTRIES: <span id="total-count" style="color:var(--accent)">—</span>
+    </div>
   </div>
-  <div class="legend-group">
-    <span class="legend-label">Size:</span>
-    <span class="legend-item"><span class="sz sz-aux">Aux</span></span>
-    <span class="legend-item"><span class="sz sz-main">Main</span></span>
-    <span class="legend-item"><span class="sz sz-heavy">Heavy</span></span>
-    <span class="legend-item"><span class="sz sz-sh">SH</span></span>
-  </div>
-  <div class="legend-group">
-    <span class="legend-label">Heat:</span>
-    <span class="legend-item" style="font-family:Share Tech Mono,monospace;font-size:10px;color:#ff4444">🔥 = self-heat on use</span>
-  </div>
+  <div class="header-accent-line"></div>
 </div>
 
 <div class="controls">
-  <div class="filter-group">
-    <span class="filter-label">Mfr:</span>
-    <button class="filter-btn active" data-mfr="all"   onclick="setFilter('mfr','all',this)">All</button>
-    <button class="filter-btn gms"   data-mfr="GMS"   onclick="setFilter('mfr','GMS',this)">GMS</button>
-    <button class="filter-btn ipsn"  data-mfr="IPS-N" onclick="setFilter('mfr','IPS-N',this)">IPS-N</button>
-    <button class="filter-btn ssc"   data-mfr="SSC"   onclick="setFilter('mfr','SSC',this)">SSC</button>
-    <button class="filter-btn horus" data-mfr="HORUS" onclick="setFilter('mfr','HORUS',this)">HORUS</button>
-    <button class="filter-btn ha"    data-mfr="HA"    onclick="setFilter('mfr','HA',this)">HA</button>
+  <div class="filter-row">
+    <span class="filter-label">MFR</span>
+    <div class="btn-group" id="mfr-filters">
+      <button class="filter-btn active" data-mfr="all">All</button>
+      <button class="filter-btn" data-mfr="GMS">GMS</button>
+      <button class="filter-btn" data-mfr="IPS-N">IPS-N</button>
+      <button class="filter-btn" data-mfr="SSC">SSC</button>
+      <button class="filter-btn" data-mfr="HORUS">HORUS</button>
+      <button class="filter-btn" data-mfr="HA">HA</button>
+    </div>
+    <div class="result-count">Showing <span id="result-num">—</span> weapons</div>
   </div>
-  <div class="filter-group">
-    <span class="filter-label">Size:</span>
-    <button class="filter-btn active"    data-sz="all"        onclick="setFilter('sz','all',this)">All</button>
-    <button class="filter-btn aux-btn"   data-sz="Auxiliary"  onclick="setFilter('sz','Auxiliary',this)">Auxiliary</button>
-    <button class="filter-btn main-btn"  data-sz="Main"       onclick="setFilter('sz','Main',this)">Main</button>
-    <button class="filter-btn heavy-btn" data-sz="Heavy"      onclick="setFilter('sz','Heavy',this)">Heavy</button>
-    <button class="filter-btn sh-btn"    data-sz="Superheavy" onclick="setFilter('sz','Superheavy',this)">Superheavy</button>
+  <div class="filter-row">
+    <span class="filter-label">Size</span>
+    <div class="btn-group" id="size-filters">
+      <button class="filter-btn active" data-sz="all">All</button>
+      <button class="filter-btn" data-sz="Auxiliary">Auxiliary</button>
+      <button class="filter-btn" data-sz="Main">Main</button>
+      <button class="filter-btn" data-sz="Heavy">Heavy</button>
+      <button class="filter-btn" data-sz="Superheavy">Superheavy</button>
+    </div>
   </div>
-  <div class="filter-group">
-    <span class="filter-label">Type:</span>
-    <button class="filter-btn active" data-wt="all"      onclick="setFilter('wt','all',this)">All</button>
-    <button class="filter-btn" data-wt="Melee"    onclick="setFilter('wt','Melee',this)">Melee</button>
-    <button class="filter-btn" data-wt="CQB"      onclick="setFilter('wt','CQB',this)">CQB</button>
-    <button class="filter-btn" data-wt="Rifle"    onclick="setFilter('wt','Rifle',this)">Rifle</button>
-    <button class="filter-btn" data-wt="Cannon"   onclick="setFilter('wt','Cannon',this)">Cannon</button>
-    <button class="filter-btn" data-wt="Launcher" onclick="setFilter('wt','Launcher',this)">Launcher</button>
-    <button class="filter-btn" data-wt="Nexus"    onclick="setFilter('wt','Nexus',this)">Nexus</button>
+  <div class="filter-row">
+    <span class="filter-label">Type</span>
+    <div class="btn-group" id="type-filters">
+      <button class="filter-btn active" data-tp="all">All</button>
+      <button class="filter-btn" data-tp="Melee">Melee</button>
+      <button class="filter-btn" data-tp="CQB">CQB</button>
+      <button class="filter-btn" data-tp="Rifle">Rifle</button>
+      <button class="filter-btn" data-tp="Cannon">Cannon</button>
+      <button class="filter-btn" data-tp="Launcher">Launcher</button>
+      <button class="filter-btn" data-tp="Nexus">Nexus</button>
+    </div>
+    <input class="search-box" type="text" id="search-box" placeholder="Search weapons, tags, licenses...">
   </div>
-  <input type="text" class="search-box" placeholder="Search weapons, tags, notes..." oninput="doSearch(this.value)">
-  <div class="result-count">Showing <span id="count">0</span> weapons</div>
+</div>
+
+<div class="legend">
+  <div class="legend-section">
+    <span class="legend-label">DMG</span>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--kinetic)"></div><span style="color:var(--kinetic)">Kinetic</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--energy)"></div><span style="color:var(--energy)">Energy</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--explosive)"></div><span style="color:var(--explosive)">Explosive</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--burn)"></div><span style="color:var(--burn)">Burn</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--mixed)"></div><span style="color:var(--mixed)">Mixed</span></div>
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-section">
+    <span class="legend-label">Size</span>
+    <span class="badge-sz badge-aux">AUX</span>
+    <span class="badge-sz badge-main">MAIN</span>
+    <span class="badge-sz badge-heavy">HEAVY</span>
+    <span class="badge-sz badge-sh">SH</span>
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-section">
+    <span class="legend-label">MFR</span>
+    <span class="badge-mfr badge-gms">GMS</span>
+    <span class="badge-mfr badge-ipsn">IPS-N</span>
+    <span class="badge-mfr badge-ssc">SSC</span>
+    <span class="badge-mfr badge-horus">HORUS</span>
+    <span class="badge-mfr badge-ha">HA</span>
+  </div>
 </div>
 
 <div class="table-wrap">
-  <table id="wt">
+  <table id="weapons-table">
     <thead>
       <tr>
-        <th onclick="sortBy(0)">Weapon <span class="si"></span></th>
-        <th onclick="sortBy(1)">Mfr <span class="si"></span></th>
-        <th onclick="sortBy(2)">License <span class="si"></span></th>
-        <th onclick="sortBy(3)">Size <span class="si"></span></th>
-        <th onclick="sortBy(4)">Type <span class="si"></span></th>
-        <th onclick="sortBy(5)">Damage <span class="si"></span></th>
-        <th onclick="sortBy(6)">Range <span class="si"></span></th>
-        <th onclick="sortBy(7)">Self Heat <span class="si"></span></th>
+        <th onclick="sortBy(0)">Weapon</th>
+        <th onclick="sortBy(1)">Mfr</th>
+        <th onclick="sortBy(2)">License</th>
+        <th onclick="sortBy(3)">Size</th>
+        <th onclick="sortBy(4)">Type</th>
+        <th onclick="sortBy(5)">Damage</th>
+        <th onclick="sortBy(6)">Range</th>
+        <th onclick="sortBy(7)">Self Heat 🔥</th>
+        <th onclick="sortBy(8)">SP</th>
         <th>Tags</th>
-        <th>Special</th>
+        <th onclick="sortBy(10)">Special Notes</th>
       </tr>
     </thead>
-    <tbody id="tbody"></tbody>
+    <tbody id="weapons-tbody"></tbody>
   </table>
-  <div class="no-results" id="nores">NO WEAPONS MATCH CURRENT FILTERS</div>
 </div>
 
+<div class="footer">
+  <div class="footer-text">LANCER RPG // MASSIF PRESS // CORE RULEBOOK // NON-COMMERCIAL FAN REFERENCE</div>
+  <div class="footer-text"><span class="footer-accent">NHP EIDOLON</span> // DATABASE NODE 4-ALPHA // WEAPONS COMPENDIUM</div>
 </div>
+
+<div id="tooltip"></div>
+
 <script>
-// Weapon data: [name, mfr, license, size, type, damage, dmgType, range, selfHeat, tags[], special]
-// dmgType: k=kinetic, e=energy, x=explosive, b=burn, m=mixed
 const W = [
-  // ── GMS ──────────────────────────────────────────────────────────
-  ["Anti-Materiel Rifle",       "GMS",   "GMS",      "Heavy",      "Rifle",    "2d6",      "k", "20",       0,  ["Accurate","AP","Loading","Ordnance"], ""],
-  ["Assault Rifle",             "GMS",   "GMS",      "Main",       "Rifle",    "1d6",      "k", "10",       0,  ["Reliable 2"], ""],
-  ["Charged Blade",             "GMS",   "GMS",      "Main",       "Melee",    "1d3+3",    "e", "Threat 1", 0,  ["AP"], ""],
-  ["Cyclone Pulse Rifle",       "GMS",   "GMS",      "Superheavy", "Rifle",    "3d6+3",    "k", "15",       0,  ["Accurate","Loading","Reliable 5"], ""],
-  ["Heavy Charged Blade",       "GMS",   "GMS",      "Heavy",      "Melee",    "1d6+3",    "e", "Threat 1", 0,  ["AP"], ""],
-  ["Heavy Machine Gun",         "GMS",   "GMS",      "Heavy",      "Cannon",   "2d6+4",    "k", "8",        0,  ["Inaccurate"], ""],
-  ["Heavy Melee Weapon",        "GMS",   "GMS",      "Heavy",      "Melee",    "2d6+1",    "k", "Threat 1", 0,  [], ""],
-  ["Howitzer",                  "GMS",   "GMS",      "Heavy",      "Cannon",   "2d6",      "x", "20/Blast2",0,  ["Arcing","Inaccurate","Loading","Ordnance"], ""],
-  ["Missile Rack",              "GMS",   "GMS",      "Auxiliary",  "Launcher", "1d3+1",    "x", "10/Blast1",0,  ["Loading"], ""],
-  ["Mortar",                    "GMS",   "GMS",      "Main",       "Cannon",   "1d6+1",    "x", "15/Blast1",0,  ["Arcing","Inaccurate"], ""],
-  ["Nexus (Hunter-Killer)",     "GMS",   "GMS",      "Main",       "Nexus",    "1d6",      "e", "10",       0,  ["Smart"], ""],
-  ["Nexus (Light)",             "GMS",   "GMS",      "Auxiliary",  "Nexus",    "1d3",      "e", "10",       0,  ["Smart"], ""],
-  ["Pistol",                    "GMS",   "GMS",      "Auxiliary",  "CQB",      "1d3",      "k", "5/Cone3",  0,  ["Reliable 1"], ""],
-  ["Progressive Knife",         "GMS",   "GMS",      "Auxiliary",  "Melee",    "1d3+1",    "e", "Threat 1", 0,  ["Overkill"], ""],
-  ["Rocket-Propelled Grenade",  "GMS",   "GMS",      "Main",       "Launcher", "1d6+1",    "x", "10/Blast2",0,  ["Loading","Ordnance"], ""],
-  ["Shotgun",                   "GMS",   "GMS",      "Main",       "CQB",      "1d6",      "k", "5/Cone3",  0,  [], ""],
-  ["Tactical Knife",            "GMS",   "GMS",      "Auxiliary",  "Melee",    "1d3+1",    "k", "Threat 1", 0,  ["Thrown 3"], ""],
-  ["Tactical Melee Weapon",     "GMS",   "GMS",      "Main",       "Melee",    "1d6+2",    "k", "Threat 1", 0,  [], ""],
-  ["Thermal Lance",             "GMS",   "GMS",      "Heavy",      "Cannon",   "1d6+3",    "e", "10",       2,  [], "2 heat to self on use"],
-  ["Thermal Pistol",            "GMS",   "GMS",      "Auxiliary",  "CQB",      "2",        "e", "5",        0,  [], ""],
-  ["Thermal Rifle",             "GMS",   "GMS",      "Main",       "Rifle",    "1d3+2",    "e", "5",        0,  ["AP"], ""],
-  // ── IPS-N ─────────────────────────────────────────────────────────
-  ["Chain Axe",                 "IPS-N", "Blackbeard I",  "Main",  "Melee",    "1d6",      "k", "Threat 1", 0,  ["Reliable 2"], "Crit: target SHREDDED until end of turn"],
-  ["Flechette Launcher",        "IPS-N", "Blackbeard I",  "Auxiliary","CQB",   "1",        "k", "1",        0,  [], "Ignores ranged ENGAGED penalty; 3 dmg vs GRAPPLED/BIOLOGICAL"],
-  ["Nanocarbon Sword",          "IPS-N", "Blackbeard II", "Heavy", "Melee",    "1d6+4",    "k", "Threat 2", 0,  ["Reliable 3"], ""],
-  ["Cutter MkII",               "IPS-N", "Lancaster III", "Auxiliary","Melee", "1+1+1",    "m", "Threat 1", 1,  [], "Deals 10 AP vs objects; 1 heat self"],
-  ["Assault Cannon",            "IPS-N", "Drake II",      "Main",  "Cannon",   "1d6+2",    "k", "8",        1,  ["Overkill"], "Spin up as quick action → Reliable 3 but SLOWED"],
-  ["Leviathan Heavy Assault Cannon","IPS-N","Drake III",  "Superheavy","Cannon","1d6",     "k", "8",        0,  [], ""],
-  ["Concussion Missiles",       "IPS-N", "Drake II",      "Main",  "Launcher", "1d3",      "x", "5",        0,  ["Knockback 2"], "Hit: HULL save or IMPAIRED until end of next turn"],
-  ["War Pike",                  "IPS-N", "Nelson I",      "Main",  "Melee",    "1d6",      "k", "Threat 3", 0,  ["Knockback 1","Thrown 5"], ""],
-  ["Power Knuckles",            "IPS-N", "Nelson III",    "Auxiliary","Melee",  "1d3+1",   "k", "Threat 1", 0,  [], "Crit: HULL save or PRONE"],
-  ["Hand Cannon",               "IPS-N", "Raleigh I",     "Auxiliary","CQB",   "1d6",      "k", "5/Cone3",  0,  ["Loading","Reliable 1"], ""],
-  ["Bolt Thrower",              "IPS-N", "Raleigh II",    "Heavy", "Cannon",   "2d6+1d6",  "m", "8",        0,  ["Loading","Reliable 2"], "+1d6 explosive bonus damage"],
-  ["Kinetic Hammer",            "IPS-N", "Raleigh III",   "Heavy", "Melee",    "2d6+2",    "k", "Threat 1", 0,  ["Reliable 4"], ""],
-  ["Deck-Sweeper Auto Shotgun", "IPS-N", "Tortuga I",     "Main",  "CQB",      "2d6",      "k", "3/Cone3",  0,  ["Inaccurate"], ""],
-  ["Daisy Cutter",              "IPS-N", "Tortuga II",    "Heavy", "CQB",      "3d6",      "x", "7/Cone3",  0,  ["Limited 2"], "Creates smoke cloud soft cover on attack"],
-  ["Catalytic Hammer",          "IPS-N", "Tortuga II",    "Main",  "Melee",    "1d3+5",    "k", "Threat 1", 0,  ["Loading"], "Crit: HULL save or STUNNED until end of next turn"],
-  ["Impact Lance",              "IPS-N", "Vlad I",        "Main",  "Melee",    "1d6",      "e", "Threat 3", 1,  [], "LINE to target; +1 heat self per extra target hit"],
-  ["Impaler Nailgun",           "IPS-N", "Vlad II",       "Main",  "CQB",      "1d6+1",    "k", "5/Cone3",  1,  [], "Hit: HULL save or IMMOBILIZED until end of next turn"],
-  ["Combat Drill",              "IPS-N", "Vlad III",      "Superheavy","Melee","3d6+1d6",  "m", "Threat 1", 0,  ["AP","Overkill"], "vs PRONE/IMMOBILIZED/STUNNED: Overkill deals extra +1d6 each trigger"],
-  // ── SSC ───────────────────────────────────────────────────────────
-  ["Magnetic Cannon",           "SSC",   "Black Witch I", "Main",  "Cannon",   "1d3+1",    "e", "8",        0,  [], "Hit: HULL save or pulled 1d3+1 spaces toward you"],
-  ["Vulture DMR",               "SSC",   "Dusk Wing II",  "Main",  "Rifle",    "1d6+1",    "k", "15",       1,  ["Accurate","Overkill"], ""],
-  ["Railgun",                   "SSC",   "Dusk Wing III", "Heavy", "Rifle",    "1d6+4",    "k", "20",       2,  ["AP","Ordnance"], ""],
-  ["Veil Rifle",                "SSC",   "Dusk Wing II",  "Main",  "Rifle",    "1d3+1",    "e", "10",       0,  ["Accurate"], "Doesn't hit allied characters; gives allies soft cover"],
-  ["Burst Launcher",            "SSC",   "Dusk Wing II",  "Main",  "Launcher", "1d3+1",    "x", "15",       0,  ["Accurate","Arcing"], "Crit: IMPAIRED until end of next turn"],
-  ["Rail Rifle",                "SSC",   "Metalmark II",  "Main",  "Rifle",    "1d6+1",    "e", "10",       1,  [], ""],
-  ["Shock Knife",               "SSC",   "Metalmark II",  "Auxiliary","Melee", "1+2",      "m", "Threat 1", 1,  ["Thrown 5"], "1 kinetic + 2 energy"],
-  ["Sharanga Missiles",         "SSC",   "Monarch II",    "Main",  "Launcher", "3",        "x", "15",       0,  ["Arcing"], "Attacks two targets simultaneously"],
-  ["Gandiva Missiles",          "SSC",   "Monarch II",    "Heavy", "Launcher", "1d6+3",    "x", "15",       0,  ["Accurate","Seeking","Smart"], ""],
-  ["Pinaka Missiles",           "SSC",   "Monarch III",   "Superheavy","Launcher","2d6",   "x", "20/Blast1",2,  ["Arcing"], "2× Blast1 areas; delay for 3d6 at end of next round"],
-  ["Vijaya Rockets",            "SSC",   "Mourning Cloak I","Auxiliary","Launcher","1d3",  "x", "5",        0,  ["Accurate"], ""],
-  ["Fold Knife",                "SSC",   "Mourning Cloak I","Auxiliary","Melee","1d3",     "k", "Threat 1", 0,  ["Accurate"], "Crit: teleport 2 spaces after attack"],
-  ["Variable Sword",            "SSC",   "Mourning Cloak III","Main","Melee",  "3",        "e", "Threat 2", 0,  ["Accurate"], "Crit: +1d6 bonus damage"],
-  ["Nanite Rifle",              "SSC",   "Swallowtail II","Main",  "Rifle",    "4",        "e", "15",       0,  ["Accurate","Seeking","Smart"], ""],
-  // ── HORUS ─────────────────────────────────────────────────────────
-  ["Autopod",                   "HORUS", "Goblin I",      "Main",  "Launcher", "3",        "k", "15",       0,  ["Seeking","Unique"], "Reaction weapon; auto-fires on target lock"],
-  ["Nanobot Whip",              "HORUS", "Goblin III",    "Heavy", "Melee",    "2d6",      "e", "Threat 3", 0,  ["Smart"], "Crit: pull target adjacent to you"],
-  ["Swarm/Hive Nexus",          "HORUS", "Goblin III",    "Main",  "Nexus",    "2+2",      "m", "5",        0,  ["Smart","Seeking"], "2 energy + 2 burn"],
-  ["Sentinel Drone",            "HORUS", "Gorgon I",      "Main",  "Nexus",    "3",        "k", "Sensors",  0,  ["Drone"], "Deployable drone; 3 dmg to hostiles attacking in perimeter"],
-  ["Ghoul Nexus",               "HORUS", "Hydra I",       "Main",  "Nexus",    "1d3+2",    "m", "10",       0,  ["Smart"], "Choose damage type each attack (K/E/X)"],
-  ["Ghast Nexus",               "HORUS", "Hydra II",      "Heavy", "Nexus",    "1d6+3",    "e", "10",       0,  ["Drone","Smart"], "Can be deployed as stationary drone"],
-  ["Annihilation Nexus",        "HORUS", "Hydra III",     "Superheavy","Nexus","1d6+3",    "e", "2",        0,  ["AP","Smart"], "Follow-up attack at start of next turn"],
-  ["Catalyst Pistol",           "HORUS", "Manticore I",   "Auxiliary","CQB",   "1d3",      "b", "3",        2,  [], "Chain attacks on hit; each chain generates 1 heat self"],
-  ["Arc Projector",             "HORUS", "Manticore II",  "Heavy", "CQB",      "1d6+1",    "e", "5",        1,  [], "Chain attacks on hit up to new targets in range"],
-  ["Lightning Generator",       "HORUS", "Manticore III", "Main",  "CQB",      "2/4AP",    "e", "Burst 1",  1,  ["Unique"], "Protocol: 2e adjacent; auto-triggers in DZ for 4 AP energy"],
-  ["Scylla NHP Vorpal Gun",     "HORUS", "Gorgon III",    "Main",  "Cannon",   "?",        "m", "?",        0,  ["Unique"], "Unpredictable reality-bending weapon"],
-  ["Mimic Gun",                 "HORUS", "Pegasus II",    "Heavy", "Rifle",    "varies",   "e", "varies",   0,  ["Unique"], "Range cycles 3d20 each turn; dmg = 1+½ range"],
-  ["Autogun",                   "HORUS", "Pegasus III",   "Main",  "Cannon",   "3",        "k", "15",       0,  ["Unique"], "Free action attack at end of turn; doesn't trigger talents"],
-  // ── HA ────────────────────────────────────────────────────────────
-  ["Krakatoa Thermobaric Flamethrower","HA","Genghis I",  "Heavy", "CQB",      "1+4",      "m", "5/Cone1",  0,  [], "1 explosive + 4 burn in cone"],
-  ["Siege Cannon",              "HA",    "Barbarossa II", "Superheavy","Cannon","3d6",      "x", "30/Blast2",4,  ["Arcing","Loading","Ordnance"], "Siege or Direct Fire mode; direct mode KB2, 2 heat self"],
-  ["Stub Cannon",               "HA",    "Iskander I",    "Auxiliary","Cannon", "3",        "k", "5",        0,  ["Limited 6","Knockback 1"], ""],
-  ["Gravity Gun",               "HA",    "Iskander II",   "Heavy", "Rifle",    "Blast3",   "k", "8",        0,  [], "HULL save or pulled to center; can't be modified"],
-  ["Displacer",                 "HA",    "Saladin II",    "Main",  "Rifle",    "10",       "e", "10/Blast1",10, ["AP","Loading","Unique"], "Snaps targets into blinkspace; 10 heat self"],
-  ["Sol-Pattern Laser Rifle",   "HA",    "Sherman I",     "Main",  "Rifle",    "1d6+1",    "e", "8",        1,  [], ""],
-  ["Andromeda-Pattern Heavy Laser","HA", "Sherman II",    "Heavy", "Cannon",   "2d6+3",    "e", "12",       3,  [], ""],
-  ["Annihilator",               "HA",    "Tokugawa I",    "Main",  "CQB",      "1d3+2",    "k", "5/Cone3",  2,  ["AP"], "Secondary attack all within Burst1 of target on hit"],
-  ["Torch",                     "HA",    "Tokugawa II",   "Main",  "Melee",    "1d6+3",    "b", "Threat 1", 2,  ["Overkill"], ""],
-  ["Tachyon Lance",             "HA",    "Sherman III",   "Superheavy","Cannon","2d6+8",   "e", "20",       4,  ["Ordnance"], "In DZ: Blast3 backblast 4e+2b; ENGINEERING save halves"],
-  ["Plasma Gauntlet",           "HA",    "Tokugawa III",  "Main",  "Melee",    "4d6AP",    "x", "Threat 1", 0,  ["Limited 1","Unique"], "DZ only; AGILITY save or 4d6 AP + PRONE; you take half as heat"],
-  ["Plasma Thrower",            "HA",    "Iskander III",  "Superheavy","CQB",  "1d6+2+6",  "m", "7/Cone10", 4,  [], "1d6+2e + 6b; leaves burning zones 1d6e per turn"],
+  ["Anti-Materiel Rifle","GMS","GMS","Heavy","Rifle","2d6","k","20",0,0,["Accurate","AP","Loading","Ordnance"],""],
+  ["Assault Rifle","GMS","GMS","Main","Rifle","1d6","k","10",0,0,["Reliable 2"],""],
+  ["Charged Blade","GMS","GMS","Main","Melee","1d3+3","e","Threat 1",0,0,["AP"],""],
+  ["Cyclone Pulse Rifle","GMS","GMS","Superheavy","Rifle","3d6+3","k","15",0,0,["Accurate","Loading","Reliable 5"],""],
+  ["Heavy Charged Blade","GMS","GMS","Heavy","Melee","1d6+3","e","Threat 1",0,0,["AP"],""],
+  ["Heavy Machine Gun","GMS","GMS","Heavy","Cannon","2d6+4","k","8",0,0,["Inaccurate"],""],
+  ["Heavy Melee Weapon","GMS","GMS","Heavy","Melee","2d6+1","k","Threat 1",0,0,[],""],
+  ["Howitzer","GMS","GMS","Heavy","Cannon","2d6","x","20/Blast2",0,0,["Arcing","Inaccurate","Loading","Ordnance"],""],
+  ["Missile Rack","GMS","GMS","Auxiliary","Launcher","1d3+1","x","10/Blast1",0,0,["Loading"],""],
+  ["Mortar","GMS","GMS","Main","Cannon","1d6+1","x","15/Blast1",0,0,["Arcing","Inaccurate"],""],
+  ["Nexus (Hunter-Killer)","GMS","GMS","Main","Nexus","1d6","e","10",0,0,["Smart"],""],
+  ["Nexus (Light)","GMS","GMS","Auxiliary","Nexus","1d3","e","10",0,0,["Smart"],""],
+  ["Pistol","GMS","GMS","Auxiliary","CQB","1d3","k","5/Cone3",0,0,["Reliable 1"],""],
+  ["Progressive Knife","GMS","GMS","Auxiliary","Melee","1d3+1","e","Threat 1",0,0,["Overkill"],""],
+  ["Rocket-Propelled Grenade","GMS","GMS","Main","Launcher","1d6+1","x","10/Blast2",0,0,["Loading","Ordnance"],""],
+  ["Shotgun","GMS","GMS","Main","CQB","1d6","k","5/Cone3",0,0,[],""],
+  ["Tactical Knife","GMS","GMS","Auxiliary","Melee","1d3+1","k","Threat 1",0,0,["Thrown 3"],""],
+  ["Tactical Melee Weapon","GMS","GMS","Main","Melee","1d6+2","k","Threat 1",0,0,[],""],
+  ["Thermal Lance","GMS","GMS","Heavy","Cannon","1d6+3","e","10",2,0,[],"2 heat to self on use"],
+  ["Thermal Pistol","GMS","GMS","Auxiliary","CQB","2","e","5",0,0,[],""],
+  ["Thermal Rifle","GMS","GMS","Main","Rifle","1d3+2","e","5",0,0,["AP"],""],
+  ["Chain Axe","IPS-N","Blackbeard I","Main","Melee","1d6","k","Threat 1",0,0,["Reliable 2"],"Crit: target SHREDDED until end of turn"],
+  ["Flechette Launcher","IPS-N","Blackbeard I","Auxiliary","CQB","1","k","1",0,0,[],"Ignores ranged ENGAGED penalty; 3 dmg vs GRAPPLED/BIOLOGICAL"],
+  ["Nanocarbon Sword","IPS-N","Blackbeard II","Heavy","Melee","1d6+4","k","Threat 2",0,0,["Reliable 3"],""],
+  ["Cutter MkII","IPS-N","Lancaster III","Auxiliary","Melee","1+1+1","m","Threat 1",1,0,[],"Deals 10 AP vs objects"],
+  ["Assault Cannon","IPS-N","Drake II","Main","Cannon","1d6+2","k","8",1,0,["Overkill"],"Spin up as quick action → Reliable 3 but SLOWED"],
+  ["Leviathan Heavy Assault Cannon","IPS-N","Drake III","Superheavy","Cannon","1d6","k","8",0,0,[],""],
+  ["Concussion Missiles","IPS-N","Drake II","Main","Launcher","1d3","x","5",0,0,["Knockback 2"],"Hit: HULL save or IMPAIRED until end of next turn"],
+  ["War Pike","IPS-N","Nelson I","Main","Melee","1d6","k","Threat 3",0,0,["Knockback 1","Thrown 5"],""],
+  ["Power Knuckles","IPS-N","Nelson III","Auxiliary","Melee","1d3+1","k","Threat 1",0,0,[],"Crit: HULL save or PRONE"],
+  ["Hand Cannon","IPS-N","Raleigh I","Auxiliary","CQB","1d6","k","5/Cone3",0,0,["Loading","Reliable 1"],""],
+  ["Bolt Thrower","IPS-N","Raleigh II","Heavy","Cannon","2d6+1d6","m","8",0,0,["Loading","Reliable 2"],"+1d6 explosive bonus damage"],
+  ["Kinetic Hammer","IPS-N","Raleigh III","Heavy","Melee","2d6+2","k","Threat 1",0,0,["Reliable 4"],""],
+  ["Deck-Sweeper Auto Shotgun","IPS-N","Tortuga I","Main","CQB","2d6","k","3/Cone3",0,0,["Inaccurate"],""],
+  ["Daisy Cutter","IPS-N","Tortuga II","Heavy","CQB","3d6","x","7/Cone3",0,0,["Limited 2"],"Creates smoke cloud on attack"],
+  ["Catalytic Hammer","IPS-N","Tortuga II","Main","Melee","1d3+5","k","Threat 1",0,0,["Loading"],"Crit: HULL save or STUNNED until end of next turn"],
+  ["Impact Lance","IPS-N","Vlad I","Main","Melee","1d6","e","Threat 3",1,0,[],"LINE to target; +1 heat self per extra target hit"],
+  ["Impaler Nailgun","IPS-N","Vlad II","Main","CQB","1d6+1","k","5/Cone3",1,0,[],"Hit: HULL save or IMMOBILIZED until end of next turn"],
+  ["Combat Drill","IPS-N","Vlad III","Superheavy","Melee","3d6+1d6","m","Threat 1",0,0,["AP","Overkill"],"vs PRONE/IMMOBILIZED/STUNNED: Overkill deals extra +1d6 each trigger"],
+  ["Magnetic Cannon","SSC","Black Witch I","Main","Cannon","1d3+1","e","8",0,0,[],"Hit: HULL save or pulled 1d3+1 spaces toward you"],
+  ["Vulture DMR","SSC","Dusk Wing II","Main","Rifle","1d6+1","k","15",1,0,["Accurate","Overkill"],""],
+  ["Railgun","SSC","Dusk Wing III","Heavy","Rifle","1d6+4","k","20",2,0,["AP","Ordnance"],""],
+  ["Veil Rifle","SSC","Dusk Wing II","Main","Rifle","1d3+1","e","10",0,0,["Accurate"],"Doesn't hit allied characters; gives allies soft cover"],
+  ["Burst Launcher","SSC","Dusk Wing II","Main","Launcher","1d3+1","x","15",0,0,["Accurate","Arcing"],"Crit: IMPAIRED until end of next turn"],
+  ["Rail Rifle","SSC","Metalmark II","Main","Rifle","1d6+1","e","10",1,0,[],""],
+  ["Shock Knife","SSC","Metalmark II","Auxiliary","Melee","1+2","m","Threat 1",1,0,["Thrown 5"],"1 kinetic + 2 energy"],
+  ["Sharanga Missiles","SSC","Monarch II","Main","Launcher","3","x","15",0,0,["Arcing"],"Attacks two targets simultaneously"],
+  ["Gandiva Missiles","SSC","Monarch II","Heavy","Launcher","1d6+3","x","15",0,1,["Accurate","Seeking","Smart"],""],
+  ["Pinaka Missiles","SSC","Monarch III","Superheavy","Launcher","2d6","x","20/Blast1",2,0,["Arcing"],"2x Blast1 areas; delay for 3d6 at end of next round"],
+  ["Vijaya Rockets","SSC","Mourning Cloak I","Auxiliary","Launcher","1d3","x","5",0,0,["Accurate"],""],
+  ["Fold Knife","SSC","Mourning Cloak I","Auxiliary","Melee","1d3","k","Threat 1",0,0,["Accurate"],"Crit: teleport 2 spaces after attack"],
+  ["Variable Sword","SSC","Mourning Cloak III","Main","Melee","3","e","Threat 2",0,0,["Accurate"],"Crit: +1d6 bonus damage"],
+  ["Nanite Rifle","SSC","Swallowtail II","Main","Rifle","4","e","15",0,0,["Accurate","Seeking","Smart"],""],
+  ["Autopod","HORUS","Goblin I","Main","Launcher","3","k","15",0,1,["Seeking","Unique"],"Reaction weapon; auto-fires on target lock"],
+  ["Nanobot Whip","HORUS","Goblin III","Heavy","Melee","2d6","e","Threat 3",0,2,["Smart"],"Crit: pull target adjacent to you"],
+  ["Swarm/Hive Nexus","HORUS","Goblin III","Main","Nexus","2+2","m","5",0,0,["Smart","Seeking"],"2 energy + 2 burn"],
+  ["Sentinel Drone","HORUS","Gorgon I","Main","Nexus","3","k","Sensors",0,2,["Drone"],"Deployable drone; 3 dmg to hostiles attacking in perimeter"],
+  ["Ghoul Nexus","HORUS","Hydra I","Main","Nexus","1d3+2","m","10",0,0,["Smart"],"Choose damage type each attack"],
+  ["Ghast Nexus","HORUS","Hydra II","Heavy","Nexus","1d6+3","e","10",0,0,["Drone","Smart"],"Can be deployed as stationary drone"],
+  ["Annihilation Nexus","HORUS","Hydra III","Superheavy","Nexus","1d6+3","e","2",0,0,["AP","Smart"],"Follow-up attack at start of next turn"],
+  ["Catalyst Pistol","HORUS","Manticore I","Auxiliary","CQB","1d3","b","3",2,0,[],"Chain attacks on hit; each chain generates 1 heat self"],
+  ["Arc Projector","HORUS","Manticore II","Heavy","CQB","1d6+1","e","5",1,0,[],"Chain attacks on hit up to new targets in range"],
+  ["Lightning Generator","HORUS","Manticore III","Main","CQB","2/4AP","e","Burst 1",1,3,["Unique"],"Protocol: 2e adjacent; auto-triggers in DZ for 4 AP energy"],
+  ["Scylla NHP Vorpal Gun","HORUS","Gorgon III","Main","Cannon","varies","m","varies",0,3,["Unique"],"Reaction weapon; fires when ally takes damage"],
+  ["Mimic Gun","HORUS","Pegasus II","Heavy","Rifle","varies","e","varies",0,0,["Unique"],"Range cycles 3d20 each turn; dmg = 1+half range"],
+  ["Autogun","HORUS","Pegasus III","Main","Cannon","3","k","15",0,1,["Unique"],"Free action attack at end of turn; doesn't trigger talents"],
+  ["Krakatoa Thermobaric Flamethrower","HA","Genghis I","Heavy","CQB","1+4","m","5/Cone1",0,0,[],"1 explosive + 4 burn in cone"],
+  ["Siege Cannon","HA","Barbarossa II","Superheavy","Cannon","3d6","x","30/Blast2",4,0,["Arcing","Loading","Ordnance"],"Siege or Direct Fire mode"],
+  ["Stub Cannon","HA","Iskander I","Auxiliary","Cannon","3","k","5",0,0,["Limited 6","Knockback 1"],""],
+  ["Gravity Gun","HA","Iskander II","Heavy","Rifle","Blast3","k","8",0,0,[],"HULL save or pulled to center; cannot be modified"],
+  ["Displacer","HA","Napoleon II","Main","Rifle","10","e","10/Blast1",10,0,["AP","Loading","Unique"],"Snaps targets into blinkspace; 10 heat self"],
+  ["Sol-Pattern Laser Rifle","HA","Sherman I","Main","Rifle","1d6+1","e","8",1,0,[],""],
+  ["Andromeda-Pattern Heavy Laser","HA","Sherman II","Heavy","Cannon","2d6+3","e","12",3,0,[],""],
+  ["Annihilator","HA","Tokugawa I","Main","CQB","1d3+2","k","5/Cone3",2,0,["AP"],"Secondary attack all within Burst1 of target on hit"],
+  ["Torch","HA","Tokugawa II","Main","Melee","1d6+3","b","Threat 1",2,0,["Overkill"],""],
+  ["Tachyon Lance","HA","Sherman III","Superheavy","Cannon","2d6+8","e","20",4,0,["Ordnance"],"In DZ: Blast3 backblast 4e+2b; ENGINEERING save halves"],
+  ["Plasma Gauntlet","HA","Tokugawa III","Main","Melee","4d6AP","x","Threat 1",0,2,["Limited 1","Unique"],"DZ only; AGILITY save or 4d6 AP + PRONE; you take half as heat"],
+  ["Plasma Thrower","HA","Iskander III","Superheavy","CQB","1d6+2+6","m","7/Cone10",4,0,[],"1d6+2e + 6b; leaves burning zones 1d6e per turn"]
 ];
 
-const dmgColor = { k:'dmg-k', e:'dmg-e', x:'dmg-x', b:'dmg-b', m:'dmg-m' };
-const szClass   = { Auxiliary:'sz-aux', Main:'sz-main', Heavy:'sz-heavy', Superheavy:'sz-sh' };
-const mfrClass  = { 'GMS':'mfr-gms','IPS-N':'mfr-ipsn','SSC':'mfr-ssc','HORUS':'mfr-horus','HA':'mfr-ha' };
-
-const knownTags = {
-  'ap':'tag-ap','overkill':'tag-overkill','smart':'tag-smart','seeking':'tag-seeking',
-  'loading':'tag-loading','ordnance':'tag-ordnance','arcing':'tag-arcing','unique':'tag-unique',
-  'accurate':'tag-accurate','inaccurate':'tag-inaccurate','knockback':'tag-knockback',
-  'drone':'tag-drone','thrown':'tag-thrown','limited':'tag-limited','threat':'tag-threat',
-  'reliable':'tag-reliable','mod':'tag-mod','heat':'tag-heat',
-};
-function tagClass(t) {
-  const l = t.toLowerCase();
-  for (const k in knownTags) if (l.startsWith(k)) return knownTags[k];
-  return '';
-}
-
-const tagDefs = {
-  'ap':         { name: 'Armor Piercing (AP)', body: 'Damage dealt by this weapon ignores ARMOR.' },
-  'accurate':   { name: 'Accurate', body: 'Attacks made with this weapon receive +1 Accuracy (bonus die).' },
-  'inaccurate': { name: 'Inaccurate', body: 'Attacks made with this weapon receive +1 Difficulty.' },
-  'arcing':     { name: 'Arcing', body: 'Can be fired over obstacles — doesn\'t require line of sight, as long as a path can be traced to the target. Still affected by cover.' },
-  'loading':    { name: 'Loading', body: 'Must be reloaded after each use via the Reload Quick Action or Stabilize. Cannot be fired again until reloaded.' },
-  'ordnance':   { name: 'Ordnance', body: 'Can only be fired before the user moves or takes any other actions (except Protocols). Cannot target characters in engagement with the user, and cannot be used for Overwatch.' },
-  'overkill':   { name: 'Overkill', body: 'When rolling damage, any die that rolls a 1 deals 1 heat to the attacker and is rerolled. Additional 1s continue to trigger this effect.' },
-  'reliable':   { name: 'Reliable X', body: 'Always deals at least X damage, even on a miss or if the damage roll is lower. Reliable damage inherits AP and base damage type but not hit-required tags like Knockback.' },
-  'seeking':    { name: 'Seeking', body: 'Has limited self-guidance. Ignores cover and doesn\'t require line of sight, as long as a path can be traced to the target.' },
-  'smart':      { name: 'Smart', body: 'Has self-guidance systems or nanorobotic ammunition. Attacks target E-Defense instead of Evasion. Targets with no E-Defense count as E-Defense 8.' },
-  'knockback':  { name: 'Knockback X', body: 'On a hit, knocks the target X spaces directly away from the point of origin. Multiple Knockback effects stack.' },
-  'thrown':     { name: 'Thrown X', body: 'This melee weapon can be thrown at targets within X spaces. Thrown attacks follow melee rules but are affected by cover. The weapon lands adjacent to its target and must be retrieved as a free action before reuse.' },
-  'limited':    { name: 'Limited X', body: 'Can only be used X times before requiring a Full Repair. Uses are tracked as "charges".' },
-  'unique':     { name: 'Unique', body: 'Cannot be duplicated — each character can only have one copy installed at a time.' },
-  'drone':      { name: 'Drone', body: 'A self-propelled semi-autonomous unit. Size 1/2, allied to user, 10 Evasion, 5 HP, 0 Armor by default. Must be deployed to a free space within Sensors and LoS. Restored to full HP on rest or Full Repair.' },
-  'threat':     { name: 'Threat X', body: 'This weapon can make Overwatch attacks within X spaces. Melee weapons with Threat can attack within X spaces instead of adjacent only.' },
-  'mod':        { name: 'Mod', body: 'Can be applied to a weapon to modify it. Each weapon can only have one Mod. Mods are applied during mech construction or Full Repair.' },
-  'heat':       { name: 'Heat X (Self)', body: 'Immediately after using this weapon or system, the user takes X heat.' },
+const TAG_TIPS = {
+  "AP": "Armor Piercing — damage ignores ARMOR completely.",
+  "Accurate": "Attacks with this weapon gain +1 Accuracy (bonus d6, take highest).",
+  "Inaccurate": "Attacks with this weapon receive +1 Difficulty (penalty d6, subtract highest).",
+  "Arcing": "Can fire without line of sight as long as a path exists. Still affected by cover.",
+  "Loading": "Must be reloaded after each use via the Reload Quick Action or Stabilize.",
+  "Ordnance": "Must be fired before moving or taking other actions on your turn.",
+  "Overkill": "Damage dice that roll 1 deal 1 heat to attacker and are rerolled. Keep rerolling 1s.",
+  "Reliable": "Always deals at least X damage, even on a miss.",
+  "Seeking": "Ignores cover and line of sight as long as a path to target exists.",
+  "Smart": "Targets E-Defense instead of Evasion.",
+  "Knockback": "On hit, knocks target X spaces directly away.",
+  "Thrown": "Can be thrown at targets within X spaces as a melee attack.",
+  "Limited": "Can only be used X times before requiring a Full Repair.",
+  "Unique": "Only one copy can be installed per mech at a time.",
+  "Drone": "Deploys a semi-autonomous SIZE 1/2 drone unit.",
+  "Threat": "Can make Overwatch attacks and melee attacks within X spaces."
 };
 
-function getTagDef(t) {
-  const l = t.toLowerCase();
-  for (const k in tagDefs) if (l.startsWith(k)) return tagDefs[k];
-  return null;
+const SIZE_ORDER = { "Auxiliary": 0, "Main": 1, "Heavy": 2, "Superheavy": 3 };
+const DMG_LABELS = { k: "KIN", e: "ENE", x: "EXP", b: "BURN", m: "MIX" };
+
+let fMfr = "all", fSz = "all", fType = "all", fSearch = "";
+let sortCol = 0, sortDir = 1;
+
+function getMfrClass(mfr) {
+  const m = { "GMS": "gms", "IPS-N": "ipsn", "SSC": "ssc", "HORUS": "horus", "HA": "ha" };
+  return m[mfr] || "gms";
 }
 
-function renderTag(t) {
-  const cls = tagClass(t);
-  const def = getTagDef(t);
-  if (def) {
-    return `<span class="tag ${cls}" data-tip-name="${def.name}" data-tip-body="${def.body.replace(/"/g, '&quot;')}">${t}</span>`;
-  }
-  return `<span class="tag ${cls}">${t}</span>`;
+function getSizeBadge(sz) {
+  const map = { "Auxiliary": "aux", "Main": "main", "Heavy": "heavy", "Superheavy": "sh" };
+  const labels = { "Auxiliary": "AUX", "Main": "MAIN", "Heavy": "HEAVY", "Superheavy": "SH" };
+  const cls = map[sz] || "main";
+  return `<span class="badge-sz badge-${cls}">${labels[sz] || sz}</span>`;
 }
 
-function buildRow(w) {
-  const [name,mfr,lic,size,type,dmg,dt,range,sh,tags,special] = w;
-  const tr = document.createElement('tr');
-  tr.dataset.mfr = mfr;
-  tr.dataset.sz  = size;
-  tr.dataset.wt  = type;
-  tr.dataset.search = [name,mfr,lic,size,type,dmg,range,...tags,special].join(' ').toLowerCase();
-
-  tr.innerHTML = `
-    <td class="wname">${name}</td>
-    <td><span class="mfr ${mfrClass[mfr]}">${mfr}</span></td>
-    <td class="lic">${lic}</td>
-    <td><span class="sz ${szClass[size]}">${size === 'Superheavy' ? 'SH' : size}</span></td>
-    <td class="wtype">${type}</td>
-    <td class="dmg"><span class="${dmgColor[dt]}">${dmg}</span></td>
-    <td class="rng">${range}</td>
-    <td class="self-heat">${sh > 0 ? `🔥 ${sh}` : '—'}</td>
-    <td><div class="tags">${tags.map(renderTag).join('')}</div></td>
-    <td class="special">${special}</td>
-  `;
-  return tr;
+function getDmgClass(dt) {
+  const m = { k: "dmg-k", e: "dmg-e", x: "dmg-x", b: "dmg-b", m: "dmg-m" };
+  return m[dt] || "dmg-k";
 }
 
-const tbody = document.getElementById('tbody');
-W.forEach(w => tbody.appendChild(buildRow(w)));
+function getTagClass(tagBase) {
+  const classes = {
+    "AP": "tag-AP", "Accurate": "tag-Accurate", "Inaccurate": "tag-Inaccurate",
+    "Arcing": "tag-Arcing", "Loading": "tag-Loading", "Ordnance": "tag-Ordnance",
+    "Overkill": "tag-Overkill", "Reliable": "tag-Reliable", "Seeking": "tag-Seeking",
+    "Smart": "tag-Smart", "Knockback": "tag-Knockback", "Thrown": "tag-Thrown",
+    "Limited": "tag-Limited", "Unique": "tag-Unique", "Drone": "tag-Drone"
+  };
+  return classes[tagBase] || "";
+}
 
-// Filters
-let fMfr = 'all', fSz = 'all', fWt = 'all', fSearch = '';
+function getTagBase(tag) {
+  return tag.split(" ")[0];
+}
 
-function setFilter(type, val, btn) {
-  if (type === 'mfr') { fMfr = val; document.querySelectorAll('[data-mfr]').forEach(b => b.classList.remove('active')); }
-  if (type === 'sz')  { fSz  = val; document.querySelectorAll('[data-sz]').forEach(b => b.classList.remove('active')); }
-  if (type === 'wt')  { fWt  = val; document.querySelectorAll('[data-wt]').forEach(b => b.classList.remove('active')); }
-  btn.classList.add('active');
+function buildTagsHTML(tags) {
+  if (!tags || tags.length === 0) return '<span style="color:var(--text-dim);font-family:Share Tech Mono,monospace;font-size:10px;">—</span>';
+  return tags.map(tag => {
+    const base = getTagBase(tag);
+    const tip = TAG_TIPS[base] || "";
+    const cls = getTagClass(base);
+    return `<span class="tag ${cls}" data-tip="${tip}">${tag}</span>`;
+  }).join('');
+}
+
+function buildTable(data) {
+  const tbody = document.getElementById('weapons-tbody');
+  tbody.innerHTML = '';
+  data.forEach((w, idx) => {
+    const [name, mfr, license, size, type, damage, dmgType, range, selfHeat, sp, tags, special] = w;
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-mfr', mfr);
+    tr.setAttribute('data-size', size);
+    tr.setAttribute('data-type', type);
+    tr.setAttribute('data-idx', idx);
+    const searchStr = [name, mfr, license, size, type, damage, range, ...(tags||[]), special].join(' ').toLowerCase();
+    tr.setAttribute('data-search', searchStr);
+
+    const mfrClass = getMfrClass(mfr);
+    const sizeBadge = getSizeBadge(size);
+    const dmgClass = getDmgClass(dmgType);
+    const dmgLabel = DMG_LABELS[dmgType] || '';
+    const heatHTML = selfHeat > 0
+      ? `<span class="heat-val">🔥 ${selfHeat}</span>`
+      : `<span class="heat-none">—</span>`;
+    const spHTML = sp > 0
+      ? `<span class="sp-val">⬡ ${sp}</span>`
+      : `<span class="sp-none">—</span>`;
+    const tagsHTML = buildTagsHTML(tags);
+    const specialHTML = special ? `<span class="special-cell">${special}</span>` : `<span style="color:var(--text-dim);font-family:Share Tech Mono,monospace;font-size:10px;">—</span>`;
+
+    tr.innerHTML = `
+      <td><span class="weapon-name">${name}</span></td>
+      <td><span class="badge-mfr badge-${mfrClass}">${mfr}</span></td>
+      <td><span class="license-text">${license}</span></td>
+      <td>${sizeBadge}</td>
+      <td><span class="type-cell">${type}</span></td>
+      <td><span class="dmg-cell ${dmgClass}">${damage} <span class="dmg-type-icon">${dmgLabel}</span></span></td>
+      <td><span class="range-cell">${range}</span></td>
+      <td>${heatHTML}</td>
+      <td>${spHTML}</td>
+      <td><div class="tags-cell">${tagsHTML}</div></td>
+      <td>${specialHTML}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('total-count').textContent = data.length;
   applyFilters();
+  attachTagTooltips();
 }
-function doSearch(v) { fSearch = v.trim().toLowerCase(); applyFilters(); }
 
 function applyFilters() {
-  let n = 0;
-  document.querySelectorAll('#tbody tr').forEach(r => {
-    const m = (fMfr === 'all' || r.dataset.mfr === fMfr);
-    const s = (fSz  === 'all' || r.dataset.sz  === fSz);
-    const t = (fWt  === 'all' || r.dataset.wt  === fWt);
-    const q = (!fSearch || r.dataset.search.includes(fSearch));
-    const show = m && s && t && q;
-    r.classList.toggle('hidden', !show);
-    if (show) n++;
+  const tbody = document.getElementById('weapons-tbody');
+  const rows = tbody.querySelectorAll('tr');
+  let count = 0;
+  rows.forEach(row => {
+    const mfr = row.getAttribute('data-mfr');
+    const size = row.getAttribute('data-size');
+    const type = row.getAttribute('data-type');
+    const search = row.getAttribute('data-search') || '';
+    const mfrOk = fMfr === 'all' || mfr === fMfr;
+    const szOk = fSz === 'all' || size === fSz;
+    const tpOk = fType === 'all' || type === fType;
+    const srOk = !fSearch || search.includes(fSearch.toLowerCase());
+    if (mfrOk && szOk && tpOk && srOk) {
+      row.classList.remove('hidden');
+      count++;
+    } else {
+      row.classList.add('hidden');
+    }
   });
-  document.getElementById('count').textContent = n;
-  document.getElementById('nores').style.display = n === 0 ? 'block' : 'none';
+  document.getElementById('result-num').textContent = count;
 }
 
-// Sort
-let sortCol = -1, sortDir = 1;
 function sortBy(col) {
-  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
-  document.querySelectorAll('thead th').forEach((th, i) => {
-    th.classList.remove('sorted-asc','sorted-desc');
-    if (i === col) th.classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+  const ths = document.querySelectorAll('thead th');
+  ths.forEach((th, i) => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (i === col) {
+      if (sortCol === col) {
+        sortDir *= -1;
+      } else {
+        sortCol = col;
+        sortDir = 1;
+      }
+      th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+    }
   });
+  sortCol = col;
+
+  const tbody = document.getElementById('weapons-tbody');
   const rows = Array.from(tbody.querySelectorAll('tr'));
+
   rows.sort((a, b) => {
-    const at = a.cells[col].textContent.trim();
-    const bt = b.cells[col].textContent.trim();
-    const an = parseFloat(at.replace(/[^0-9.\-]/g,''));
-    const bn = parseFloat(bt.replace(/[^0-9.\-]/g,''));
-    if (!isNaN(an) && !isNaN(bn)) return (an - bn) * sortDir;
-    return at.localeCompare(bt) * sortDir;
+    let aVal = getCellValue(a, col);
+    let bVal = getCellValue(b, col);
+
+    if (col === 3) {
+      const ao = SIZE_ORDER[aVal] !== undefined ? SIZE_ORDER[aVal] : 99;
+      const bo = SIZE_ORDER[bVal] !== undefined ? SIZE_ORDER[bVal] : 99;
+      return (ao - bo) * sortDir;
+    }
+
+    const aNum = parseFloat(aVal);
+    const bNum = parseFloat(bVal);
+    if (!isNaN(aNum) && !isNaN(bNum)) {
+      return (aNum - bNum) * sortDir;
+    }
+
+    return aVal.localeCompare(bVal) * sortDir;
   });
+
   rows.forEach(r => tbody.appendChild(r));
 }
 
-// Init count
-applyFilters();
-
-// Global tooltip
-const ttEl   = document.getElementById('tooltip');
-const ttName = document.getElementById('tip-name');
-const ttBody = document.getElementById('tip-body');
-
-document.addEventListener('mouseover', e => {
-  const tag = e.target.closest('[data-tip-name]');
-  if (!tag) return;
-  ttName.textContent = tag.dataset.tipName;
-  ttBody.textContent = tag.dataset.tipBody;
-  ttEl.style.display = 'block';
-  positionTip(e);
-});
-
-document.addEventListener('mousemove', e => {
-  if (ttEl.style.display === 'block') positionTip(e);
-});
-
-document.addEventListener('mouseout', e => {
-  if (!e.target.closest('[data-tip-name]')) return;
-  ttEl.style.display = 'none';
-});
-
-function positionTip(e) {
-  const pad = 12;
-  const tw = ttEl.offsetWidth;
-  const th = ttEl.offsetHeight;
-  let x = e.clientX + pad;
-  let y = e.clientY - th - pad;
-  // Keep within viewport
-  if (x + tw > window.innerWidth - pad) x = e.clientX - tw - pad;
-  if (y < pad) y = e.clientY + pad;
-  ttEl.style.left = x + 'px';
-  ttEl.style.top  = y + 'px';
+function getCellValue(row, col) {
+  const cells = row.querySelectorAll('td');
+  if (!cells[col]) return '';
+  return cells[col].textContent.trim();
 }
+
+function attachTagTooltips() {
+  const tooltip = document.getElementById('tooltip');
+  document.querySelectorAll('.tag[data-tip]').forEach(el => {
+    el.addEventListener('mouseenter', (e) => {
+      const tip = el.getAttribute('data-tip');
+      if (!tip) return;
+      tooltip.textContent = tip;
+      tooltip.classList.add('visible');
+      positionTooltip(e);
+    });
+    el.addEventListener('mousemove', positionTooltip);
+    el.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('visible');
+    });
+  });
+}
+
+function positionTooltip(e) {
+  const tooltip = document.getElementById('tooltip');
+  const x = e.clientX + 14;
+  const y = e.clientY - 10;
+  const tw = tooltip.offsetWidth;
+  const th = tooltip.offsetHeight;
+  const ww = window.innerWidth;
+  const wh = window.innerHeight;
+  tooltip.style.left = (x + tw > ww ? ww - tw - 8 : x) + 'px';
+  tooltip.style.top = (y + th > wh ? y - th - 10 : y) + 'px';
+}
+
+// MFR filter buttons
+document.getElementById('mfr-filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('#mfr-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  fMfr = btn.getAttribute('data-mfr');
+  applyFilters();
+});
+
+// Size filter buttons
+document.getElementById('size-filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('#size-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  fSz = btn.getAttribute('data-sz');
+  applyFilters();
+});
+
+// Type filter buttons
+document.getElementById('type-filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('#type-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  fType = btn.getAttribute('data-tp');
+  applyFilters();
+});
+
+// Search
+document.getElementById('search-box').addEventListener('input', (e) => {
+  fSearch = e.target.value;
+  applyFilters();
+});
+
+// Initial render
+document.addEventListener('DOMContentLoaded', () => {
+  buildTable(W);
+  // Set initial sort indicator
+  document.querySelectorAll('thead th')[0].classList.add('sort-asc');
+});
 </script>
 </body>
 </html>
