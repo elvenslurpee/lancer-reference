@@ -423,7 +423,30 @@
     <button class="col-btn on" onclick="toggleCol('col-mounts', this)">Mounts</button>
   </div>
 
-  <div class="table-wrap">
+  <!-- MOUNT LEGEND -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;padding:12px 16px;background:var(--panel2);border:1px solid var(--border);">
+    <span style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-right:4px;">Mount Types:</span>
+    <span class="mount-pip mp-flex"   title="Flex — can hold Aux, Main, or Heavy weapons">Flex</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Aux / Main / Heavy</span>
+    <span style="color:var(--border);margin:0 4px">│</span>
+    <span class="mount-pip mp-main"   title="Main — can hold Aux or Main weapons">Main</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Aux / Main</span>
+    <span style="color:var(--border);margin:0 4px">│</span>
+    <span class="mount-pip mp-heavy"  title="Heavy — can hold Aux, Main, or Heavy weapons">Heavy</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Aux / Main / Heavy</span>
+    <span style="color:var(--border);margin:0 4px">│</span>
+    <span class="mount-pip mp-aux"    title="Aux — can hold Aux weapons only">Aux</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Aux only</span>
+    <span style="color:var(--border);margin:0 4px">│</span>
+    <span class="mount-pip mp-mainaux" title="Main/Aux — one Main slot and one Aux slot on the same mount">Main/Aux</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Main + Aux together</span>
+    <span style="color:var(--border);margin:0 4px">│</span>
+    <span class="mount-pip mp-auxaux"  title="Aux/Aux — two Aux slots on the same mount">Aux/Aux</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Two Aux together</span>
+    <span style="color:var(--border);margin:0 4px">│</span>
+    <span class="mount-pip mp-integrated" title="Integrated — fixed built-in weapon, cannot be changed or replaced">⚙ Integrated</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin:0 2px">Fixed, cannot swap</span>
+  </div>
     <table id="frameTable">
       <thead>
         <tr>
