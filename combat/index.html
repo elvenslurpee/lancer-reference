@@ -706,6 +706,7 @@
     line-height: 1.5;
   }
   .qr-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .qr-table td.qr-tip { cursor: help; text-decoration: underline dotted rgba(0,212,255,0.4); }
   .qr-table td:first-child {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
@@ -799,6 +800,27 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
     margin-bottom: 32px;
+  }
+
+  /* FLOWCHARTS */
+  .flowchart-wrap {
+    margin: 24px 0 32px;
+    position: relative;
+  }
+  .flowchart-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    opacity: 0.7;
+  }
+  .flowchart-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
   }
 
   /* RESPONSIVE */
@@ -1261,7 +1283,104 @@
       </div>
     </div>
 
-    <div class="section-header">Reactor Meltdown</div>
+    <!-- OVERHEAT FLOWCHART -->
+    <div class="section-header">Overheat Decision Flowchart</div>
+    <div class="flowchart-wrap">
+      <svg viewBox="0 0 860 480" xmlns="http://www.w3.org/2000/svg" font-family="'Share Tech Mono', monospace">
+        <defs>
+          <marker id="arr-r" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4a6880"/></marker>
+          <marker id="arr-g" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#39ff14"/></marker>
+          <marker id="arr-y" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff8800"/></marker>
+          <marker id="arr-red" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff4444"/></marker>
+        </defs>
+
+        <!-- START: Exceed Heat Cap -->
+        <rect x="280" y="10" width="300" height="44" rx="4" fill="none" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="430" y="28" text-anchor="middle" fill="#ff4444" font-size="11" letter-spacing="2" font-weight="bold">EXCEED HEAT CAP</text>
+        <text x="430" y="44" text-anchor="middle" fill="#5a7a90" font-size="9" letter-spacing="1">Take 1 STRESS · Clear all heat · Carry over excess</text>
+
+        <!-- Arrow down to roll -->
+        <line x1="430" y1="54" x2="430" y2="84" stroke="#4a6880" stroke-width="1.5" marker-end="url(#arr-r)"/>
+
+        <!-- ROLL BOX -->
+        <rect x="300" y="86" width="260" height="40" rx="3" fill="#0e1520" stroke="#1e3348" stroke-width="1.5"/>
+        <text x="430" y="101" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">ROLL [STRESS MARKED] d6</text>
+        <text x="430" y="117" text-anchor="middle" fill="#5a7a90" font-size="9" letter-spacing="1">Choose the lowest result</text>
+
+        <!-- Arrow down to diamond -->
+        <line x1="430" y1="126" x2="430" y2="155" stroke="#4a6880" stroke-width="1.5" marker-end="url(#arr-r)"/>
+
+        <!-- DIAMOND: Roll value check -->
+        <polygon points="430,158 530,195 430,232 330,195" fill="#0a1118" stroke="#1e3348" stroke-width="1.5"/>
+        <text x="430" y="191" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">Lowest</text>
+        <text x="430" y="207" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">die result?</text>
+
+        <!-- Branch: 5-6 (left) -->
+        <line x1="330" y1="195" x2="110" y2="195" stroke="#39ff14" stroke-width="1.5" marker-end="url(#arr-g)"/>
+        <text x="220" y="187" text-anchor="middle" fill="#39ff14" font-size="10" letter-spacing="1">5–6</text>
+        <rect x="10" y="170" width="100" height="52" rx="3" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.35)" stroke-width="1.5"/>
+        <text x="60" y="190" text-anchor="middle" fill="#39ff14" font-size="9" letter-spacing="1" font-weight="bold">EMERGENCY</text>
+        <text x="60" y="204" text-anchor="middle" fill="#39ff14" font-size="9" letter-spacing="1" font-weight="bold">SHUNT</text>
+        <text x="60" y="218" text-anchor="middle" fill="#5a7a90" font-size="8" letter-spacing="1">IMPAIRED 1 turn</text>
+
+        <!-- Branch: 2-4 (right) -->
+        <line x1="530" y1="195" x2="750" y2="195" stroke="#ff8800" stroke-width="1.5" marker-end="url(#arr-y)"/>
+        <text x="640" y="187" text-anchor="middle" fill="#ff8800" font-size="10" letter-spacing="1">2–4</text>
+        <rect x="750" y="170" width="100" height="52" rx="3" fill="rgba(255,136,0,0.06)" stroke="rgba(255,136,0,0.4)" stroke-width="1.5"/>
+        <text x="800" y="190" text-anchor="middle" fill="#ff8800" font-size="9" letter-spacing="1" font-weight="bold">DESTABILIZED</text>
+        <text x="800" y="204" text-anchor="middle" fill="#ff8800" font-size="9" letter-spacing="1" font-weight="bold">POWER PLANT</text>
+        <text x="800" y="218" text-anchor="middle" fill="#5a7a90" font-size="8" letter-spacing="1">EXPOSED</text>
+
+        <!-- Branch: 1 (down) -->
+        <line x1="430" y1="232" x2="430" y2="262" stroke="#ff4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+        <text x="442" y="250" fill="#ff4444" font-size="10" letter-spacing="1">1</text>
+
+        <!-- DIAMOND: Stress remaining -->
+        <polygon points="430,265 530,302 430,339 330,302" fill="#0a1118" stroke="#1e3348" stroke-width="1.5"/>
+        <text x="430" y="298" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">STRESS</text>
+        <text x="430" y="314" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">remaining?</text>
+
+        <!-- 3+ branch left -->
+        <line x1="330" y1="302" x2="220" y2="302" stroke="#ff8800" stroke-width="1.5" marker-end="url(#arr-y)"/>
+        <text x="275" y="294" text-anchor="middle" fill="#ff8800" font-size="9" letter-spacing="1">3+ STRESS</text>
+        <rect x="130" y="278" width="90" height="48" rx="3" fill="rgba(255,136,0,0.06)" stroke="rgba(255,136,0,0.4)" stroke-width="1.5"/>
+        <text x="175" y="299" text-anchor="middle" fill="#ff8800" font-size="9" letter-spacing="1" font-weight="bold">EXPOSED</text>
+        <text x="175" y="313" text-anchor="middle" fill="#5a7a90" font-size="8" letter-spacing="1">until cleared</text>
+
+        <!-- 2 branch right -->
+        <line x1="530" y1="302" x2="620" y2="302" stroke="#ff4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+        <text x="575" y="294" text-anchor="middle" fill="#ff4444" font-size="9" letter-spacing="1">2 STRESS</text>
+        <!-- Diamond for hull check -->
+        <polygon points="680,302 740,325 680,348 620,325" fill="#0a1118" stroke="#ff4444" stroke-width="1"/>
+        <text x="680" y="321" text-anchor="middle" fill="#c8dce8" font-size="9">ENG</text>
+        <text x="680" y="335" text-anchor="middle" fill="#c8dce8" font-size="9">check?</text>
+        <!-- Pass -->
+        <line x1="680" y1="348" x2="680" y2="388" stroke="#39ff14" stroke-width="1" marker-end="url(#arr-g)"/>
+        <text x="692" y="372" fill="#39ff14" font-size="8">Pass</text>
+        <rect x="630" y="390" width="100" height="36" rx="3" fill="rgba(255,136,0,0.06)" stroke="rgba(255,136,0,0.4)" stroke-width="1"/>
+        <text x="680" y="406" text-anchor="middle" fill="#ff8800" font-size="8" letter-spacing="1" font-weight="bold">EXPOSED</text>
+        <text x="680" y="420" text-anchor="middle" fill="#5a7a90" font-size="7" letter-spacing="1">until cleared</text>
+        <!-- Fail -->
+        <line x1="740" y1="325" x2="800" y2="325" stroke="#ff4444" stroke-width="1" marker-end="url(#arr-red)"/>
+        <text x="770" y="318" text-anchor="middle" fill="#ff4444" font-size="8">Fail</text>
+        <rect x="800" y="305" width="50" height="40" rx="3" fill="rgba(255,68,68,0.08)" stroke="rgba(255,68,68,0.5)" stroke-width="1"/>
+        <text x="825" y="322" text-anchor="middle" fill="#ff4444" font-size="8" letter-spacing="1" font-weight="bold">1d6</text>
+        <text x="825" y="336" text-anchor="middle" fill="#ff4444" font-size="7" letter-spacing="1">MELTDOWN</text>
+
+        <!-- 1 STRESS branch down -->
+        <line x1="430" y1="339" x2="430" y2="388" stroke="#ff4444" stroke-width="2" marker-end="url(#arr-red)"/>
+        <text x="442" y="368" fill="#ff4444" font-size="9" letter-spacing="1">1 STRESS</text>
+        <rect x="340" y="390" width="180" height="40" rx="3" fill="rgba(255,68,68,0.1)" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="430" y="406" text-anchor="middle" fill="#ff4444" font-size="10" letter-spacing="1" font-weight="bold">REACTOR MELTDOWN</text>
+        <text x="430" y="422" text-anchor="middle" fill="#5a7a90" font-size="8" letter-spacing="1">end of next turn</text>
+
+        <!-- Multiple 1s -->
+        <text x="430" y="458" text-anchor="middle" fill="#ff4444" font-size="9" letter-spacing="2">MULTIPLE 1s → IRREVERSIBLE MELTDOWN (end of next turn, no save)</text>
+
+        <!-- Legend labels for diamonds -->
+        <text x="110" y="460" fill="#1e3348" font-size="9">◆ = decision point</text>
+      </svg>
+    </div>
     <div class="action-card full-card" style="max-width:600px;margin-bottom:32px;">
       <div class="card-header"><div class="card-name" style="color:var(--heat)">Reactor Meltdown</div></div>
       <div class="card-body">
@@ -1393,7 +1512,152 @@
       </table>
     </div>
 
-    <div class="section-header">Repair Options</div>
+    <!-- STRUCTURE FLOWCHART -->
+    <div class="section-header">Structure Damage Decision Flowchart</div>
+    <div class="flowchart-wrap">
+      <svg viewBox="0 0 1100 560" xmlns="http://www.w3.org/2000/svg" font-family="'Share Tech Mono', monospace">
+        <defs>
+          <marker id="sarr-r"   markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4a6880"/></marker>
+          <marker id="sarr-g"   markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#39ff14"/></marker>
+          <marker id="sarr-y"   markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff8800"/></marker>
+          <marker id="sarr-red" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff4444"/></marker>
+        </defs>
+
+        <!-- ─────────────────────────────────────────────────────────────
+             COLUMN GUIDE (for reference):
+               Left outcome  (5-6 / 3+)  : cx ≈  90
+               Central spine              : cx = 380
+               System Trauma column       : cx = 780
+               HULL check column          : cx = 620  (below spine, right of center destroyed)
+               Far-right destroyed        : cx = 900
+        ──────────────────────────────────────────────────────────────── -->
+
+        <!-- ── 1. START BOX ── -->
+        <rect x="230" y="10" width="300" height="44" rx="4" fill="none" stroke="#4499ff" stroke-width="1.5"/>
+        <text x="380" y="28" text-anchor="middle" fill="#4499ff" font-size="11" letter-spacing="2" font-weight="bold">REACH 0 HP</text>
+        <text x="380" y="46" text-anchor="middle" fill="#5a7a90" font-size="9" letter-spacing="1">Take 1 STRUCTURE · Reset to full HP · Carry over excess damage</text>
+
+        <!-- ── 2. Arrow down to 0-STRUCT diamond ── -->
+        <line x1="380" y1="54" x2="380" y2="82" stroke="#4a6880" stroke-width="1.5" marker-end="url(#sarr-r)"/>
+
+        <!-- ── 3. DIAMOND: At 0 STRUCTURE? (cy=105) ── -->
+        <polygon points="380,85 460,108 380,131 300,108" fill="#0a1118" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="380" y="104" text-anchor="middle" fill="#c8dce8" font-size="10">0 STRUCT?</text>
+        <text x="380" y="119" text-anchor="middle" fill="#5a7a90" font-size="9">(mech destroyed)</text>
+
+        <!-- Yes → far right DESTROYED (clear of everything) cx=640 -->
+        <line x1="460" y1="108" x2="590" y2="108" stroke="#ff4444" stroke-width="1.5" marker-end="url(#sarr-red)"/>
+        <text x="525" y="100" text-anchor="middle" fill="#ff4444" font-size="9" letter-spacing="1">Yes</text>
+        <rect x="590" y="88" width="130" height="40" rx="3" fill="rgba(255,68,68,0.1)" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="655" y="105" text-anchor="middle" fill="#ff4444" font-size="10" font-weight="bold">DESTROYED</text>
+        <text x="655" y="120" text-anchor="middle" fill="#5a7a90" font-size="8">Pilot can eject</text>
+
+        <!-- No → down -->
+        <line x1="380" y1="131" x2="380" y2="158" stroke="#4a6880" stroke-width="1.5" marker-end="url(#sarr-r)"/>
+        <text x="392" y="149" fill="#39ff14" font-size="9">No</text>
+
+        <!-- ── 4. ROLL BOX ── -->
+        <rect x="240" y="160" width="280" height="40" rx="3" fill="#0e1520" stroke="#1e3348" stroke-width="1.5"/>
+        <text x="380" y="176" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">ROLL [STRUCTURE MARKED] d6</text>
+        <text x="380" y="192" text-anchor="middle" fill="#5a7a90" font-size="9" letter-spacing="1">Choose the lowest result</text>
+
+        <!-- Arrow down -->
+        <line x1="380" y1="200" x2="380" y2="226" stroke="#4a6880" stroke-width="1.5" marker-end="url(#sarr-r)"/>
+
+        <!-- ── 5. DIAMOND: Lowest die result? (cy=258) ── -->
+        <polygon points="380,229 490,262 380,295 270,262" fill="#0a1118" stroke="#1e3348" stroke-width="1.5"/>
+        <text x="380" y="257" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">Lowest</text>
+        <text x="380" y="273" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">die result?</text>
+
+        <!-- ── 6a. 5-6 → LEFT (cx=90) ── -->
+        <line x1="270" y1="262" x2="175" y2="262" stroke="#39ff14" stroke-width="1.5" marker-end="url(#sarr-g)"/>
+        <text x="222" y="254" text-anchor="middle" fill="#39ff14" font-size="10">5–6</text>
+        <rect x="14" y="242" width="161" height="44" rx="3" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.35)" stroke-width="1.5"/>
+        <text x="95" y="260" text-anchor="middle" fill="#39ff14" font-size="9" font-weight="bold">GLANCING BLOW</text>
+        <text x="95" y="274" text-anchor="middle" fill="#5a7a90" font-size="8">IMPAIRED until end</text>
+        <text x="95" y="286" text-anchor="middle" fill="#5a7a90" font-size="8">of next turn</text>
+
+        <!-- ── 6b. 2-4 → RIGHT column (cx=780) ── -->
+        <line x1="490" y1="262" x2="640" y2="262" stroke="#ff8800" stroke-width="1.5" marker-end="url(#sarr-y)"/>
+        <text x="565" y="254" text-anchor="middle" fill="#ff8800" font-size="10">2–4</text>
+
+        <!-- System Trauma header box cx=780 -->
+        <rect x="680" y="242" width="200" height="40" rx="3" fill="#0e1520" stroke="#ff8800" stroke-width="1.5"/>
+        <text x="780" y="258" text-anchor="middle" fill="#ff8800" font-size="10" font-weight="bold">SYSTEM TRAUMA</text>
+        <text x="780" y="273" text-anchor="middle" fill="#5a7a90" font-size="8">Roll 1d6 for type</text>
+
+        <!-- Arrow down to 1d6 result diamond cy=320 -->
+        <line x1="780" y1="282" x2="780" y2="308" stroke="#ff8800" stroke-width="1" marker-end="url(#sarr-y)"/>
+        <polygon points="780,311 850,334 780,357 710,334" fill="#0a1118" stroke="#ff8800" stroke-width="1"/>
+        <text x="780" y="330" text-anchor="middle" fill="#c8dce8" font-size="9">1d6</text>
+        <text x="780" y="344" text-anchor="middle" fill="#c8dce8" font-size="9">result?</text>
+
+        <!-- 1-3: All weapons on mount destroyed — cx=700 y=400 -->
+        <line x1="780" y1="357" x2="780" y2="386" stroke="#ff8800" stroke-width="1" marker-end="url(#sarr-y)"/>
+        <text x="792" y="375" fill="#ff8800" font-size="8">1–3</text>
+        <rect x="700" y="388" width="160" height="44" rx="3" fill="rgba(255,136,0,0.06)" stroke="rgba(255,136,0,0.4)" stroke-width="1.5"/>
+        <text x="780" y="406" text-anchor="middle" fill="#ff8800" font-size="9" font-weight="bold">ALL WEAPONS</text>
+        <text x="780" y="420" text-anchor="middle" fill="#5a7a90" font-size="8">on 1 mount destroyed</text>
+
+        <!-- 4-6: One system — far right cx=990, same row as 1d6 diamond -->
+        <line x1="850" y1="334" x2="920" y2="334" stroke="#ff8800" stroke-width="1" marker-end="url(#sarr-y)"/>
+        <text x="885" y="326" text-anchor="middle" fill="#ff8800" font-size="8">4–6</text>
+        <rect x="920" y="314" width="160" height="44" rx="3" fill="rgba(255,136,0,0.06)" stroke="rgba(255,136,0,0.4)" stroke-width="1.5"/>
+        <text x="1000" y="332" text-anchor="middle" fill="#ff8800" font-size="9" font-weight="bold">1 SYSTEM</text>
+        <text x="1000" y="348" text-anchor="middle" fill="#5a7a90" font-size="8">destroyed</text>
+
+        <!-- ── 6c. 1 → DOWN to Structure-remaining diamond ── -->
+        <line x1="380" y1="295" x2="380" y2="322" stroke="#ff4444" stroke-width="1.5" marker-end="url(#sarr-red)"/>
+        <text x="392" y="313" fill="#ff4444" font-size="10">1</text>
+
+        <!-- ── 7. DIAMOND: Structure remaining? (cy=355) ── -->
+        <polygon points="380,325 480,358 380,391 280,358" fill="#0a1118" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="380" y="353" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">STRUCTURE</text>
+        <text x="380" y="369" text-anchor="middle" fill="#c8dce8" font-size="10" letter-spacing="1">remaining?</text>
+
+        <!-- 3+ → left STUNNED cx=140 -->
+        <line x1="280" y1="358" x2="200" y2="358" stroke="#ff8800" stroke-width="1.5" marker-end="url(#sarr-y)"/>
+        <text x="240" y="350" text-anchor="middle" fill="#ff8800" font-size="9">3+ STRUCT</text>
+        <rect x="30" y="338" width="170" height="44" rx="3" fill="rgba(255,215,0,0.06)" stroke="rgba(255,215,0,0.35)" stroke-width="1.5"/>
+        <text x="115" y="358" text-anchor="middle" fill="#ffd700" font-size="9" font-weight="bold">STUNNED</text>
+        <text x="115" y="372" text-anchor="middle" fill="#5a7a90" font-size="8">until end of next turn</text>
+
+        <!-- 1 STRUCT → down to DESTROYED cx=380 y=490 -->
+        <line x1="380" y1="391" x2="380" y2="442" stroke="#ff4444" stroke-width="2" marker-end="url(#sarr-red)"/>
+        <text x="392" y="422" fill="#ff4444" font-size="9" letter-spacing="1">1 STRUCT</text>
+        <rect x="270" y="444" width="220" height="40" rx="3" fill="rgba(255,68,68,0.1)" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="380" y="461" text-anchor="middle" fill="#ff4444" font-size="10" font-weight="bold">DESTROYED</text>
+        <text x="380" y="476" text-anchor="middle" fill="#5a7a90" font-size="8">pilot can eject normally</text>
+
+        <!-- 2 STRUCT → elbow right then down to HULL check cx=580 y=445 -->
+        <!-- Route: right from diamond (480,358) → (560,358) → down to (560,435) -->
+        <line x1="480" y1="358" x2="560" y2="358" stroke="#ff4444" stroke-width="1.5"/>
+        <line x1="560" y1="358" x2="560" y2="432" stroke="#ff4444" stroke-width="1.5" marker-end="url(#sarr-red)"/>
+        <text x="520" y="350" text-anchor="middle" fill="#ff4444" font-size="9">2 STRUCT</text>
+
+        <!-- ── 8. DIAMOND: HULL check cx=560 cy=455 ── -->
+        <polygon points="560,435 640,458 560,481 480,458" fill="#0a1118" stroke="#ff4444" stroke-width="1"/>
+        <text x="560" y="454" text-anchor="middle" fill="#c8dce8" font-size="9">HULL</text>
+        <text x="560" y="469" text-anchor="middle" fill="#c8dce8" font-size="9">check?</text>
+
+        <!-- Pass → down → STUNNED cx=560 y=520 -->
+        <line x1="560" y1="481" x2="560" y2="508" stroke="#39ff14" stroke-width="1" marker-end="url(#sarr-g)"/>
+        <text x="572" y="499" fill="#39ff14" font-size="8">Pass</text>
+        <rect x="480" y="510" width="160" height="40" rx="3" fill="rgba(255,215,0,0.06)" stroke="rgba(255,215,0,0.35)" stroke-width="1"/>
+        <text x="560" y="528" text-anchor="middle" fill="#ffd700" font-size="9" font-weight="bold">STUNNED</text>
+        <text x="560" y="542" text-anchor="middle" fill="#5a7a90" font-size="7">until end of next turn</text>
+
+        <!-- Fail → right → DESTROYED cx=810 y=458 -->
+        <line x1="640" y1="458" x2="730" y2="458" stroke="#ff4444" stroke-width="1" marker-end="url(#sarr-red)"/>
+        <text x="685" y="450" text-anchor="middle" fill="#ff4444" font-size="8">Fail</text>
+        <rect x="730" y="438" width="150" height="40" rx="3" fill="rgba(255,68,68,0.1)" stroke="#ff4444" stroke-width="1.5"/>
+        <text x="805" y="455" text-anchor="middle" fill="#ff4444" font-size="9" font-weight="bold">DESTROYED</text>
+        <text x="805" y="470" text-anchor="middle" fill="#5a7a90" font-size="7">pilot can eject</text>
+
+        <!-- Multiple 1s note -->
+        <text x="10" y="548" fill="#ff4444" font-size="9" letter-spacing="2">MULTIPLE 1s → CRUSHING HIT: Mech destroyed outright, no further roll</text>
+      </svg>
+    </div>
     <div class="repair-grid">
       <div class="repair-card">
         <h3>In Combat — Stabilize</h3>
@@ -1442,38 +1706,38 @@
 
   <!-- TAB: QUICK REFERENCE -->
   <div id="tab-quickref" class="section">
-    <div class="section-header">All Actions at a Glance</div>
+    <div class="section-header">All Actions at a Glance <span style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);font-weight:normal">— hover action name for full rules</span></div>
     <table class="qr-table">
       <tr>
         <th>Action</th>
         <th>Type</th>
         <th>Summary</th>
       </tr>
-      <tr><td>Standard Move</td><td><span class="badge badge-free">Free</span></td><td>Move up to SPEED. Can split with other actions.</td></tr>
-      <tr><td>Skirmish</td><td><span class="badge badge-quick">Quick</span></td><td>Attack with 1 weapon (+1 AUX from same mount). No SUPERHEAVY.</td></tr>
-      <tr><td>Boost</td><td><span class="badge badge-quick">Quick</span></td><td>Extra move = SPEED.</td></tr>
-      <tr><td>Ram</td><td><span class="badge badge-quick">Quick</span></td><td>Melee attack → PRONE + optional 1-space pushback.</td></tr>
-      <tr><td>Grapple</td><td><span class="badge badge-quick">Quick</span></td><td>Melee attack → both GRAPPLED. Larger may drag.</td></tr>
-      <tr><td>Quick Tech</td><td><span class="badge badge-quick">Quick</span></td><td>Bolster / Scan / Lock On / Invade. Different option each use.</td></tr>
-      <tr><td>Hide</td><td><span class="badge badge-quick">Quick</span></td><td>Gain HIDDEN. Requires cover/LoS break/INVISIBLE and not ENGAGED.</td></tr>
-      <tr><td>Search</td><td><span class="badge badge-quick">Quick</span></td><td>Contested SYSTEMS vs AGILITY to find HIDDEN target.</td></tr>
-      <tr><td>Reload</td><td><span class="badge badge-quick">Quick</span></td><td>Reload all LOADING weapons.</td></tr>
-      <tr><td>Prepare</td><td><span class="badge badge-quick">Quick</span></td><td>Hold a Quick Action for a trigger. No other actions/reactions until triggered.</td></tr>
-      <tr><td>Shut Down</td><td><span class="badge badge-quick">Quick</span></td><td>Power off. Clear all heat + EXPOSED. STUNNED indefinitely. Tech immunity.</td></tr>
-      <tr><td>Eject</td><td><span class="badge badge-quick">Quick</span></td><td>Fly 6 spaces. Mech IMPAIRED. Single use per mission.</td></tr>
-      <tr><td>Self-Destruct</td><td><span class="badge badge-quick">Quick</span></td><td>Countdown to BURST 2 4d6 explosion. Pilot dies.</td></tr>
-      <tr><td>Barrage</td><td><span class="badge badge-full">Full</span></td><td>Attack with 2 weapons (or 1 SUPERHEAVY) + AUX from each mount.</td></tr>
-      <tr><td>Stabilize</td><td><span class="badge badge-full">Full</span></td><td>Cool (all heat + EXPOSED) OR Repair (1 REPAIR → full HP) + secondary option.</td></tr>
-      <tr><td>Full Tech</td><td><span class="badge badge-full">Full</span></td><td>Two Quick Tech options (can repeat) or one Full Tech system.</td></tr>
-      <tr><td>Improvised Attack</td><td><span class="badge badge-full">Full</span></td><td>Melee attack → 1d6 kinetic damage. Works while JAMMED.</td></tr>
-      <tr><td>Disengage</td><td><span class="badge badge-full">Full</span></td><td>Until end of turn, ignore engagement, movement doesn't trigger reactions.</td></tr>
-      <tr><td>Skill Check</td><td><span class="badge badge-full">Full</span></td><td>GM-defined action with clear goal and roll.</td></tr>
-      <tr><td>Boot Up</td><td><span class="badge badge-full">Full</span></td><td>Power on SHUT DOWN mech.</td></tr>
-      <tr><td>Activate</td><td><span class="badge badge-either">Quick/Full</span></td><td>Use tagged system. Once per system per turn (unless free action).</td></tr>
-      <tr><td>Mount/Dismount</td><td><span class="badge badge-either">Quick/Full</span></td><td>Full to mount/dismount normally. Quick to EJECT (6 spaces, IMPAIRED).</td></tr>
-      <tr><td>Overcharge</td><td><span class="badge badge-free">Free/Once/Turn</span></td><td>Extra Quick Action. Heat: 1 / 1d3 / 1d6 / 1d6+4. Resets on Full Repair.</td></tr>
-      <tr><td>Brace</td><td><span class="badge badge-reaction">Reaction 1/round</span></td><td>When hit: RESISTANCE to that attack. Cost: limited next turn actions.</td></tr>
-      <tr><td>Overwatch</td><td><span class="badge badge-reaction">Reaction 1/round</span></td><td>When hostile moves in THREAT: Skirmish them before they move.</td></tr>
+      <tr><td class="qr-tip" data-tip="Standard Move" data-tip-body="Move up to your SPEED in spaces. Free every turn — does not cost an action. You can split your movement before and after any actions on your turn. Non-movement actions must fully resolve before you continue moving.">Standard Move</td><td><span class="badge badge-free">Free</span></td><td>Move up to SPEED. Can split with other actions.</td></tr>
+      <tr><td class="qr-tip" data-tip="Skirmish" data-tip-body="Attack with one weapon. Choose a valid target within RANGE (melee uses THREAT). You may also attack with an AUXILIARY weapon on the same mount for no bonus damage. SUPERHEAVY weapons cannot be used in a Skirmish.">Skirmish</td><td><span class="badge badge-quick">Quick</span></td><td>Attack with 1 weapon (+1 AUX from same mount). No SUPERHEAVY.</td></tr>
+      <tr><td class="qr-tip" data-tip="Boost" data-tip-body="Move an additional number of spaces equal to your SPEED. This is separate from your standard move and can be used in addition to it on the same turn.">Boost</td><td><span class="badge badge-quick">Quick</span></td><td>Extra move = SPEED.</td></tr>
+      <tr><td class="qr-tip" data-tip="Ram" data-tip-body="Make a melee attack against an adjacent character of equal SIZE or smaller. On a success: target is knocked PRONE and you may push them 1 space directly away from you.">Ram</td><td><span class="badge badge-quick">Quick</span></td><td>Melee attack → PRONE + optional 1-space pushback.</td></tr>
+      <tr><td class="qr-tip" data-tip="Grapple" data-tip-body="Make a melee attack against an adjacent character of equal SIZE or smaller. On a success: both you and the target become GRAPPLED — neither can move normally. If you are larger, you may drag the target when you move. The target may attempt to break free each turn.">Grapple</td><td><span class="badge badge-quick">Quick</span></td><td>Melee attack → both GRAPPLED. Larger may drag.</td></tr>
+      <tr><td class="qr-tip" data-tip="Quick Tech" data-tip-body="Electronic warfare. Choose one option per use: Bolster, Scan, Lock On, or Invade. Unlike other quick actions, Quick Tech can be taken more than once per turn — but each use must choose a different option (unless granted as a free action).">Quick Tech</td><td><span class="badge badge-quick">Quick</span></td><td>Bolster / Scan / Lock On / Invade. Different option each use.</td></tr>
+      <tr><td class="qr-tip" data-tip="Hide" data-tip-body="Gain the HIDDEN status. Requires: not ENGAGED + outside enemy line of sight, in sufficient cover, or INVISIBLE. You lose HIDDEN if you attack, force saves, take reactions, Boost, or lose cover. While HIDDEN, you cannot be targeted by attacks or hostile actions.">Hide</td><td><span class="badge badge-quick">Quick</span></td><td>Gain HIDDEN. Requires cover/LoS break/INVISIBLE and not ENGAGED.</td></tr>
+      <tr><td class="qr-tip" data-tip="Search" data-tip-body="Attempt to find a HIDDEN target within SENSORS. Make a contested SYSTEMS check vs the target's AGILITY. On success, the target loses HIDDEN and can be located by any character. As a pilot on foot, use a contested skill check within RANGE 5.">Search</td><td><span class="badge badge-quick">Quick</span></td><td>Contested SYSTEMS vs AGILITY to find HIDDEN target.</td></tr>
+      <tr><td class="qr-tip" data-tip="Reload" data-tip-body="Reload all weapons on your mech with the LOADING tag, allowing them to be fired again. Some systems can also trigger a reload as part of their effects.">Reload</td><td><span class="badge badge-quick">Quick</span></td><td>Reload all LOADING weapons.</td></tr>
+      <tr><td class="qr-tip" data-tip="Prepare" data-tip-body="Hold a Quick Action for a specified trigger ('When X happens, I do Y'). The trigger must be a visible action by another character. Until your next turn, you can take that action as a Reaction when triggered. You cannot take other actions or reactions while waiting. If not triggered, the preparation is lost.">Prepare</td><td><span class="badge badge-quick">Quick</span></td><td>Hold a Quick Action for a trigger. No other actions/reactions until triggered.</td></tr>
+      <tr><td class="qr-tip" data-tip="Shut Down" data-tip-body="Power off your mech immediately. Clears ALL heat and EXPOSED status. All tech conditions (Lock On, etc.) end. Gains IMMUNITY to tech attacks. Mech is STUNNED indefinitely — it cannot act until Boot Up. Only removed by the Boot Up Full Action.">Shut Down</td><td><span class="badge badge-quick">Quick</span></td><td>Power off. Clear all heat + EXPOSED. STUNNED indefinitely. Tech immunity.</td></tr>
+      <tr><td class="qr-tip" data-tip="Eject" data-tip-body="Emergency exit from your mech. You fly up to 6 spaces in any direction as a free action. Your mech is left IMPAIRED (all attacks, saves, and checks at +1 difficulty) until a Full Repair. Single use — you cannot eject again until Full Repair.">Eject</td><td><span class="badge badge-quick">Quick</span></td><td>Fly 6 spaces. Mech IMPAIRED. Single use per mission.</td></tr>
+      <tr><td class="qr-tip" data-tip="Self-Destruct" data-tip-body="Initiate reactor meltdown. Countdown begins — at the end of your next turn (or within 2 turns, your choice), your mech explodes in a BURST 2 area dealing 4d6 explosive damage. AGILITY save halves damage. The pilot inside is killed. The mech is annihilated.">Self-Destruct</td><td><span class="badge badge-quick">Quick</span></td><td>Countdown to BURST 2 4d6 explosion. Pilot dies.</td></tr>
+      <tr><td class="qr-tip" data-tip="Barrage" data-tip-body="Attack with two weapons, or one SUPERHEAVY weapon. You may choose the same or different targets within range. Each mount that fired may also fire an AUXILIARY weapon (no bonus damage). SUPERHEAVY weapons can ONLY be used in a Barrage, not a Skirmish.">Barrage</td><td><span class="badge badge-full">Full</span></td><td>Attack with 2 weapons (or 1 SUPERHEAVY) + AUX from each mount.</td></tr>
+      <tr><td class="qr-tip" data-tip="Stabilize" data-tip-body="Emergency protocols. Choose ONE primary option: (1) Cool — clear all heat and EXPOSED status, or (2) Repair — spend 1 REPAIR to restore all HP. Then choose ONE secondary option: reload all LOADING weapons, clear all burn, clear one condition (not self-caused), or clear an allied character's condition.">Stabilize</td><td><span class="badge badge-full">Full</span></td><td>Cool (all heat + EXPOSED) OR Repair (1 REPAIR → full HP) + secondary option.</td></tr>
+      <tr><td class="qr-tip" data-tip="Full Tech" data-tip-body="Perform two Quick Tech options (can repeat the same option), OR activate a system that requires Full Tech. This is the primary way to use powerful electronic warfare systems that exceed what Quick Tech allows.">Full Tech</td><td><span class="badge badge-full">Full</span></td><td>Two Quick Tech options (can repeat) or one Full Tech system.</td></tr>
+      <tr><td class="qr-tip" data-tip="Improvised Attack" data-tip-body="Attack an adjacent target with a fist, rifle butt, or improvised weapon. On a hit: deals 1d6 kinetic damage. Works even while JAMMED, making it the only attack option available when jammed.">Improvised Attack</td><td><span class="badge badge-full">Full</span></td><td>Melee attack → 1d6 kinetic damage. Works while JAMMED.</td></tr>
+      <tr><td class="qr-tip" data-tip="Disengage" data-tip-body="Until the end of your current turn, you ignore ENGAGEMENT and your movement does not trigger reactions (such as Overwatch). Useful for safely repositioning out of melee range without being struck as you leave.">Disengage</td><td><span class="badge badge-full">Full</span></td><td>Until end of turn, ignore engagement, movement doesn't trigger reactions.</td></tr>
+      <tr><td class="qr-tip" data-tip="Skill Check" data-tip-body="Undertake a complex activity outside of standard combat actions — forcing a locked door, jumping a gap, lifting debris, etc. The parameters, difficulty, and outcomes are determined by the GM based on the situation.">Skill Check</td><td><span class="badge badge-full">Full</span></td><td>GM-defined action with clear goal and roll.</td></tr>
+      <tr><td class="qr-tip" data-tip="Boot Up" data-tip-body="Power on a SHUT DOWN mech. The pilot must be inside. Removes the SHUT DOWN status and all associated effects (STUNNED, tech immunity, etc.), allowing the mech to act normally again.">Boot Up</td><td><span class="badge badge-full">Full</span></td><td>Power on SHUT DOWN mech.</td></tr>
+      <tr><td class="qr-tip" data-tip="Activate" data-tip-body="Use a system or piece of gear tagged QUICK ACTION or FULL ACTION. A system may be activated multiple times per turn, but not the same system more than once unless it is granted as a free action by another effect.">Activate</td><td><span class="badge badge-either">Quick/Full</span></td><td>Use tagged system. Once per system per turn (unless free action).</td></tr>
+      <tr><td class="qr-tip" data-tip="Mount / Dismount" data-tip-body="Full Action: Enter or exit a mech you are adjacent to. Quick Action (Eject only): fly up to 6 spaces in any direction as an emergency exit — the mech is left IMPAIRED and cannot be ejected from again until Full Repair.">Mount/Dismount</td><td><span class="badge badge-either">Quick/Full</span></td><td>Full to mount/dismount normally. Quick to EJECT (6 spaces, IMPAIRED).</td></tr>
+      <tr><td class="qr-tip" data-tip="Overcharge" data-tip-body="Once per turn as a Free Action, push your reactor past safe limits to gain one extra Quick Action. Heat cost escalates with each use per mission: 1st use = 1 heat, 2nd = 1d3, 3rd = 1d6, 4th+ = 1d6+4. The counter resets only on Full Repair.">Overcharge</td><td><span class="badge badge-free">Free/Once/Turn</span></td><td>Extra Quick Action. Heat: 1 / 1d3 / 1d6 / 1d6+4. Resets on Full Repair.</td></tr>
+      <tr><td class="qr-tip" data-tip="Brace" data-tip-body="Trigger: You are hit by an attack and damage is rolled. Effect: Gain RESISTANCE to all damage, burn, and heat from that attack (halved after reductions). Cost: Until end of your next turn, you cannot take reactions. On that turn: only 1 Quick Action, no Overcharge, no standard move, no Full Actions, no Free Actions.">Brace</td><td><span class="badge badge-reaction">Reaction 1/round</span></td><td>When hit: RESISTANCE to that attack. Cost: limited next turn actions.</td></tr>
+      <tr><td class="qr-tip" data-tip="Overwatch" data-tip-body="Trigger: A hostile character starts any voluntary movement (including Boost) inside the THREAT range of one of your weapons. Effect: Immediately Skirmish against that character as a reaction, resolving before they move. All weapons have THREAT 1 by default unless specified otherwise.">Overwatch</td><td><span class="badge badge-reaction">Reaction 1/round</span></td><td>When hostile moves in THREAT: Skirmish them before they move.</td></tr>
     </table>
 
     <div class="section-header">Heat at a Glance</div>
@@ -1498,6 +1762,12 @@
 
 </div>
 
+<!-- Global tooltip -->
+<div id="qr-tooltip" style="display:none;position:fixed;background:#0a1520;border:1px solid #1e3348;box-shadow:0 6px 24px rgba(0,0,0,0.7);padding:12px 14px;width:280px;z-index:9000;pointer-events:none;border-radius:2px;">
+  <span id="qr-tip-name" style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#eaf4ff;margin-bottom:7px;display:block;white-space:normal;"></span>
+  <span id="qr-tip-body" style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:300;color:#4a6880;line-height:1.7;text-transform:none;letter-spacing:0;white-space:normal;"></span>
+</div>
+
 <script>
   function showTab(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1505,6 +1775,35 @@
     document.getElementById('tab-' + id).classList.add('active');
     event.target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // QR table tooltips
+  const qrTip  = document.getElementById('qr-tooltip');
+  const qrName = document.getElementById('qr-tip-name');
+  const qrBody = document.getElementById('qr-tip-body');
+
+  document.addEventListener('mouseover', e => {
+    const td = e.target.closest('.qr-tip');
+    if (!td) return;
+    qrName.textContent = td.dataset.tip;
+    qrBody.textContent = td.dataset.tipBody;
+    qrTip.style.display = 'block';
+    posQR(e);
+  });
+  document.addEventListener('mousemove', e => {
+    if (qrTip.style.display === 'block' && e.target.closest('.qr-tip')) posQR(e);
+    else if (!e.target.closest('.qr-tip')) qrTip.style.display = 'none';
+  });
+  document.addEventListener('mouseout', e => {
+    if (!e.relatedTarget || !e.relatedTarget.closest('.qr-tip')) qrTip.style.display = 'none';
+  });
+  function posQR(e) {
+    const pad = 14, tw = qrTip.offsetWidth, th = qrTip.offsetHeight;
+    let x = e.clientX + pad, y = e.clientY - th - pad;
+    if (x + tw > window.innerWidth - pad) x = e.clientX - tw - pad;
+    if (y < pad) y = e.clientY + pad;
+    qrTip.style.left = x + 'px';
+    qrTip.style.top  = y + 'px';
   }
 </script>
 </body>
