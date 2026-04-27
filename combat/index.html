@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Combat Systems Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a0f;
+    --panel: #0b1118;
+    --panel2: #0e1520;
+    --border: #1a2d3f;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #39ff14;
+    --heat: #ff4444;
+    --heat2: #ff8800;
+    --stress: #cc00ff;
+    --gold: #ffd700;
+    --text: #c8dce8;
+    --text-dim: #5a7a90;
+    --quick: #00d4ff;
+    --full: #ff6b35;
+    --free: #39ff14;
+    --reaction: #cc00ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCANLINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,212,255,0.015) 2px,
+      rgba(0,212,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .grid-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 30px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 200px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .logo-mark {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, #0066aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+  }
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+  .header-stat {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: auto;
+    text-align: right;
+  }
+  .header-stat span { color: var(--accent); }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+  }
+  .tab-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .tab-btn.active {
+    background: var(--panel);
+    color: var(--accent);
+    border-color: var(--accent);
+    border-bottom-color: var(--panel);
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ACTION BADGE */
+  .badge {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    border: 1px solid currentColor;
+    font-weight: bold;
+  }
+  .badge-quick { color: var(--quick); border-color: var(--quick); background: rgba(0,212,255,0.08); }
+  .badge-full { color: var(--full); border-color: var(--full); background: rgba(255,107,53,0.08); }
+  .badge-free { color: var(--free); border-color: var(--free); background: rgba(57,255,20,0.08); }
+  .badge-reaction { color: var(--reaction); border-color: var(--reaction); background: rgba(204,0,255,0.08); }
+  .badge-either { color: var(--gold); border-color: var(--gold); background: rgba(255,215,0,0.08); }
+
+  /* TURN FLOW DIAGRAM */
+  .turn-flow {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 30px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .turn-flow::before {
+    content: 'TURN STRUCTURE';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    background: var(--panel);
+    padding: 0 8px;
+  }
+  .flow-boxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+    align-items: stretch;
+  }
+  .flow-box {
+    border: 1px solid var(--border);
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .flow-box:hover { border-color: var(--accent); background: rgba(0,212,255,0.04); }
+  .flow-box.move-box { border-color: rgba(57,255,20,0.3); }
+  .flow-box.action-box { border-color: rgba(0,212,255,0.3); }
+  .flow-box.overcharge-box { border-color: rgba(255,68,68,0.3); }
+  .flow-box.free-box { border-color: rgba(57,255,20,0.2); }
+  .flow-box .box-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .flow-box .box-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .flow-box .box-sub strong { color: var(--text); }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    font-size: 18px;
+  }
+  .plus-sign {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 24px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  /* ACTION GRID */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .action-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .action-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .action-card.quick-card { border-left: 3px solid var(--quick); }
+  .action-card.full-card { border-left: 3px solid var(--full); }
+  .action-card.free-card { border-left: 3px solid var(--free); }
+  .action-card.reaction-card { border-left: 3px solid var(--reaction); }
+  .action-card.either-card { border-left: 3px solid var(--gold); }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .card-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .card-body { padding: 14px 16px; font-size: 13px; line-height: 1.7; color: var(--text-dim); }
+  .card-body strong { color: var(--text); }
+  .card-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .card-heat {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--heat);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* SECTION HEADERS */
+  .section-header {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 60px; height: 1px;
+    background: var(--accent);
+  }
+
+  /* HEAT FLOW DIAGRAM */
+  .heat-diagram {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 30px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .heat-diagram::before {
+    content: 'HEAT SYSTEM OVERVIEW';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--heat);
+    background: var(--panel);
+    padding: 0 8px;
+  }
+
+  .heat-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0;
+    align-items: start;
+    margin-top: 10px;
+  }
+  .heat-col { display: flex; flex-direction: column; gap: 8px; }
+  .heat-source {
+    background: rgba(255,68,68,0.08);
+    border: 1px solid rgba(255,68,68,0.3);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .heat-source strong { color: var(--heat); display: block; font-size: 11px; margin-bottom: 2px; }
+  .heat-center {
+    background: rgba(255,68,68,0.12);
+    border: 2px solid rgba(255,68,68,0.6);
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .heat-center .big-label {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--heat);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .heat-center .cap-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,68,68,0.6);
+    margin-top: 4px;
+  }
+  .heat-arrow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    gap: 4px;
+    padding-top: 40px;
+  }
+  .heat-arrow {
+    font-size: 24px;
+    color: var(--heat);
+    opacity: 0.7;
+  }
+  .heat-arrow-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .heat-clear-col { display: flex; flex-direction: column; gap: 8px; }
+  .heat-clear {
+    background: rgba(57,255,20,0.06);
+    border: 1px solid rgba(57,255,20,0.25);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .heat-clear strong { color: var(--free); display: block; font-size: 11px; margin-bottom: 2px; }
+  .heat-overflow {
+    margin-top: 16px;
+    background: rgba(255,0,0,0.05);
+    border: 1px solid rgba(255,0,0,0.3);
+    padding: 16px 20px;
+  }
+  .heat-overflow-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--heat);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .overheat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .overheat-table th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .overheat-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-dim);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .overheat-table td:first-child {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--heat2);
+    white-space: nowrap;
+  }
+  .overheat-table td:nth-child(2) {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .overheat-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* STRUCTURE TABLE */
+  .struct-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .struct-table th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .struct-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-dim);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .struct-table td:first-child {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: #4499ff;
+    white-space: nowrap;
+  }
+  .struct-table td:nth-child(2) {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  /* OVERCHARGE TRACK */
+  .overcharge-track {
+    background: var(--panel);
+    border: 1px solid rgba(255,68,68,0.3);
+    padding: 24px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .overcharge-track::before {
+    content: 'OVERCHARGE HEAT COST TRACK';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--heat);
+    background: var(--panel);
+    padding: 0 8px;
+  }
+  .oc-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .oc-step {
+    text-align: center;
+    border: 1px solid var(--border);
+    padding: 16px 8px;
+    position: relative;
+  }
+  .oc-step:nth-child(1) { border-color: rgba(255,68,68,0.2); }
+  .oc-step:nth-child(2) { border-color: rgba(255,68,68,0.4); }
+  .oc-step:nth-child(3) { border-color: rgba(255,68,68,0.6); }
+  .oc-step:nth-child(4) { border-color: rgba(255,68,68,0.9); }
+  .oc-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .oc-cost {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    color: var(--heat);
+  }
+  .oc-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .oc-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+  }
+  .oc-note span { color: var(--accent); }
+
+  /* CONDITIONS */
+  .conditions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .cond-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .cond-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cond-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .cond-type {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .type-status { background: rgba(255,107,53,0.15); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+  .type-condition { background: rgba(0,212,255,0.1); color: var(--quick); border: 1px solid rgba(0,212,255,0.3); }
+  .cond-body { padding: 12px 14px; font-size: 12px; line-height: 1.7; color: var(--text-dim); }
+  .cond-body strong { color: var(--text); }
+  .cond-clear {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--free);
+    padding: 8px 14px;
+    background: rgba(57,255,20,0.04);
+    border-top: 1px solid rgba(57,255,20,0.1);
+  }
+
+  /* STABILIZE BOX */
+  .stabilize-box {
+    background: rgba(57,255,20,0.04);
+    border: 1px solid rgba(57,255,20,0.25);
+    padding: 24px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .stabilize-box::before {
+    content: 'STABILIZE — FULL ACTION';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--free);
+    background: var(--bg);
+    padding: 0 8px;
+  }
+  .stab-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .stab-option {
+    border: 1px solid rgba(57,255,20,0.15);
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .stab-option .stab-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--free);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* ATTACK FLOW */
+  .attack-flow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .attack-type-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .attack-type-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .attack-type-body { padding: 14px 16px; font-size: 12px; line-height: 1.7; color: var(--text-dim); }
+  .attack-type-body ul { list-style: none; }
+  .attack-type-body li { padding: 3px 0; }
+  .attack-type-body li::before { content: '▸ '; color: var(--accent); font-size: 10px; }
+
+  /* QUICK REF TABLE */
+  .qr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+  .qr-table th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+  .qr-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .qr-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .qr-table td:first-child {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .qr-table td:last-child { color: var(--text-dim); font-size: 12px; }
+
+  /* REPAIR SECTION */
+  .repair-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .repair-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+  .repair-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .repair-card ul { list-style: none; }
+  .repair-card li {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    line-height: 1.5;
+  }
+  .repair-card li::before { content: '▸ '; color: var(--free); font-size: 10px; }
+  .repair-card li strong { color: var(--text); }
+
+  /* PILOT ACTIONS BOX */
+  .pilot-box {
+    background: var(--panel);
+    border: 1px solid rgba(255,215,0,0.2);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .pilot-box::before {
+    content: 'PILOT ON FOOT — SPECIAL ACTIONS';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    background: var(--panel);
+    padding: 0 8px;
+  }
+  .pilot-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .pilot-action {
+    border: 1px solid rgba(255,215,0,0.15);
+    padding: 10px 12px;
+  }
+  .pilot-action-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .pilot-action-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* TECH ACTIONS */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .heat-flow {
+      grid-template-columns: 1fr;
+    }
+    .heat-arrow-col { padding: 8px 0; }
+    .heat-arrow { transform: rotate(90deg); }
+    .oc-steps { grid-template-columns: repeat(2,1fr); }
+    .flow-boxes { grid-template-columns: 1fr; }
+  }
+
+  /* GLOW EFFECTS */
+  @keyframes pulse-heat {
+    0%, 100% { box-shadow: 0 0 8px rgba(255,68,68,0.2); }
+    50% { box-shadow: 0 0 20px rgba(255,68,68,0.4); }
+  }
+  .heat-center { animation: pulse-heat 3s ease-in-out infinite; }
+
+  @keyframes glow-accent {
+    0%, 100% { text-shadow: 0 0 8px rgba(0,212,255,0.3); }
+    50% { text-shadow: 0 0 16px rgba(0,212,255,0.6); }
+  }
+  h1 { animation: glow-accent 4s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-mark">IPS-N // GMS // HORUS // HARRISON ARMORY // SSC</div>
+    <div class="header-top">
+      <div>
+        <h1>Lancer Combat</h1>
+        <div class="subtitle">Systems Reference // Section 3 // Mech Combat</div>
+      </div>
+      <div class="header-stat">
+        DOC REV <span>2.1.0</span><br>
+        CLASSIFICATION <span>OPEN</span><br>
+        SCOPE <span>FULL COMBAT</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('turn')">Turn Structure</button>
+    <button class="tab-btn" onclick="showTab('actions')">All Actions</button>
+    <button class="tab-btn" onclick="showTab('heat')">Heat & Stress</button>
+    <button class="tab-btn" onclick="showTab('conditions')">Statuses & Conditions</button>
+    <button class="tab-btn" onclick="showTab('repairs')">Repairs & Recovery</button>
+    <button class="tab-btn" onclick="showTab('quickref')">Quick Reference</button>
+  </nav>
+
+  <!-- TAB: TURN STRUCTURE -->
+  <div id="tab-turn" class="section active">
+    <div class="turn-flow">
+      <div class="flow-boxes">
+        <div class="flow-box move-box">
+          <div class="box-title" style="color:var(--free)">Standard Move</div>
+          <div class="box-sub">Move up to your <strong>SPEED</strong> in spaces. Free every turn. Can be split before/after actions.</div>
+        </div>
+        <div class="plus-sign" style="color:var(--text-dim)">+</div>
+        <div class="flow-box action-box">
+          <div class="box-title" style="color:var(--accent)">One of These:</div>
+          <div class="box-sub" style="text-align:left; padding-left:8px;">
+            <span style="color:var(--full)">■</span> <strong>1 Full Action</strong><br>
+            <span style="color:var(--quick)">■</span> <strong>2 Quick Actions</strong><br>
+            <span style="color:var(--quick)">■</span> <strong>1 Quick Action</strong>
+          </div>
+        </div>
+        <div class="plus-sign" style="color:var(--text-dim)">+</div>
+        <div class="flow-box overcharge-box">
+          <div class="box-title" style="color:var(--heat)">Overcharge (×1/turn)</div>
+          <div class="box-sub">Gain <strong>1 extra Quick Action</strong> as a Free Action. Costs escalating <strong style="color:var(--heat)">heat</strong>.</div>
+        </div>
+        <div class="plus-sign" style="color:var(--text-dim)">+</div>
+        <div class="flow-box free-box">
+          <div class="box-title" style="color:var(--free)">Free Actions</div>
+          <div class="box-sub">Unlimited. Granted by systems/talents. Can duplicate other actions. Protocols activate at <strong>start of turn</strong>.</div>
+        </div>
+        <div class="plus-sign" style="color:var(--text-dim)">+</div>
+        <div class="flow-box" style="border-color:rgba(204,0,255,0.3)">
+          <div class="box-title" style="color:var(--reaction)">Reactions</div>
+          <div class="box-sub">Unlimited per round. One per turn (yours or others'). Recharge at start of your next turn.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">Overcharge Heat Escalation</div>
+    <div class="overcharge-track">
+      <div class="oc-steps">
+        <div class="oc-step">
+          <div class="oc-num">1ST USE</div>
+          <div class="oc-cost">1</div>
+          <div class="oc-label">HEAT</div>
+        </div>
+        <div class="oc-step">
+          <div class="oc-num">2ND USE</div>
+          <div class="oc-cost">1d3</div>
+          <div class="oc-label">HEAT</div>
+        </div>
+        <div class="oc-step">
+          <div class="oc-num">3RD USE</div>
+          <div class="oc-cost">1d6</div>
+          <div class="oc-label">HEAT</div>
+        </div>
+        <div class="oc-step">
+          <div class="oc-num">4TH+ USE</div>
+          <div class="oc-cost">1d6+4</div>
+          <div class="oc-label">HEAT</div>
+        </div>
+      </div>
+      <div class="oc-note">Counter resets on <span>FULL REPAIR</span> only. Each use grants one extra Quick Action as a Free Action.</div>
+    </div>
+
+    <div class="section-header">Movement Rules</div>
+    <div class="action-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px,1fr))">
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Splitting Movement</div></div>
+        <div class="card-body">You can split your move before and after any actions. Non-movement actions must fully resolve before you continue moving.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Engaged</div></div>
+        <div class="card-body">Moving adjacent to a hostile triggers <strong>ENGAGED</strong>. All ranged attacks by an ENGAGED character receive <strong>+1 difficulty</strong>. If engaged by a target of equal/greater SIZE mid-move, movement stops.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Involuntary Movement</div></div>
+        <div class="card-body">Forced movement (knockback, grapple drag, etc.) does not trigger OVERWATCH or engagement rules — those only apply to <em>voluntary</em> movement.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ALL ACTIONS -->
+  <div id="tab-actions" class="section">
+
+    <div class="section-header">Quick Actions</div>
+    <div class="action-grid">
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Skirmish</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">
+          Attack with <strong>one weapon</strong>. Choose a valid target within RANGE (or THREAT for melee). You may also attack with a different <strong>AUXILIARY weapon</strong> on the same mount (no bonus damage). SUPERHEAVY weapons cannot be used in a Skirmish.
+        </div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Boost</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Move additional spaces equal to your <strong>SPEED</strong>. This is separate from your standard move. Can be used to HIDE immediately after if conditions are met.</div>
+        <div class="card-note">Losing HIDDEN if used while hidden (unless granted as free action).</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Ram</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Make a <strong>melee attack</strong> against an adjacent target of equal SIZE or smaller. On success: target is knocked <strong>PRONE</strong> and you may push them <strong>1 space</strong> directly away.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Grapple</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Make a <strong>melee attack</strong> vs. adjacent target equal SIZE or smaller. On success: you and target become <strong>GRAPPLED</strong>. Neither can move normally. You can drag target if you are larger. Target can attempt to escape each turn.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Quick Tech</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">
+          Electronic warfare. Choose one option per use (a different option each time): <strong>Bolster</strong>, <strong>Scan</strong>, <strong>Lock On</strong>, or <strong>Invade</strong>. Unlike other quick actions, Quick Tech can be taken more than once per turn, but each use must choose a different option.
+        </div>
+        <div class="card-heat">INVADE: deals 2 heat on a successful tech attack.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Hide</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Gain <strong>HIDDEN</strong> status. Requires: not ENGAGED + outside enemy LoS, in sufficient cover, or INVISIBLE. You lose HIDDEN if you attack, force saves, take reactions, BOOST, or lose cover.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Search</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Attempt to find a <strong>HIDDEN</strong> target within SENSORS. Make a contested <strong>SYSTEMS vs. AGILITY</strong> check. On success, target loses HIDDEN and can be located by anyone.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Reload</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Reload all weapons with the <strong>LOADING</strong> tag. Required before those weapons can fire again.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Prepare</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Hold a Quick Action for a specified trigger ("When X, then Y"). Until your next turn, you can take that action as a <strong>Reaction</strong> when triggered. You cannot take other actions or reactions until triggered or turn starts. Trigger must be visible action by another character.</div>
+      </div>
+    </div>
+
+    <div class="section-header">Full Actions</div>
+    <div class="action-grid">
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Barrage</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">Attack with <strong>two weapons</strong>, or one <strong>SUPERHEAVY</strong> weapon. Choose the same or different targets within range. Each mount that fired may also fire a different AUXILIARY weapon (no bonus damage). SUPERHEAVY weapons can ONLY be used in Barrage.</div>
+      </div>
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Stabilize</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">
+          Emergency protocols. Choose <strong>one primary option</strong>:
+          <br>• <strong style="color:var(--heat)">Cool</strong> — clear all heat and EXPOSED
+          <br>• <strong style="color:var(--free)">Repair</strong> — spend 1 REPAIR to restore all HP
+          <br><br>Then choose <strong>one secondary option</strong>:
+          <br>• Reload all LOADING weapons
+          <br>• Clear all burn
+          <br>• Clear a condition (not self-caused)
+          <br>• Clear an allied character's condition (not self-caused)
+        </div>
+        <div class="card-heat">Primary heat effect: COOLING clears ALL heat and EXPOSED status.</div>
+      </div>
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Full Tech</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">Perform <strong>two Quick Tech options</strong> (can repeat the same option), OR activate a system that requires Full Tech. Powerful electronic warfare and support option.</div>
+      </div>
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Improvised Attack</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">Attack adjacent target with a fist, rifle butt, or improvised weapon. On success: <strong>1d6 kinetic damage</strong>. Works even while JAMMED.</div>
+      </div>
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Disengage</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">Until the end of your current turn, you <strong>ignore engagement</strong> and your movement <strong>does not trigger reactions</strong> (like Overwatch). Useful for safely repositioning out of melee.</div>
+      </div>
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Skill Check</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">Undertake a complex activity outside standard actions (forcing a locked door, jumping a crevasse, lifting debris). Parameters and outcomes determined by the GM.</div>
+      </div>
+    </div>
+
+    <div class="section-header">Quick or Full Actions</div>
+    <div class="action-grid">
+      <div class="action-card either-card">
+        <div class="card-header">
+          <div class="card-name">Activate</div>
+          <span class="badge badge-either">Quick/Full</span>
+        </div>
+        <div class="card-body">Use a system or piece of gear tagged <strong>QUICK ACTION</strong> or <strong>FULL ACTION</strong>. Can activate multiple times per turn, but not the same system more than once (unless granted as free action).</div>
+      </div>
+      <div class="action-card either-card">
+        <div class="card-header">
+          <div class="card-name">Mount / Dismount</div>
+          <span class="badge badge-either">Quick/Full</span>
+        </div>
+        <div class="card-body">
+          <strong>Full Action</strong> to mount/dismount a mech (must be adjacent to mount). <strong>Quick Action</strong> to EJECT — fly 6 spaces in any direction, but leaves mech <strong>IMPAIRED</strong> (can't eject again until Full Repair).
+        </div>
+        <div class="card-note">EJECT: single use emergency. Mech remains IMPAIRED.</div>
+      </div>
+    </div>
+
+    <div class="section-header">Mech Emergency Actions</div>
+    <div class="action-grid">
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Shut Down</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Power off your mech. Clears <strong>all heat</strong> and EXPOSED. Ends tech conditions (LOCK ON, etc.). Gains <strong>IMMUNITY to tech attacks</strong>. Mech is STUNNED indefinitely. Only removed by BOOT UP.</div>
+        <div class="card-heat">Clears ALL heat. Useful as emergency heat relief, but mech cannot act.</div>
+      </div>
+      <div class="action-card full-card">
+        <div class="card-header">
+          <div class="card-name">Boot Up</div>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <div class="card-body">Power on a SHUT DOWN mech. Removes <strong>SHUT DOWN</strong> status and all associated effects. Pilot must be inside the mech.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header">
+          <div class="card-name">Self-Destruct</div>
+          <span class="badge badge-quick">Quick</span>
+        </div>
+        <div class="card-body">Initiate reactor meltdown. At the end of your next turn (or within 2 turns, your choice), your mech explodes: <strong>BURST 2, 4d6 explosive damage</strong>. AGILITY save halves damage. Pilot inside is killed. Mech annihilated.</div>
+      </div>
+    </div>
+
+    <div class="section-header">Reactions (Out of Turn)</div>
+    <div class="action-grid">
+      <div class="action-card reaction-card">
+        <div class="card-header">
+          <div class="card-name">Brace</div>
+          <span class="badge badge-reaction">Reaction</span>
+        </div>
+        <div class="card-body">
+          <strong>Trigger:</strong> You are hit by an attack and damage is rolled.<br><br>
+          <strong>Effect:</strong> You gain RESISTANCE to all damage, burn, and heat from that attack. Until end of your next turn, all attacks against you have +1 difficulty.<br><br>
+          <strong>Cost:</strong> Cannot take reactions until end of your next turn. On that turn: only 1 Quick Action, no Overcharge, no standard move, no Full Actions, no Free Actions.
+        </div>
+      </div>
+      <div class="action-card reaction-card">
+        <div class="card-header">
+          <div class="card-name">Overwatch</div>
+          <span class="badge badge-reaction">Reaction</span>
+        </div>
+        <div class="card-body">
+          <strong>Trigger:</strong> A hostile starts any movement (including Boost) inside one of your weapons' THREAT range.<br><br>
+          <strong>Effect:</strong> Immediately Skirmish against that character as a reaction, before they move. All weapons have THREAT 1 by default.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">Quick Tech Options (used with Quick Tech / Full Tech)</div>
+    <div class="tech-grid">
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Bolster</div></div>
+        <div class="card-body">Choose a character within <strong>SENSORS</strong>. They receive <strong>+2 bonus dice</strong> on their next skill check or save before the end of their next turn. Only one BOLSTER at a time.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Scan</div></div>
+        <div class="card-body">Choose a character/object within <strong>SENSORS and LoS</strong>. Ask the GM one of: full stats/weapons/systems; one piece of hidden information; public records info. Information is current at time of scan only.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Lock On</div></div>
+        <div class="card-body">Choose a character within <strong>SENSORS and LoS</strong>. They gain the <strong>LOCK ON condition</strong>. Any character attacking them may consume it for <strong>+1 bonus die</strong> on that attack. Required for some systems and talents.</div>
+      </div>
+      <div class="action-card quick-card">
+        <div class="card-header"><div class="card-name">Invade</div></div>
+        <div class="card-body">Make a <strong>tech attack</strong> against a target within SENSORS and LoS. On success: target takes <strong>2 heat</strong> and you choose an Invasion option. Default option: <strong>Fragment Signal</strong> — target becomes IMPAIRED and SLOWED until end of their next turn.</div>
+        <div class="card-heat">GENERATES: 2 heat on target. Tech attack vs. E-DEFENSE.</div>
+      </div>
+    </div>
+
+    <div class="pilot-box">
+      <div class="pilot-actions">
+        <div class="pilot-action">
+          <div class="pilot-action-name">Fight <span class="badge badge-full" style="font-size:8px">Full</span></div>
+          <div class="pilot-action-desc">Attack with one weapon (pilot-scale).</div>
+        </div>
+        <div class="pilot-action">
+          <div class="pilot-action-name">Jockey <span class="badge badge-full" style="font-size:8px">Full</span></div>
+          <div class="pilot-action-desc">Attempt to climb and attack a mech.</div>
+        </div>
+        <div class="pilot-action">
+          <div class="pilot-action-name">Reload <span class="badge badge-quick" style="font-size:8px">Quick</span></div>
+          <div class="pilot-action-desc">Reload a pilot weapon with LOADING tag.</div>
+        </div>
+        <div class="pilot-action">
+          <div class="pilot-action-name">Boost <span class="badge badge-quick" style="font-size:8px">Quick</span></div>
+          <div class="pilot-action-desc">Extra move equal to SPEED.</div>
+        </div>
+        <div class="pilot-action">
+          <div class="pilot-action-name">Hide / Search <span class="badge badge-quick" style="font-size:8px">Quick</span></div>
+          <div class="pilot-action-desc">Hide (RANGE 5) or search for HIDDEN targets.</div>
+        </div>
+        <div class="pilot-action">
+          <div class="pilot-action-name">Brace / Overwatch <span class="badge badge-reaction" style="font-size:8px">React</span></div>
+          <div class="pilot-action-desc">Same rules as mech reactions.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: HEAT & STRESS -->
+  <div id="tab-heat" class="section">
+
+    <div class="heat-diagram">
+      <div class="heat-flow">
+        <div class="heat-col">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--heat);margin-bottom:8px;text-transform:uppercase;">Heat Sources</div>
+          <div class="heat-source"><strong>Overcharge</strong>1 / 1d3 / 1d6 / 1d6+4</div>
+          <div class="heat-source"><strong>Invade (hit target)</strong>2 heat to target</div>
+          <div class="heat-source"><strong>Weapons</strong>Some weapons list heat cost</div>
+          <div class="heat-source"><strong>Environmental</strong>GM-determined hazards</div>
+          <div class="heat-source"><strong>Overheat Overflow</strong>Excess heat carries over</div>
+          <div class="heat-source"><strong>System Effects</strong>Various talents/systems</div>
+        </div>
+        <div class="heat-arrow-col">
+          <div class="heat-arrow">→</div>
+          <div class="heat-arrow-label">fills<br>heat<br>track</div>
+        </div>
+        <div>
+          <div class="heat-center">
+            <div class="big-label">HEAT<br>CAP</div>
+            <div class="cap-label">Base: ENGINEERING<br>+1 per ENGINEERING point</div>
+            <div style="margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,136,0,0.8);">⚠ DANGER ZONE<br>when ½ cap filled</div>
+          </div>
+        </div>
+        <div class="heat-arrow-col">
+          <div class="heat-arrow">→</div>
+          <div class="heat-arrow-label">clear<br>heat<br>via</div>
+        </div>
+        <div class="heat-clear-col">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--free);margin-bottom:8px;text-transform:uppercase;">Heat Removal</div>
+          <div class="heat-clear"><strong>Stabilize (Cool)</strong>Full Action — clears ALL heat + EXPOSED</div>
+          <div class="heat-clear"><strong>Shut Down</strong>Quick Action — clears ALL heat (but STUNS mech)</div>
+          <div class="heat-clear"><strong>Rest</strong>After combat — clear all heat</div>
+          <div class="heat-clear"><strong>Full Repair</strong>10hr — clear all heat + reset overcharge</div>
+          <div class="heat-clear"><strong>Systems / Talents</strong>Specific gear may cool heat</div>
+        </div>
+      </div>
+
+      <div class="heat-overflow">
+        <div class="heat-overflow-title">⚠ Exceeding Heat Cap → Overheat! (Takes 1 STRESS, then clears heat)</div>
+        <table class="overheat-table">
+          <tr><th>Roll (1d6/stress)</th><th>Result</th><th>Effect</th></tr>
+          <tr>
+            <td>5–6</td>
+            <td>Emergency Shunt</td>
+            <td>Cooling contains the heat. Mech becomes <strong>IMPAIRED</strong> until end of next turn.</td>
+          </tr>
+          <tr>
+            <td>2–4</td>
+            <td>Destabilized Power Plant</td>
+            <td>Mech becomes <strong>EXPOSED</strong> — all kinetic/explosive/energy damage doubled until cleared.</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Meltdown</td>
+            <td><strong>3+ STRESS:</strong> EXPOSED. <strong>2 STRESS:</strong> ENGINEERING check or meltdown in 1d6 turns. <strong>1 STRESS:</strong> Reactor meltdown at end of next turn.</td>
+          </tr>
+          <tr>
+            <td>Multiple 1s</td>
+            <td>Irreversible Meltdown</td>
+            <td>Reactor goes critical. Meltdown at end of next turn — no save possible.</td>
+          </tr>
+        </table>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:10px;">Roll [# of stress marked] d6. Choose LOWEST result. Excess heat carries over after overheat clears.</div>
+      </div>
+    </div>
+
+    <div class="section-header">Reactor Meltdown</div>
+    <div class="action-card full-card" style="max-width:600px;margin-bottom:32px;">
+      <div class="card-header"><div class="card-name" style="color:var(--heat)">Reactor Meltdown</div></div>
+      <div class="card-body">
+        When meltdown triggers: <strong>pilot inside is immediately killed</strong>. Mech is vaporized in a <strong>BURST 2 explosion dealing 4d6 explosive damage</strong> to all in area. AGILITY save halves damage. Wreck is annihilated.<br><br>
+        <strong>Preventing a countdown meltdown:</strong> Roll again on the overheat table as a <strong>Full Action</strong> during the countdown.
+      </div>
+    </div>
+
+    <div class="section-header">Stress Track</div>
+    <div style="background:var(--panel);border:1px solid var(--border);padding:20px;margin-bottom:32px;font-size:13px;line-height:1.8;color:var(--text-dim);">
+      Most PC mechs have <strong style="color:var(--stress)">4 STRESS</strong>. Each time heat exceeds HEAT CAP: take 1 STRESS and make an overheating check. Heat then clears. Excess heat beyond cap carries over and may trigger multiple overheats.<br><br>
+      At <strong>0 STRESS</strong>, the mech suffers a <strong style="color:var(--heat)">reactor meltdown</strong> at the end of its next turn. STRESS is restored by spending <strong>2 REPAIRS during rest</strong>, or automatically on <strong>Full Repair</strong>.
+    </div>
+
+    <div class="section-header">Danger Zone</div>
+    <div style="background:rgba(255,136,0,0.06);border:1px solid rgba(255,136,0,0.3);padding:20px;margin-bottom:32px;font-size:13px;line-height:1.8;color:var(--text-dim);">
+      A mech is in the <strong style="color:var(--heat2)">DANGER ZONE</strong> when <strong>half or more of its HEAT CAP is filled</strong>. This is visually obvious (glowing segments, steam, open vents). Certain weapons, systems, and talents are <em>only available</em> in the Danger Zone or gain extra effects there.
+    </div>
+
+  </div>
+
+  <!-- TAB: CONDITIONS -->
+  <div id="tab-conditions" class="section">
+
+    <div class="section-header">Statuses (Usually require specific action to remove)</div>
+    <div class="conditions-grid">
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Danger Zone</div><span class="cond-type type-status">Mechs Only</span></div>
+        <div class="cond-body">When half or more of HEAT CAP is filled. Enables certain weapons/talents/effects. Visually obvious — glowing, steaming, vents open.</div>
+        <div class="cond-clear">REMOVED: when heat drops below half of HEAT CAP</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Exposed</div><span class="cond-type type-status">Mechs Only</span></div>
+        <div class="cond-body">All <strong>kinetic, explosive, and energy damage doubled</strong> before reductions. Caused by overheating, plasma ejections, or system attacks.</div>
+        <div class="cond-clear">REMOVED: Stabilize (Cool option) or Shut Down</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Hidden</div><span class="cond-type type-status">Status</span></div>
+        <div class="cond-body">Cannot be targeted by attacks or hostile actions. Enemies only know approximate location. Don't cause engagement.</div>
+        <div class="cond-clear">REMOVED: Attacking, forcing saves, Boost, reactions, losing cover</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Invisible</div><span class="cond-type type-status">Status</span></div>
+        <div class="cond-body">All attacks have a <strong>50% chance to miss outright</strong> before roll (flip coin/d2). Can always HIDE even without cover.</div>
+        <div class="cond-clear">REMOVED: As specified by effect</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Prone</div><span class="cond-type type-status">Status</span></div>
+        <div class="cond-body">Attacks against you get <strong>+1 bonus die</strong>. You are SLOWED and count as moving in difficult terrain. Cannot stand if IMMOBILIZED.</div>
+        <div class="cond-clear">REMOVED: Stand up instead of standard move (doesn't count as movement)</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Shut Down</div><span class="cond-type type-status">Mechs Only</span></div>
+        <div class="cond-body">Clears all heat and EXPOSED. Tech conditions end. <strong>Immune to all tech attacks</strong>. Mech is permanently STUNNED while shut down. NHPs stabilize.</div>
+        <div class="cond-clear">REMOVED: Boot Up (Full Action by pilot inside)</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Engaged</div><span class="cond-type type-status">Status</span></div>
+        <div class="cond-body">All <strong>ranged attacks at +1 difficulty</strong>. If engaged mid-move by equal/larger SIZE target, movement stops immediately.</div>
+        <div class="cond-clear">REMOVED: Move away from all adjacent hostiles</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Down and Out</div><span class="cond-type type-status">Pilots Only</span></div>
+        <div class="cond-body">Unconscious and STUNNED. Any further damage kills them. Regain consciousness and half HP on rest.</div>
+        <div class="cond-clear">REMOVED: Rest</div>
+      </div>
+    </div>
+
+    <div class="section-header">Conditions (More ways to remove, often temporary)</div>
+    <div class="conditions-grid">
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Impaired</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">All <strong>attacks, saves, and skill checks at +1 difficulty</strong>.</div>
+        <div class="cond-clear">REMOVED: Stabilize (secondary option), Full Repair, rest</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Stunned</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Cannot Overcharge, move, or take <strong>any actions</strong> (including free actions and reactions). Pilots can still Mount/Dismount/Eject. Max EVASION 5. Auto-fail HULL and AGILITY checks.</div>
+        <div class="cond-clear">REMOVED: As specified (usually end of next turn, or Boot Up if Shut Down)</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Slowed</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Only movement allowed is <strong>standard move on your own turn</strong>. Cannot Boost or use special movement from talents/systems/weapons.</div>
+        <div class="cond-clear">REMOVED: End of next turn (usually), Stabilize, or Full Repair</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Immobilized</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Cannot make any <strong>voluntary movement</strong>. Involuntary movement (push, pull, etc.) still applies.</div>
+        <div class="cond-clear">REMOVED: End of next turn (usually), Stabilize, or Full Repair</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Lock On</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Hostile attackers can <strong>consume</strong> this condition for <strong>+1 bonus die</strong> on their attack. Condition ends after it is consumed. Required for some talents/systems.</div>
+        <div class="cond-clear">REMOVED: Consumed by attacker, or Shut Down clears tech conditions</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Jammed</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Cannot use comms. <strong>Cannot make attacks</strong> except Improvised Attack, Grapple, and Ram. Cannot take reactions or tech actions.</div>
+        <div class="cond-clear">REMOVED: Stabilize, Full Repair, or as specified</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Shredded</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Character does not benefit from <strong>ARMOR or RESISTANCE</strong> to any damage type.</div>
+        <div class="cond-clear">REMOVED: As specified by the effect that caused it</div>
+      </div>
+      <div class="cond-card">
+        <div class="cond-header"><div class="cond-name">Burn</div><span class="cond-type type-condition">Condition</span></div>
+        <div class="cond-body">Takes burn damage at start of each turn (equal to burn value). Must pass an ENGINEERING save to reduce burn; on success, reduce burn by the save amount.</div>
+        <div class="cond-clear">REMOVED: Stabilize (secondary option "clear all burn")</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: REPAIRS -->
+  <div id="tab-repairs" class="section">
+    <div class="section-header">Structure Damage (0 HP → Roll structure check)</div>
+    <div style="background:var(--panel);border:1px solid var(--border);padding:24px;margin-bottom:32px;">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.8;">
+        When a mech reaches <strong>0 HP</strong>, it takes <strong>1 STRUCTURE damage</strong>, makes a structure check, then resets to full HP. Excess damage carries over. PC mechs have <strong>4 STRUCTURE</strong>. At 0 STRUCTURE: <strong style="color:var(--heat)">mech is destroyed</strong>.<br>
+        Roll <strong>[# of structure marked] d6</strong>. Take the <strong>lowest result</strong>.
+      </div>
+      <table class="struct-table">
+        <tr><th>Roll</th><th>Result</th><th>Effect</th></tr>
+        <tr><td>5–6</td><td>Glancing Blow</td><td>Mech becomes <strong>IMPAIRED</strong> until end of next turn.</td></tr>
+        <tr><td>2–4</td><td>System Trauma</td><td>Roll 1d6: 1-3 = all weapons on one mount destroyed; 4-6 = one system destroyed. (LIMITED systems with no charges are invalid.)</td></tr>
+        <tr><td>1</td><td>Direct Hit</td><td><strong>3+ STRUCTURE:</strong> STUNNED until end of next turn. <strong>2 STRUCTURE:</strong> HULL check — pass = STUNNED; fail = destroyed. <strong>1 STRUCTURE:</strong> destroyed.</td></tr>
+        <tr><td>Multiple 1s</td><td>Crushing Hit</td><td>Mech destroyed outright.</td></tr>
+      </table>
+    </div>
+
+    <div class="section-header">Repair Options</div>
+    <div class="repair-grid">
+      <div class="repair-card">
+        <h3>In Combat — Stabilize</h3>
+        <ul>
+          <li><strong>Cool:</strong> Clear all heat + EXPOSED (Free option — no cost)</li>
+          <li><strong>Repair:</strong> Spend 1 REPAIR → restore all HP</li>
+          <li>+ one secondary: reload LOADING weapons, clear burn, clear a condition</li>
+        </ul>
+      </div>
+      <div class="repair-card">
+        <h3>Rest (1hr downtime)</h3>
+        <ul>
+          <li>Clear <strong>all heat</strong></li>
+          <li>Clear all <strong>statuses and conditions</strong></li>
+          <li>Restore <strong>half pilot HP</strong>, clear DOWN AND OUT</li>
+          <li><strong>1 REPAIR:</strong> restore full mech HP, or fix destroyed weapon/system</li>
+          <li><strong>2 REPAIRS:</strong> restore 1 STRUCTURE or 1 STRESS</li>
+          <li><strong>4 REPAIRS:</strong> repair a destroyed mech (wreckage needed)</li>
+        </ul>
+      </div>
+      <div class="repair-card">
+        <h3>Full Repair (10hr secure)</h3>
+        <ul>
+          <li>Restore all <strong>pilot HP</strong>, clear DOWN AND OUT</li>
+          <li>Mech to full <strong>HP, STRESS, and STRUCTURE</strong></li>
+          <li>Clear all <strong>statuses and conditions</strong></li>
+          <li>Repair all <strong>destroyed weapons/systems</strong></li>
+          <li>Recover <strong>CP</strong> if used</li>
+          <li>Regain all <strong>REPAIRS</strong> and LIMITED weapon uses</li>
+          <li>Reset <strong>Overcharge counter</strong></li>
+          <li>Print a new mech (with proper facilities)</li>
+        </ul>
+      </div>
+      <div class="repair-card">
+        <h3>Repair Cap</h3>
+        <ul>
+          <li>Determined by <strong>FRAME</strong> + <strong>HULL bonus</strong></li>
+          <li>Maximum REPAIRs available per mission</li>
+          <li>Only one pilot can share REPAIRs: when repairing a <strong>destroyed mech</strong> (4 REPAIRs total — anyone can contribute)</li>
+          <li>Full Repair fully restores REPAIR CAP</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: QUICK REFERENCE -->
+  <div id="tab-quickref" class="section">
+    <div class="section-header">All Actions at a Glance</div>
+    <table class="qr-table">
+      <tr>
+        <th>Action</th>
+        <th>Type</th>
+        <th>Summary</th>
+      </tr>
+      <tr><td>Standard Move</td><td><span class="badge badge-free">Free</span></td><td>Move up to SPEED. Can split with other actions.</td></tr>
+      <tr><td>Skirmish</td><td><span class="badge badge-quick">Quick</span></td><td>Attack with 1 weapon (+1 AUX from same mount). No SUPERHEAVY.</td></tr>
+      <tr><td>Boost</td><td><span class="badge badge-quick">Quick</span></td><td>Extra move = SPEED.</td></tr>
+      <tr><td>Ram</td><td><span class="badge badge-quick">Quick</span></td><td>Melee attack → PRONE + optional 1-space pushback.</td></tr>
+      <tr><td>Grapple</td><td><span class="badge badge-quick">Quick</span></td><td>Melee attack → both GRAPPLED. Larger may drag.</td></tr>
+      <tr><td>Quick Tech</td><td><span class="badge badge-quick">Quick</span></td><td>Bolster / Scan / Lock On / Invade. Different option each use.</td></tr>
+      <tr><td>Hide</td><td><span class="badge badge-quick">Quick</span></td><td>Gain HIDDEN. Requires cover/LoS break/INVISIBLE and not ENGAGED.</td></tr>
+      <tr><td>Search</td><td><span class="badge badge-quick">Quick</span></td><td>Contested SYSTEMS vs AGILITY to find HIDDEN target.</td></tr>
+      <tr><td>Reload</td><td><span class="badge badge-quick">Quick</span></td><td>Reload all LOADING weapons.</td></tr>
+      <tr><td>Prepare</td><td><span class="badge badge-quick">Quick</span></td><td>Hold a Quick Action for a trigger. No other actions/reactions until triggered.</td></tr>
+      <tr><td>Shut Down</td><td><span class="badge badge-quick">Quick</span></td><td>Power off. Clear all heat + EXPOSED. STUNNED indefinitely. Tech immunity.</td></tr>
+      <tr><td>Eject</td><td><span class="badge badge-quick">Quick</span></td><td>Fly 6 spaces. Mech IMPAIRED. Single use per mission.</td></tr>
+      <tr><td>Self-Destruct</td><td><span class="badge badge-quick">Quick</span></td><td>Countdown to BURST 2 4d6 explosion. Pilot dies.</td></tr>
+      <tr><td>Barrage</td><td><span class="badge badge-full">Full</span></td><td>Attack with 2 weapons (or 1 SUPERHEAVY) + AUX from each mount.</td></tr>
+      <tr><td>Stabilize</td><td><span class="badge badge-full">Full</span></td><td>Cool (all heat + EXPOSED) OR Repair (1 REPAIR → full HP) + secondary option.</td></tr>
+      <tr><td>Full Tech</td><td><span class="badge badge-full">Full</span></td><td>Two Quick Tech options (can repeat) or one Full Tech system.</td></tr>
+      <tr><td>Improvised Attack</td><td><span class="badge badge-full">Full</span></td><td>Melee attack → 1d6 kinetic damage. Works while JAMMED.</td></tr>
+      <tr><td>Disengage</td><td><span class="badge badge-full">Full</span></td><td>Until end of turn, ignore engagement, movement doesn't trigger reactions.</td></tr>
+      <tr><td>Skill Check</td><td><span class="badge badge-full">Full</span></td><td>GM-defined action with clear goal and roll.</td></tr>
+      <tr><td>Boot Up</td><td><span class="badge badge-full">Full</span></td><td>Power on SHUT DOWN mech.</td></tr>
+      <tr><td>Activate</td><td><span class="badge badge-either">Quick/Full</span></td><td>Use tagged system. Once per system per turn (unless free action).</td></tr>
+      <tr><td>Mount/Dismount</td><td><span class="badge badge-either">Quick/Full</span></td><td>Full to mount/dismount normally. Quick to EJECT (6 spaces, IMPAIRED).</td></tr>
+      <tr><td>Overcharge</td><td><span class="badge badge-free">Free/Once/Turn</span></td><td>Extra Quick Action. Heat: 1 / 1d3 / 1d6 / 1d6+4. Resets on Full Repair.</td></tr>
+      <tr><td>Brace</td><td><span class="badge badge-reaction">Reaction 1/round</span></td><td>When hit: RESISTANCE to that attack. Cost: limited next turn actions.</td></tr>
+      <tr><td>Overwatch</td><td><span class="badge badge-reaction">Reaction 1/round</span></td><td>When hostile moves in THREAT: Skirmish them before they move.</td></tr>
+    </table>
+
+    <div class="section-header">Heat at a Glance</div>
+    <table class="qr-table">
+      <tr><th>Event</th><th>Heat Effect</th></tr>
+      <tr><td>Overcharge (1st)</td><td>+1 heat to self</td></tr>
+      <tr><td>Overcharge (2nd)</td><td>+1d3 heat to self</td></tr>
+      <tr><td>Overcharge (3rd)</td><td>+1d6 heat to self</td></tr>
+      <tr><td>Overcharge (4th+)</td><td>+1d6+4 heat to self</td></tr>
+      <tr><td>Invade (successful)</td><td>+2 heat to target</td></tr>
+      <tr><td>Exceed HEAT CAP</td><td>Take 1 STRESS, make overheating check, clear all heat, carry over excess</td></tr>
+      <tr><td>Overheat 5–6</td><td>IMPAIRED until end of next turn</td></tr>
+      <tr><td>Overheat 2–4</td><td>EXPOSED (damage doubled)</td></tr>
+      <tr><td>Overheat 1</td><td>Meltdown or EXPOSED depending on remaining STRESS</td></tr>
+      <tr><td>Overheat multiple 1s</td><td>Irreversible meltdown at end of next turn</td></tr>
+      <tr><td>Stabilize (Cool)</td><td>Clear ALL heat + EXPOSED</td></tr>
+      <tr><td>Shut Down</td><td>Clear ALL heat + EXPOSED (mech STUNNED)</td></tr>
+      <tr><td>Rest</td><td>Clear all heat</td></tr>
+      <tr><td>Full Repair</td><td>Clear all heat, reset overcharge counter</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

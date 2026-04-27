@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Frame Database</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a0f;
+    --panel: #0b1118;
+    --panel2: #0e1520;
+    --border: #1a2d3f;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #39ff14;
+    --text: #c8dce8;
+    --text-dim: #5a7a90;
+    --gms: #7ec8e3;
+    --ipsn: #ff9f43;
+    --ssc: #a29bfe;
+    --horus: #55efc4;
+    --ha: #fd79a8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,212,255,0.012) 2px, rgba(0,212,255,0.012) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .grid-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; padding: 0 20px 60px; }
+
+  header {
+    padding: 40px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 300px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .logo-mark {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    opacity: 0.6;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, #0066aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+  }
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  /* CONTROLS */
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .filter-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .filter-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .filter-btn.active { background: rgba(0,212,255,0.1); color: var(--accent); border-color: var(--accent); }
+  .filter-btn.gms-btn.active { background: rgba(126,200,227,0.12); color: var(--gms); border-color: var(--gms); }
+  .filter-btn.ipsn-btn.active { background: rgba(255,159,67,0.12); color: var(--ipsn); border-color: var(--ipsn); }
+  .filter-btn.ssc-btn.active { background: rgba(162,155,254,0.12); color: var(--ssc); border-color: var(--ssc); }
+  .filter-btn.horus-btn.active { background: rgba(85,239,196,0.12); color: var(--horus); border-color: var(--horus); }
+  .filter-btn.ha-btn.active { background: rgba(253,121,168,0.12); color: var(--ha); border-color: var(--ha); }
+
+  .search-box {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.15s;
+  }
+  .search-box::placeholder { color: var(--text-dim); }
+  .search-box:focus { border-color: var(--accent); }
+
+  .result-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: auto;
+    letter-spacing: 2px;
+  }
+  .result-count span { color: var(--accent); }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1100px;
+  }
+
+  thead th {
+    background: var(--panel);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    transition: color 0.15s;
+  }
+  thead th:hover { color: var(--accent); }
+  thead th.sorted-asc, thead th.sorted-desc { color: var(--accent); }
+  thead th .sort-icon { margin-left: 4px; opacity: 0.4; font-size: 9px; }
+  thead th.sorted-asc .sort-icon::after { content: '▲'; opacity: 1; }
+  thead th.sorted-desc .sort-icon::after { content: '▼'; opacity: 1; }
+  thead th:not(.sorted-asc):not(.sorted-desc) .sort-icon::after { content: '⇅'; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: rgba(0,212,255,0.04); }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 9px 12px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  /* Frame name column */
+  td.frame-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Manufacturer badge */
+  .mfr-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+  }
+  .mfr-gms { color: var(--gms); background: rgba(126,200,227,0.08); }
+  .mfr-ipsn { color: var(--ipsn); background: rgba(255,159,67,0.08); }
+  .mfr-ssc { color: var(--ssc); background: rgba(162,155,254,0.08); }
+  .mfr-horus { color: var(--horus); background: rgba(85,239,196,0.08); }
+  .mfr-ha { color: var(--ha); background: rgba(253,121,168,0.08); }
+
+  /* Role badge */
+  .role-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  /* Numeric cells */
+  td.num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    text-align: right;
+    padding-right: 20px;
+    color: var(--text);
+  }
+
+  /* Value coloring */
+  .val-high { color: #55efc4; }
+  .val-mid { color: var(--text); }
+  .val-low { color: #fd79a8; }
+
+  /* Tech attack special coloring */
+  .tech-pos { color: #55efc4; font-weight: bold; }
+  .tech-zero { color: var(--text-dim); }
+  .tech-neg { color: #fd79a8; }
+
+  /* Size display */
+  .size-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* Column highlight on hover */
+  td.highlight { background: rgba(0,212,255,0.04); }
+
+  /* Stat bars */
+  .stat-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bar {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.08);
+    width: 50px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  /* Tooltip */
+  th[title] { position: relative; }
+
+  /* Column toggle */
+  .col-toggle {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+  .col-toggle-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-right: 6px;
+    align-self: center;
+  }
+  .col-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .col-btn.on { background: rgba(0,212,255,0.1); color: var(--accent); border-color: rgba(0,212,255,0.3); }
+  .col-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* No results */
+  .no-results {
+    text-align: center;
+    padding: 40px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-mark">IPS-N // GMS // HORUS // HARRISON ARMORY // SSC</div>
+    <h1>Frame Database</h1>
+    <div class="subtitle">All 27 Player Frames // Core Book // Sortable Stats Reference</div>
+  </header>
+
+  <div class="controls">
+    <div class="filter-group">
+      <span class="filter-label">Mfr:</span>
+      <button class="filter-btn active" data-filter="all" onclick="filterMfr('all',this)">All</button>
+      <button class="filter-btn gms-btn" data-filter="GMS" onclick="filterMfr('GMS',this)">GMS</button>
+      <button class="filter-btn ipsn-btn" data-filter="IPS-N" onclick="filterMfr('IPS-N',this)">IPS-N</button>
+      <button class="filter-btn ssc-btn" data-filter="SSC" onclick="filterMfr('SSC',this)">SSC</button>
+      <button class="filter-btn horus-btn" data-filter="HORUS" onclick="filterMfr('HORUS',this)">HORUS</button>
+      <button class="filter-btn ha-btn" data-filter="HA" onclick="filterMfr('HA',this)">HA</button>
+    </div>
+    <div class="filter-group" style="margin-left:12px">
+      <span class="filter-label">Role:</span>
+      <button class="filter-btn active" data-role="all" onclick="filterRole('all',this)">All</button>
+      <button class="filter-btn" data-role="Striker" onclick="filterRole('Striker',this)">Striker</button>
+      <button class="filter-btn" data-role="Controller" onclick="filterRole('Controller',this)">Controller</button>
+      <button class="filter-btn" data-role="Artillery" onclick="filterRole('Artillery',this)">Artillery</button>
+      <button class="filter-btn" data-role="Support" onclick="filterRole('Support',this)">Support</button>
+      <button class="filter-btn" data-role="Defender" onclick="filterRole('Defender',this)">Defender</button>
+    </div>
+    <input type="text" class="search-box" placeholder="Search frames..." oninput="searchFrames(this.value)">
+    <div class="result-count">Showing <span id="count">27</span> / 27 frames</div>
+  </div>
+
+  <div class="col-toggle">
+    <span class="col-toggle-label">Columns:</span>
+    <button class="col-btn on" onclick="toggleCol('col-size', this)">Size</button>
+    <button class="col-btn on" onclick="toggleCol('col-armor', this)">Armor</button>
+    <button class="col-btn on" onclick="toggleCol('col-hp', this)">HP</button>
+    <button class="col-btn on" onclick="toggleCol('col-repair', this)">Repair</button>
+    <button class="col-btn on" onclick="toggleCol('col-evasion', this)">Evasion</button>
+    <button class="col-btn on" onclick="toggleCol('col-speed', this)">Speed</button>
+    <button class="col-btn on" onclick="toggleCol('col-save', this)">Save</button>
+    <button class="col-btn on" onclick="toggleCol('col-sensors', this)">Sensors</button>
+    <button class="col-btn on" onclick="toggleCol('col-edef', this)">E-Def</button>
+    <button class="col-btn on" onclick="toggleCol('col-tech', this)">Tech Atk</button>
+    <button class="col-btn on" onclick="toggleCol('col-sp', this)">SP</button>
+    <button class="col-btn on" onclick="toggleCol('col-heat', this)">Heat Cap</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="frameTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)" title="Frame name">Frame <span class="sort-icon"></span></th>
+          <th onclick="sortTable(1)" title="Manufacturer">Mfr <span class="sort-icon"></span></th>
+          <th onclick="sortTable(2)" title="Primary role">Role <span class="sort-icon"></span></th>
+          <th class="col-size" onclick="sortTable(3)" title="Physical size (1/2 to 3)">Size <span class="sort-icon"></span></th>
+          <th class="col-armor" onclick="sortTable(4)" title="Armor reduces all damage">Armor <span class="sort-icon"></span></th>
+          <th class="col-hp" onclick="sortTable(5)" title="Hit Points">HP <span class="sort-icon"></span></th>
+          <th class="col-repair" onclick="sortTable(6)" title="Repair Cap — max repairs per mission">Repair <span class="sort-icon"></span></th>
+          <th class="col-evasion" onclick="sortTable(7)" title="Evasion — melee/ranged attack roll target">Evasion <span class="sort-icon"></span></th>
+          <th class="col-speed" onclick="sortTable(8)" title="Movement per turn">Speed <span class="sort-icon"></span></th>
+          <th class="col-save" onclick="sortTable(9)" title="Save Target — enemies need to beat this on saves">Save <span class="sort-icon"></span></th>
+          <th class="col-sensors" onclick="sortTable(10)" title="Sensor range for tech attacks">Sensors <span class="sort-icon"></span></th>
+          <th class="col-edef" onclick="sortTable(11)" title="E-Defense — tech attack roll target">E-Def <span class="sort-icon"></span></th>
+          <th class="col-tech" onclick="sortTable(12)" title="Tech Attack bonus added to 1d20 for tech attacks">Tech Atk <span class="sort-icon"></span></th>
+          <th class="col-sp" onclick="sortTable(13)" title="System Points — for equipping systems">SP <span class="sort-icon"></span></th>
+          <th class="col-heat" onclick="sortTable(14)" title="Heat Cap — maximum heat before overheating">Heat Cap <span class="sort-icon"></span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- Data rows injected by JS -->
+      </tbody>
+    </table>
+    <div class="no-results" id="noResults">NO FRAMES MATCH CURRENT FILTERS</div>
+  </div>
+
+</div>
+
+<script>
+const frames = [
+  // name, mfr, role, size, armor, hp, repair, evasion, speed, save, sensors, edef, tech, sp, heat
+  // Size: 0.5 = 1/2 for sorting
+  ["Everest",       "GMS",   "Striker/Support",    1,   0, 10, 5,  8,  4, 10, 10,  8,  0, 6, 6],
+  ["Blackbeard",    "IPS-N", "Striker",            1,   1, 12, 5,  8,  5, 10,  5,  6, -2, 5, 4],
+  ["Drake",         "IPS-N", "Defender",           2,   3,  8, 5,  6,  3, 10, 10,  6,  0, 5, 5],
+  ["Lancaster",     "IPS-N", "Support",            2,   1,  6,10,  8,  6, 10,  8,  8, +1, 8, 6],
+  ["Nelson",        "IPS-N", "Striker",            1,   0,  8, 5, 11,  5, 10,  5,  7,  0, 6, 6],
+  ["Raleigh",       "IPS-N", "Striker",            1,   1, 10, 5,  8,  4, 10, 10,  7, -1, 5, 5],
+  ["Tortuga",       "IPS-N", "Defender/Striker",   2,   2,  8, 6,  6,  3, 10, 15, 10, +1, 6, 6],
+  ["Vlad",          "IPS-N", "Striker/Controller", 1,   2,  8, 4,  8,  4, 11,  5,  8, -2, 5, 6],
+  ["Black Witch",   "SSC",   "Support/Controller", 1,   1,  6, 3, 10,  5, 11, 15, 12,  0, 8, 6],
+  ["Dusk Wing",     "SSC",   "Controller/Support", 0.5, 0,  6, 3, 12,  6, 11, 10,  8, +1, 6, 4],
+  ["Metalmark",     "SSC",   "Striker/Support",    1,   1,  8, 4, 10,  5, 10, 10,  6,  0, 5, 5],
+  ["Monarch",       "SSC",   "Artillery",          2,   1,  8, 3,  8,  5, 10, 15,  8, +1, 5, 6],
+  ["Mourning Cloak","SSC",   "Striker",            1,   0,  8, 3, 12,  5, 10, 15,  6,  0, 6, 4],
+  ["Swallowtail",   "SSC",   "Support/Controller", 1,   0,  6, 5, 10,  6, 10, 20, 10, +1, 6, 4],
+  ["Goblin",        "HORUS", "Controller",         0.5, 0,  6, 2, 10,  5, 11, 20, 12, +2, 8, 4],
+  ["Gorgon",        "HORUS", "Defender/Controller",2,   0, 12, 3,  8,  4, 12,  8, 12, +1, 6, 5],
+  ["Hydra",         "HORUS", "Controller",         1,   1,  8, 4,  7,  5, 10, 10, 10, +1, 8, 5],
+  ["Manticore",     "HORUS", "Striker",            1,   2,  8, 3,  6,  3, 10, 10, 10, +1, 6, 7],
+  ["Minotaur",      "HORUS", "Controller",         1,   0, 12, 4,  8,  4, 11,  8, 10, +1, 8, 5],
+  ["Pegasus",       "HORUS", "Artillery",          1,   0,  8, 3,  8,  4, 10, 10, 10, +1, 7, 6],
+  ["Barbarossa",    "HA",    "Artillery/Defender", 3,   2, 10, 4,  6,  2, 10, 10,  6, -2, 5, 8],
+  ["Genghis",       "HA",    "Striker",            1,   3,  6, 4,  6,  3, 10,  5,  8, -2, 5,10],
+  ["Iskander",      "HA",    "Controller",         2,   1,  8, 3,  8,  3, 12, 15, 10, +1, 6, 7],
+  ["Napoleon",      "HA",    "Striker/Support",    0.5, 2,  6, 3,  8,  4, 11,  5,  8,  0, 7, 8],
+  ["Saladin",       "HA",    "Defender/Support",   2,   1, 12, 4,  6,  3, 10, 10,  8,  0, 8, 8],
+  ["Sherman",       "HA",    "Striker/Artillery",  1,   1, 10, 4,  7,  3, 10, 10,  8, -1, 5, 8],
+  ["Tokugawa",      "HA",    "Striker",            1,   1,  8, 4,  8,  4, 11, 10,  6, -1, 6, 8],
+];
+
+// Stat ranges for color coding
+const ranges = {
+  3:  {min:0,   max:3},   // armor
+  4:  {min:6,   max:12},  // hp
+  5:  {min:2,   max:10},  // repair
+  6:  {min:6,   max:12},  // evasion
+  7:  {min:2,   max:6},   // speed
+  8:  {min:10,  max:12},  // save
+  9:  {min:5,   max:20},  // sensors
+  10: {min:6,   max:12},  // edef
+  12: {min:5,   max:8},   // sp
+  13: {min:4,   max:10},  // heat cap
+};
+
+function colorVal(colIdx, val) {
+  const r = ranges[colIdx];
+  if (!r) return 'val-mid';
+  const pct = (val - r.min) / (r.max - r.min);
+  if (pct >= 0.65) return 'val-high';
+  if (pct <= 0.35) return 'val-low';
+  return 'val-mid';
+}
+
+function techClass(val) {
+  if (val > 0) return 'tech-pos';
+  if (val < 0) return 'tech-neg';
+  return 'tech-zero';
+}
+
+function techStr(val) {
+  if (val > 0) return '+' + val;
+  return '' + val;
+}
+
+function sizeStr(val) {
+  if (val === 0.5) return '½';
+  return val;
+}
+
+function mfrClass(mfr) {
+  return 'mfr-' + mfr.toLowerCase().replace('-','');
+}
+
+function mfrBgColor(mfr) {
+  const map = {'GMS':'var(--gms)','IPS-N':'var(--ipsn)','SSC':'var(--ssc)','HORUS':'var(--horus)','HA':'var(--ha)'};
+  return map[mfr] || 'var(--text)';
+}
+
+function nameColor(mfr) {
+  return mfrBgColor(mfr);
+}
+
+function buildTable(data) {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  data.forEach(f => {
+    const [name, mfr, role, size, armor, hp, repair, evasion, speed, save, sensors, edef, tech, sp, heat] = f;
+    const tr = document.createElement('tr');
+    tr.dataset.mfr = mfr;
+    tr.dataset.role = role;
+    tr.dataset.name = name.toLowerCase();
+    tr.innerHTML = `
+      <td class="frame-name" style="color:${nameColor(mfr)}">${name}</td>
+      <td><span class="mfr-badge ${mfrClass(mfr)}">${mfr}</span></td>
+      <td><span class="role-badge">${role}</span></td>
+      <td class="num col-size"><span class="size-badge">${sizeStr(size)}</span></td>
+      <td class="num col-armor"><span class="${colorVal(3,armor)}">${armor}</span></td>
+      <td class="num col-hp"><span class="${colorVal(4,hp)}">${hp}</span></td>
+      <td class="num col-repair"><span class="${colorVal(5,repair)}">${repair}</span></td>
+      <td class="num col-evasion"><span class="${colorVal(6,evasion)}">${evasion}</span></td>
+      <td class="num col-speed"><span class="${colorVal(7,speed)}">${speed}</span></td>
+      <td class="num col-save"><span class="${colorVal(8,save)}">${save}</span></td>
+      <td class="num col-sensors"><span class="${colorVal(9,sensors)}">${sensors}</span></td>
+      <td class="num col-edef"><span class="${colorVal(10,edef)}">${edef}</span></td>
+      <td class="num col-tech"><span class="${techClass(tech)}">${techStr(tech)}</span></td>
+      <td class="num col-sp"><span class="${colorVal(12,sp)}">${sp}</span></td>
+      <td class="num col-heat"><span class="${colorVal(13,heat)}">${heat}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  updateCount();
+}
+
+// Sorting
+let sortCol = -1;
+let sortDir = 1;
+
+function sortTable(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+
+  // Update header classes
+  document.querySelectorAll('thead th').forEach((th, i) => {
+    th.classList.remove('sorted-asc','sorted-desc');
+    if (i === col) th.classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+  });
+
+  const tbody = document.getElementById('tableBody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a, b) => {
+    const aCell = a.cells[col];
+    const bCell = b.cells[col];
+    const aText = aCell.textContent.trim().replace('+','');
+    const bText = bCell.textContent.trim().replace('+','');
+    const aNum = parseFloat(aText);
+    const bNum = parseFloat(bText);
+    if (!isNaN(aNum) && !isNaN(bNum)) return (aNum - bNum) * sortDir;
+    return aText.localeCompare(bText) * sortDir;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  updateCount();
+}
+
+// Filtering
+let currentMfr = 'all';
+let currentRole = 'all';
+let currentSearch = '';
+
+function applyFilters() {
+  const rows = document.querySelectorAll('#tableBody tr');
+  let visible = 0;
+  rows.forEach(r => {
+    const mfrMatch = currentMfr === 'all' || r.dataset.mfr === currentMfr;
+    const roleMatch = currentRole === 'all' || r.dataset.role.includes(currentRole);
+    const searchMatch = currentSearch === '' || r.dataset.name.includes(currentSearch.toLowerCase()) || r.dataset.mfr.toLowerCase().includes(currentSearch.toLowerCase()) || r.dataset.role.toLowerCase().includes(currentSearch.toLowerCase());
+    const show = mfrMatch && roleMatch && searchMatch;
+    r.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+  document.getElementById('count').textContent = visible;
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function filterMfr(mfr, btn) {
+  currentMfr = mfr;
+  document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function filterRole(role, btn) {
+  currentRole = role;
+  document.querySelectorAll('[data-role]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function searchFrames(val) {
+  currentSearch = val.trim();
+  applyFilters();
+}
+
+function updateCount() {
+  const visible = document.querySelectorAll('#tableBody tr:not(.hidden)').length;
+  document.getElementById('count').textContent = visible;
+}
+
+// Column toggle
+function toggleCol(cls, btn) {
+  const cells = document.querySelectorAll('.' + cls);
+  const isOn = btn.classList.contains('on');
+  cells.forEach(c => c.style.display = isOn ? 'none' : '');
+  btn.classList.toggle('on', !isOn);
+}
+
+// Init
+buildTable(frames);
+</script>
+</body>
+</html>
