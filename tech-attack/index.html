@@ -174,6 +174,18 @@
     padding: 2px 6px; border: 1px solid var(--border2); color: var(--text-dim);
     text-transform: uppercase; border-radius: 2px; white-space: nowrap; cursor: help;
   }
+  /* Legend tags are clickable filters */
+  .legend .tag {
+    cursor: pointer;
+    transition: opacity 0.15s, box-shadow 0.15s;
+    user-select: none;
+  }
+  .legend .tag:hover { opacity: 0.8; }
+  .legend .tag.tag-active {
+    box-shadow: 0 0 0 2px currentColor;
+    opacity: 1;
+  }
+  .legend .tag:not(.tag-active) { opacity: 0.5; }
   .tag-heat-self { border-color: rgba(255,68,68,0.4); color: var(--heat); }
   .tag-stun      { border-color: rgba(255,215,0,0.3); color: #ffd700; }
   .tag-control   { border-color: rgba(162,155,254,0.3); color: var(--ssc); }
@@ -293,18 +305,18 @@
     <span class="action-badge ab-full">Full Tech</span>
     <span class="action-badge ab-passive">Passive</span>
   </div>
-  <span class="legend-label" style="margin-left:12px">Effect Tags:</span>
+  <span class="legend-label" style="margin-left:12px">Effect Tags <span style="font-size:8px;opacity:0.6">(click to filter)</span>:</span>
   <div class="legend-group">
-    <span class="tag tag-damage">Damage</span>
-    <span class="tag tag-heat-self">Self-Heat</span>
-    <span class="tag tag-stun">Stun</span>
-    <span class="tag tag-control">Control</span>
-    <span class="tag tag-debuff">Debuff</span>
-    <span class="tag tag-support">Support</span>
-    <span class="tag tag-info">Intel</span>
-    <span class="tag tag-defensive">Defensive</span>
-    <span class="tag tag-ally">Ally</span>
-    <span class="tag tag-crit">Crit</span>
+    <span class="tag tag-damage"    onclick="setTagFilter('damage',this)"   >Damage</span>
+    <span class="tag tag-heat-self" onclick="setTagFilter('heat-self',this)" >Self-Heat</span>
+    <span class="tag tag-stun"      onclick="setTagFilter('stun',this)"      >Stun</span>
+    <span class="tag tag-control"   onclick="setTagFilter('control',this)"   >Control</span>
+    <span class="tag tag-debuff"    onclick="setTagFilter('debuff',this)"    >Debuff</span>
+    <span class="tag tag-support"   onclick="setTagFilter('support',this)"   >Support</span>
+    <span class="tag tag-info"      onclick="setTagFilter('info',this)"      >Intel</span>
+    <span class="tag tag-defensive" onclick="setTagFilter('defensive',this)" >Defensive</span>
+    <span class="tag tag-ally"      onclick="setTagFilter('ally',this)"      >Ally</span>
+    <span class="tag tag-crit"      onclick="setTagFilter('crit',this)"      >Crit</span>
   </div>
 </div>
 
@@ -553,6 +565,7 @@ T.forEach(row => {
   const tr = document.createElement('tr');
   tr.dataset.at  = at;
   tr.dataset.mfr = mfr;
+  tr.dataset.tags = tags.join(' ');
   tr.dataset.search = [name, system, mfr, license, at, tags.join(' ')].join(' ').toLowerCase();
   tr.setAttribute('data-atype', at);
   tr.innerHTML = `
@@ -571,7 +584,7 @@ T.forEach(row => {
 });
 
 // Filters
-let fAt = 'all', fMfr = 'all', fSearch = '';
+let fAt = 'all', fMfr = 'all', fSearch = '', fTag = 'all';
 
 function setF(type, val, btn) {
   if (type === 'at')  { fAt  = val; document.querySelectorAll('[data-at]').forEach(b => b.classList.remove('active')); }
@@ -581,13 +594,27 @@ function setF(type, val, btn) {
 }
 function doSearch(v) { fSearch = v.trim().toLowerCase(); applyFilters(); }
 
+function setTagFilter(tag, el) {
+  // Toggle: clicking active tag resets to 'all'
+  if (fTag === tag) {
+    fTag = 'all';
+    document.querySelectorAll('.legend .tag').forEach(t => t.classList.remove('tag-active'));
+  } else {
+    fTag = tag;
+    document.querySelectorAll('.legend .tag').forEach(t => t.classList.remove('tag-active'));
+    el.classList.add('tag-active');
+  }
+  applyFilters();
+}
+
 function applyFilters() {
   let n = 0;
   document.querySelectorAll('#tbody tr').forEach(r => {
     const matchAt  = fAt  === 'all' || r.dataset.at  === fAt;
     const matchMfr = fMfr === 'all' || r.dataset.mfr === fMfr;
     const matchQ   = !fSearch || r.dataset.search.includes(fSearch);
-    const show = matchAt && matchMfr && matchQ;
+    const matchTag = fTag === 'all' || r.dataset.tags.split(' ').includes(fTag);
+    const show = matchAt && matchMfr && matchQ && matchTag;
     r.classList.toggle('hidden', !show);
     if (show) n++;
   });
