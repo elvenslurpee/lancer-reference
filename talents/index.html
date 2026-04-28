@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANCER // Talent Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#060a0f;--panel:#0b1118;--panel2:#0d1520;
+  --border:#1a2d3f;--border2:#1e3348;
+  --accent:#00d4ff;--text:#c8dce8;--text-dim:#4a6880;--text-bright:#eaf4ff;
+  --gms:#7ec8e3;--ipsn:#ff9f43;--ssc:#a29bfe;--horus:#55efc4;--ha:#fd79a8;
+  --warn:#ffd700;--success:#39ff14;--danger:#ff4444;
+  --r1:#4a6880;--r2:#00d4ff;--r3:#ffd700;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:"Exo 2",sans-serif;font-weight:300;min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;z-index:9999;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrapper{position:relative;z-index:1;max-width:1600px;margin:0 auto;padding:0 24px 80px;}
+header{padding:40px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px;position:relative;}
+header::after{content:"";position:absolute;bottom:-1px;left:0;width:240px;height:2px;background:linear-gradient(90deg,var(--ssc),transparent);}
+.logo-mark{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--ssc);letter-spacing:4px;opacity:.6;margin-bottom:6px;text-transform:uppercase;}
+h1{font-family:"Exo 2",sans-serif;font-weight:900;font-size:clamp(1.8rem,4vw,3rem);line-height:1;letter-spacing:-1px;text-transform:uppercase;background:linear-gradient(135deg,#fff 0%,var(--ssc) 60%,#7060cc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.subtitle{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--text-dim);letter-spacing:3px;margin-top:8px;text-transform:uppercase;}
+
+/* CONTROLS */
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+.filter-label{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;}
+.filter-btn{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all .15s;}
+.filter-btn:hover{color:var(--ssc);border-color:var(--ssc);}
+.filter-btn.active{background:rgba(162,155,254,.1);color:var(--ssc);border-color:var(--ssc);}
+.filter-btn.f-combat.active{background:rgba(255,159,67,.1);color:var(--ipsn);border-color:var(--ipsn);}
+.filter-btn.f-tech.active{background:rgba(0,212,255,.1);color:var(--accent);border-color:var(--accent);}
+.filter-btn.f-reactor.active{background:rgba(255,68,68,.1);color:var(--danger);border-color:var(--danger);}
+.filter-btn.f-mob.active{background:rgba(57,255,20,.1);color:var(--success);border-color:var(--success);}
+.filter-btn.f-drone.active{background:rgba(85,239,196,.1);color:var(--horus);border-color:var(--horus);}
+.filter-btn.f-sup.active{background:rgba(253,121,168,.1);color:var(--ha);border-color:var(--ha);}
+.filter-btn.f-util.active{background:rgba(255,215,0,.1);color:var(--warn);border-color:var(--warn);}
+.search-box{font-family:"Share Tech Mono",monospace;font-size:12px;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:5px 12px;outline:none;width:240px;}
+.search-box::placeholder{color:var(--text-dim);}
+.search-box:focus{border-color:var(--ssc);}
+.result-count{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--text-dim);margin-left:auto;letter-spacing:2px;}
+.result-count span{color:var(--ssc);}
+
+/* TALENT CARDS GRID */
+.talent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
+.talent-card{background:var(--panel);border:1px solid var(--border);display:flex;flex-direction:column;transition:border-color .2s;}
+.talent-card:hover{border-color:var(--border2);}
+.talent-card.hidden{display:none;}
+.tc-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;justify-content:space-between;}
+.tc-name{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:18px;letter-spacing:2px;text-transform:uppercase;color:var(--text-bright);}
+.tc-category{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:1.5px;padding:2px 6px;border-radius:2px;text-transform:uppercase;border:1px solid currentColor;white-space:nowrap;margin-top:3px;}
+.cat-combat{color:var(--ipsn);background:rgba(255,159,67,.07);}
+.cat-tech{color:var(--accent);background:rgba(0,212,255,.07);}
+.cat-reactor{color:var(--danger);background:rgba(255,68,68,.07);}
+.cat-mob{color:var(--success);background:rgba(57,255,20,.07);}
+.cat-drone{color:var(--horus);background:rgba(85,239,196,.07);}
+.cat-sup{color:var(--ha);background:rgba(253,121,168,.07);}
+.cat-util{color:var(--warn);background:rgba(255,215,0,.07);}
+.tc-flavor{font-size:11px;color:var(--text-dim);line-height:1.6;padding:10px 18px;font-style:italic;border-bottom:1px solid var(--border);}
+.tc-ranks{padding:12px 18px;display:flex;flex-direction:column;gap:0;flex:1;}
+.rank-block{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.rank-block:last-child{border-bottom:none;}
+.rank-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.rank-num{font-family:"Share Tech Mono",monospace;font-size:9px;letter-spacing:2px;padding:2px 7px;border-radius:2px;text-transform:uppercase;white-space:nowrap;}
+.rank-I{color:var(--r1);border:1px solid var(--r1);background:rgba(74,104,128,.1);}
+.rank-II{color:var(--r2);border:1px solid var(--r2);background:rgba(0,212,255,.07);}
+.rank-III{color:var(--r3);border:1px solid var(--r3);background:rgba(255,215,0,.07);}
+.rank-ability{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-bright);}
+.rank-effect{font-size:12px;color:var(--text-dim);line-height:1.7;}
+.rank-effect strong{color:var(--text);}
+.rank-effect .react{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--warn);border:1px solid rgba(255,215,0,.3);padding:1px 5px;border-radius:2px;}
+.rank-effect .weapon-gained{font-family:"Share Tech Mono",monospace;font-size:10px;color:var(--horus);background:rgba(85,239,196,.06);border:1px solid rgba(85,239,196,.2);padding:6px 8px;display:block;margin-top:6px;line-height:1.5;}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:60px;font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--text-dim);letter-spacing:2px;display:none;}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrapper">
+<header>
+  <div class="logo-mark">Section 4 // Compendium // Pilot Talents</div>
+  <h1>Talent Reference</h1>
+  <div class="subtitle">All 24 Pilot Talents &mdash; Ranks I, II &amp; III with Full Ability Text</div>
+</header>
+
+<div class="controls">
+  <span class="filter-label">Category:</span>
+  <button class="filter-btn active" data-cat="all"     onclick="setF(this,'all')">All</button>
+  <button class="filter-btn f-combat"  data-cat="combat"  onclick="setF(this,'combat')">Combat</button>
+  <button class="filter-btn f-tech"    data-cat="tech"    onclick="setF(this,'tech')">Tech / E-War</button>
+  <button class="filter-btn f-reactor" data-cat="reactor" onclick="setF(this,'reactor')">Reactor / DZ</button>
+  <button class="filter-btn f-mob"     data-cat="mob"     onclick="setF(this,'mob')">Mobility</button>
+  <button class="filter-btn f-drone"   data-cat="drone"   onclick="setF(this,'drone')">Drone</button>
+  <button class="filter-btn f-sup"     data-cat="sup"     onclick="setF(this,'sup')">Support / Leadership</button>
+  <button class="filter-btn f-util"    data-cat="util"    onclick="setF(this,'util')">Utility</button>
+  <input type="text" class="search-box" placeholder="Search talents and abilities..." oninput="doSearch(this.value)">
+  <div class="result-count">Showing <span id="count">0</span> talents</div>
+</div>
+
+<div class="talent-grid" id="grid"></div>
+<div class="no-results" id="nores">NO TALENTS MATCH CURRENT FILTERS</div>
+
+</div>
+<script>
+// Talent data: {name, cat, flavor, ranks: [{num, ability, effect}]}
+// cat: combat|tech|reactor|mob|drone|sup|util
+// rank num: "I"|"II"|"III"
+const T = [
+  {name:"Ace", cat:"mob", flavor:"Your skills as a mech pilot are notorious enough that your callsign is known throughout the system.",
+   ranks:[
+    {num:"I",  ability:"Acrobatics", effect:"While <strong>flying</strong>: +1 Accuracy on all AGILITY checks and saves. Reaction (1/round): when an attack misses you, fly up to 2 spaces in any direction."},
+    {num:"II", ability:"Afterburners", effect:"When you BOOST while flying, move an additional <strong>1d6 spaces</strong>, but take heat equal to half that amount."},
+    {num:"III",ability:"Supersonic", effect:"Quick action: spin up thrusters. If you end your turn flying, nominate a character within RANGE = SPEED and LoS. Gain the <strong>Supersonic</strong> reaction (1/round): <span class='react'>Trigger: your nominated target&apos;s turn ends. Effect: fly to a free space adjacent to them, ignoring engagement, no reactions.</span>"}
+  ]},
+  {name:"Bonded", cat:"sup", flavor:"You have found your bondmate — alone you are deadly; together you are a force of nature.",
+   ranks:[
+    {num:"I",  ability:"I'm Your Huckleberry", effect:"Choose a BONDMATE (ideally another PC). All mech skill checks and saves either character makes while adjacent gain <strong>+1 Accuracy</strong>. If both have this talent: +2 Accuracy (doesn't stack further). Bondmate can be changed between missions if the relationship has changed."},
+    {num:"II", ability:"Sundance", effect:"Gain the <strong>Intercede</strong> reaction (1/round): <span class='react'>Trigger: you are adjacent to your bondmate and they take damage from a source within your LoS. Effect: you take the damage instead.</span>"},
+    {num:"III",ability:"Cover Me!", effect:"If a character within LoS attempts to attack your bondmate, spend your OVERWATCH to intervene. The attacker must choose a different target (your Overwatch is wasted) or press on — if they attack anyway, you <strong>immediately attack them with Overwatch</strong> before the triggering attack resolves."}
+  ]},
+  {name:"Brawler", cat:"combat", flavor:"Up close and personal — the way battle was done since the dawn of time.",
+   ranks:[
+    {num:"I",  ability:"Hold and Lock", effect:"+1 Accuracy on all melee attacks against targets you are <strong>GRAPPLING</strong>."},
+    {num:"II", ability:"Sledgehammer", effect:"Your <strong>IMPROVISED ATTACKS</strong> gain KNOCKBACK 2 and deal <strong>2d6+2 kinetic</strong>."},
+    {num:"III",ability:"Knockout Blow", effect:"Gain a <strong>BRAWLER DIE</strong> (d6, starting at 6). Each GRAPPLE, RAM, or IMPROVISED ATTACK reduces it by 1. When it reaches 1: reset to 6 and, as a full action, <strong>knockout blow</strong> an adjacent character — HULL save or 2d6+2 kinetic + STUNNED until end of next turn. Persists between scenes; resets on rest/Full Repair."}
+  ]},
+  {name:"Brutal", cat:"combat", flavor:"This isn't a dance, it isn't a game — it's war, and Brutal lancers mean to see it through.",
+   ranks:[
+    {num:"I",  ability:"Predator", effect:"When you roll a <strong>natural 20</strong> on an attack die and crit, deal the <strong>maximum possible damage and bonus damage</strong>."},
+    {num:"II", ability:"Cull the Herd", effect:"Your <strong>critical hits</strong> gain <strong>KNOCKBACK 1</strong>."},
+    {num:"III",ability:"Relentless", effect:"When you miss with an attack, your <strong>next attack</strong> gains +1 Accuracy. This stacks and persists until you hit."}
+  ]},
+  {name:"Centimane", cat:"drone", flavor:"The Hundred Hands — agents of the Karrakin Royal Intelligence Service.",
+   ranks:[
+    {num:"I",  ability:"Ten Thousand Teeth", effect:"1/round, when you <strong>crit with a NEXUS</strong>, target must pass a SYSTEMS save or become <strong>IMPAIRED and SLOWED</strong> until end of next turn."},
+    {num:"II", ability:"Expose Weakness", effect:"When you consume LOCK ON as part of a NEXUS or DRONE attack and <strong>crit</strong>, target becomes <strong>SHREDDED</strong> until start of your next turn."},
+    {num:"III",ability:"Tidal Suppression", effect:"Replaces Ten Thousand Teeth. 1/round, when you crit with a NEXUS, target SYSTEMS save or choose one effect (lasts until end of their next turn): <strong>Harrying Swarm</strong> (IMPAIRED + SLOWED), <strong>Blinding Swarm</strong> (LoS limited to adjacent), <strong>Virulent Swarm</strong> (SHREDDED — adjacent also save), or <strong>Restricting Swarm</strong> (1 burn per action/reaction taken)."}
+  ]},
+  {name:"Combined Arms", cat:"combat", flavor:"True strength comes from knowing how to use both the blade and the gun.",
+   ranks:[
+    {num:"I",  ability:"Shield of Blades", effect:"While ENGAGED, you and any <strong>allies adjacent to you</strong> count as having <strong>soft cover</strong>."},
+    {num:"II", ability:"CQB-Trained", effect:"You don't gain <strong>Difficulty from being ENGAGED</strong> when making ranged attacks."},
+    {num:"III",ability:"Storm of Violence", effect:"When you hit with a melee attack, gain <strong>+1 Accuracy on your next ranged attack</strong> against that target. When you hit with a ranged attack, gain <strong>+1 Accuracy on your next melee attack</strong> against that target. Doesn't stack."}
+  ]},
+  {name:"Crack Shot", cat:"combat", flavor:"No targeting assist. No AI required. All you need is a zeroed sight, a fresh magazine, and a target downrange.",
+   ranks:[
+    {num:"I",  ability:"Stable, Steady", effect:"Protocol: become <strong>IMMOBILIZED</strong> until start of your next turn, but gain <strong>+1 Accuracy on all RIFLE attacks</strong> while immobilized (&#34;steadying your aim&#34;)."},
+    {num:"II", ability:"Zero In", effect:"1/round, while steadying your aim and attacking with a RIFLE: gain <strong>+1 Accuracy</strong> on the roll, and deal <strong>+1d6 bonus damage on a crit</strong>."},
+    {num:"III",ability:"Watch This", effect:"1/round, when you <strong>crit with a RIFLE</strong> while steadying your aim, target HULL save or choose an additional effect: <strong>Headshot</strong> (LoS limited to adjacent until end of next turn), <strong>Leg Shot</strong> (IMMOBILIZED until end of next turn), or <strong>Body Shot</strong> (knocked PRONE)."}
+  ]},
+  {name:"Drone Commander", cat:"drone", flavor:"Her swarm obeys almost before she orders — an unnerving development, but a useful one.",
+   ranks:[
+    {num:"I",  ability:"Shepherd", effect:"Your DRONE-tagged systems gain <strong>+5 HP</strong>. Gain the <strong>Shepherd</strong> protocol: move one drone within SENSORS up to 4 spaces."},
+    {num:"II", ability:"Energized Swarm", effect:"1/round, when you consume LOCK ON in an attack, all your DRONES emit a vicious pulse — all characters of your choice within <strong>Burst 1 of each drone</strong> take <strong>1d6 energy</strong>. Each character only affected by one drone."},
+    {num:"III",ability:"Invigorate", effect:"Quick action: send a pulse to an allied character (including DRONES) within Burst 3, drawing a LINE. Extend the LINE to additional allies within Burst 3 each (no repeats). Allied characters in the LINE restore <strong>+1d6 HP</strong> (rolled once); hostile characters take <strong>energy damage equal to the HP restored</strong>."}
+  ]},
+  {name:"Duelist", cat:"combat", flavor:"With a blade in your hand, you write old tales anew.",
+   ranks:[
+    {num:"I",  ability:"Man-at-Arms", effect:"+1 Accuracy on the <strong>first MAIN MELEE attack</strong> you make on your turn."},
+    {num:"II", ability:"Blademaster", effect:"1/round, when you hit with a MAIN MELEE weapon, gain 1 <strong>BLADEMASTER DIE</strong> (d6, max 3). Expend 1-for-1: <strong>Parry</strong> (reaction — RESISTANCE to a melee hit), <strong>Deflect</strong> (reaction — roll dice, 5+ gives RESISTANCE to a ranged hit), <strong>Feint</strong> (free action — ignore engagement and reactions from one adjacent target until start of next turn), or <strong>Trip</strong> (quick action — AGILITY save or target PRONE, pass through their space freely this turn)."},
+    {num:"III",ability:"Unstoppable", effect:"1/round, when you hit a target with a melee attack on your turn, expend a BLADEMASTER DIE to immediately <strong>GRAPPLE or RAM</strong> them as a free action after the attack."}
+  ]},
+  {name:"Engineer", cat:"util", flavor:"In your spare time, you have managed to apply a little old-fashioned ingenuity to your mech.",
+   ranks:[
+    {num:"I",  ability:"Prototype", effect:"On Full Repair: install a <strong>Prototype Weapon</strong> (integrated mount, doesn't require a mount slot). Choose any weapon type and damage type. <span class='weapon-gained'>Prototype Weapon — Main [any type], Limited 1d6+2, Overkill. Damage: 1d6+2 of chosen type.</span> Reroll Limited uses each Full Repair. Choose new type each repair."},
+    {num:"II", ability:"Revision", effect:"On Full Repair, choose two upgrades for your prototype: <strong>Tweaked Optics</strong> (+1 Accuracy always), <strong>Tweaked Computer</strong> (gains SMART), or <strong>Stripped Reactor Shielding</strong> (pay 2 heat — ranged: Burst 3, Blast 5, or Line 1; melee: Line 1)."},
+    {num:"III",ability:"Final Draft", effect:"Your prototype is now <strong>Limited 2d6</strong> and deals <strong>1d6+4 damage</strong>."}
+  ]},
+  {name:"Executioner", cat:"combat", flavor:"No one lives forever — you make sure of it.",
+   ranks:[
+    {num:"I",  ability:"Backswing Cut", effect:"1/round, when you hit with a <strong>HEAVY or SUPERHEAVY melee weapon</strong>, make another melee attack with the same weapon as a free action against a different character within THREAT and LoS. <strong>Deals half damage</strong> on hit."},
+    {num:"II", ability:"Wide Arc Cleave", effect:"The first time per round you <strong>crit with a HEAVY or SUPERHEAVY melee</strong>, deal <strong>3 kinetic to all characters and objects of your choice within THREAT</strong> (excluding the primary target)."},
+    {num:"III",ability:"No Escape", effect:"1/round, when you <strong>miss with a melee attack</strong>, reroll it against a <strong>different target</strong> within THREAT and LoS."}
+  ]},
+  {name:"Exemplar", cat:"combat", flavor:"Your livery is famous, your voice brassy, your weapons polished to a sheen.",
+   ranks:[
+    {num:"I",  ability:"Honorable Challenge", effect:"The first time on your turn you attack a hostile within Range 3 (hit or miss), give them the <strong>EXEMPLAR'S MARK</strong> as a free action. While marked (until start of your next turn), gain: <strong>Valiant Aid</strong> reaction (1/round) — <span class='react'>Trigger: ally attacks your mark and misses. Effect: they may reroll, must keep new result.</span>"},
+    {num:"II", ability:"Punishment", effect:"1/round, when your <strong>marked character attacks someone other than you</strong> within Range 3 of you, they <strong>trigger your OVERWATCH</strong>."},
+    {num:"III",ability:"To the Death", effect:"Free action when you mark: challenge to a duel. Both you and the marked character receive <strong>+3 Difficulty on attacks against anyone but each other</strong> until scene end or one mech is destroyed. If they attack you (hit or miss), this effect ceases for them until your next turn. You cannot voluntarily move away from your mark, and cannot mark new characters while active."}
+  ]},
+  {name:"Grease Monkey", cat:"util", flavor:"The mechanics come to you with questions, but usually prefer to stay away — there's something spooky about how your beast runs.",
+   ranks:[
+    {num:"I",  ability:"Unsanctioned Capacity Upgrade", effect:"While resting, spend <strong>2 REPAIRS</strong> to replenish <strong>1 use of all LIMITED and DEPLOYABLE</strong> weapons and systems."},
+    {num:"II", ability:"Machine Bond", effect:"When you <strong>STABILIZE</strong>, also clear <strong>IMPAIRED, JAMMED, IMMOBILIZED, SLOWED, and LOCK ON</strong>."},
+    {num:"III",ability:"Friends in High Places", effect:"1/mission while resting, call in a <strong>supply drop</strong>: you and allies replenish 1 use of all LIMITED weapons/systems and <strong>restore 1 STRUCTURE</strong>. Requires no REPAIRS and can exceed Repair Cap."}
+  ]},
+  {name:"Gunslinger", cat:"combat", flavor:"As easy as pointing a finger, you land your shots with accuracy unmatched by pilot or machine.",
+   ranks:[
+    {num:"I",  ability:"Opening Argument", effect:"+1 Accuracy on the <strong>first attack with an AUXILIARY ranged weapon</strong> on your turn."},
+    {num:"II", ability:"From the Hip", effect:"Gain the <strong>Return Fire</strong> reaction (1/round): <span class='react'>Trigger: a character hits you with a ranged attack. Effect: immediately attack them with a single AUXILIARY ranged weapon if they are within RANGE.</span>"},
+    {num:"III",ability:"I Kill With My Heart", effect:"Gain a <strong>GUNSLINGER DIE</strong> (d6, starting at 6). Each hit with an AUXILIARY ranged weapon reduces it by 1. When it reaches 1: reset to 6 to give your <strong>next AUX ranged attack +2d6 bonus AP damage</strong> that ignores cover. Persists between scenes; resets on rest/Full Repair."}
+  ]},
+  {name:"Hacker", cat:"tech", flavor:"Firewalls, gatekeeper protocols, invasion, defense — nothing stands in her way.",
+   ranks:[
+    {num:"I",  ability:"SNOW_CRASH", effect:"When you <strong>hit with a tech attack that consumes Lock On</strong>, your target must choose: take <strong>2 heat</strong>, or be <strong>pushed 3 spaces</strong> in a direction of your choice."},
+    {num:"II", ability:"SAFE_CRACKER", effect:"Gain three new <strong>Invade options</strong>: <strong>JAM COCKPIT</strong> (characters can't MOUNT/DISMOUNT target until ENGINEERING check), <strong>DISABLE LIFE SUPPORT</strong> (+1 Difficulty on all target saves until SYSTEMS check), and <strong>HACK./SLASH</strong> (target can't use Quick/Full Tech until SHUT DOWN or SYSTEMS check)."},
+    {num:"III",ability:"Last Argument of Kings", effect:"Gain a <strong>Full Tech option</strong>: tech attack within SENSORS/LoS. On hit: target immediately takes <strong>BURN equal to their current HEAT</strong>. If this causes an overheat, it resolves before their heat resets."}
+  ]},
+  {name:"Heavy Gunner", cat:"combat", flavor:"You clean your cannons; make ordered rows of your shot and shell.",
+   ranks:[
+    {num:"I",  ability:"Covering Fire", effect:"Quick action: choose a character within RANGE of a HEAVY ranged weapon and within 10 spaces — they become <strong>IMPAIRED</strong> until start of your next turn. If they move more than 1 space, they clear Impaired but you may immediately <strong>attack them as a reaction with a heavy ranged weapon for half damage</strong>. Effect ends if target damages you."},
+    {num:"II", ability:"Hammerbeat", effect:"When you successfully hit with the <strong>Covering Fire reaction attack</strong>, the target is <strong>IMMOBILIZED</strong> until end of their next turn."},
+    {num:"III",ability:"Bracketing Fire", effect:"When using Covering Fire, choose <strong>two targets</strong> instead of one. Each triggers and resolves your attack separately; clearing one doesn't clear the other."}
+  ]},
+  {name:"Hunter", cat:"mob", flavor:"The battlefield is your hunting ground. Your movement is a prowl: silent, quick, and controlled.",
+   ranks:[
+    {num:"I",  ability:"Lunge", effect:"1/round, when you attack with an <strong>AUXILIARY melee weapon</strong>, you may <strong>fly up to 3 spaces directly toward a character</strong> before the attack. Ignores engagement and doesn't provoke reactions."},
+    {num:"II", ability:"Knife Juggler", effect:"All AUXILIARY melee weapons gain <strong>THROWN 5</strong> (or increase existing THROWN to 5). At end of your turn, all weapons you threw <strong>automatically return to you</strong>."},
+    {num:"III",ability:"Disdainful Blade", effect:"1/round, when you hit a character with a melee attack, <strong>also throw an AUXILIARY melee weapon</strong> as a free action attack against any character within RANGE. This attack can't deal bonus damage."}
+  ]},
+  {name:"Infiltrator", cat:"mob", flavor:"Whatever the size of the mech, whatever the terrain, whatever the enemy, you can get in and get out without raising alarm.",
+   ranks:[
+    {num:"I",  ability:"Prowl", effect:"During your turn: entering LoS or moving from cover doesn't stop you being HIDDEN; you can <strong>pass freely through enemy spaces</strong> (can't end there); you can <strong>HIDE even in plain sight</strong>. All effects end when your turn ends."},
+    {num:"II", ability:"Ambush", effect:"When you start your turn <strong>HIDDEN</strong>, your first attack on a hit: target HULL save or become <strong>SLOWED, IMPAIRED, and unable to take reactions</strong> until end of their next turn."},
+    {num:"III",ability:"Mastermind", effect:"When you lose HIDDEN, you may first fire a <strong>flash bomb at any adjacent character</strong> (SYSTEMS save or LoS limited to adjacent until end of next turn). Then <strong>move up to your SPEED</strong>, ignoring engagement and reactions, before being revealed."}
+  ]},
+  {name:"Juggernaut", cat:"mob", flavor:"You're in a couple tons of metal powered by a sliver of dying star, and you're going to make sure everyone else knows it.",
+   ranks:[
+    {num:"I",  ability:"Momentum", effect:"When you BOOST, your <strong>next RAM before start of your next turn</strong> gains +1 Accuracy and knocks the target back an <strong>additional 2 spaces</strong>."},
+    {num:"II", ability:"Kinetic Mass Transfer", effect:"1/round, when you <strong>RAM a target into another character</strong>, that character HULL save or PRONE. RAM into an <strong>obstruction</strong>: target takes <strong>1d6 kinetic</strong>."},
+    {num:"III",ability:"Unstoppable Force", effect:"1/round, when you BOOST: move max SPEED in a straight line, take <strong>1d3+3 heat</strong>. Benefits: pass through same-SIZE-or-smaller characters (HULL save or PRONE); deal 20 AP to obstructions (pass through if destroyed); ignore difficult terrain; movement ignores engagement and reactions."}
+  ]},
+  {name:"Leader", cat:"sup", flavor:"Whatever your actual age, you're the Old Man of the battlefield. A light to your friends and allies.",
+   ranks:[
+    {num:"I",  ability:"Field Commander", effect:"Gain <strong>3 LEADERSHIP DICE</strong> (d6). 1/turn as free action: give an allied PC a LEADERSHIP DIE with an order. They may expend it for <strong>+1 Accuracy on any action directly following that order</strong>, or return it. Regain 1 on rest, all on Full Repair."},
+    {num:"II", ability:"Open Channels", effect:"Gain <strong>5 LEADERSHIP DICE</strong> instead of 3. You can now issue a command as a <strong>reaction at the start of any other player's turn</strong>, any number of times per round."},
+    {num:"III",ability:"Inspiring Presence", effect:"Gain <strong>6 LEADERSHIP DICE</strong>. Allies can expend them to <strong>reduce damage by 1d6</strong> when taking damage, or deal <strong>+1d6 bonus damage</strong> when they hit."}
+  ]},
+  {name:"Nuclear Cavalier", cat:"reactor", flavor:"That machine you pilot is powered by cascading nuclear reactions. Why not open that compartment up and see what sort of damage it can do?",
+   ranks:[
+    {num:"I",  ability:"Aggressive Heat Bleed", effect:"When in the <strong>DANGER ZONE</strong> (heat &ge; half Heat Cap), the <strong>first attack on your turn</strong> deals <strong>+2 bonus energy</strong> on a hit."},
+    {num:"II", ability:"Fusion Hemorrhage", effect:"When in the <strong>DANGER ZONE</strong>, the first attack on your turn deals <strong>+1d6 bonus energy</strong> on a hit."},
+    {num:"III",ability:"Here, Catch!", effect:"Gain an integrated mount with the <strong>Fuel Rod Gun</strong>: <span class='weapon-gained'>Fuel Rod Gun — Main CQB, Limited 3, Unique. Range 3, Blast 3, 1d3+2 energy. On Attack: Clear 4 heat.</span>"}
+  ]},
+  {name:"Siege Specialist", cat:"combat", flavor:"No wall can withstand you; no bunker can stay sealed. Your skill with cannon and blast is uncanny.",
+   ranks:[
+    {num:"I",  ability:"Jackhammer", effect:"Quick action (if you have a CANNON): fire a jackhammer round — automatically deal <strong>10 AP kinetic to a SIZE 1 section of any object</strong> within RANGE. Adjacent characters knocked back 2 spaces and take 2 kinetic."},
+    {num:"II", ability:"Collateral Damage", effect:"1/round, when you <strong>crit on a character or object with a CANNON</strong>, cause a <strong>Blast 2 secondary explosion</strong> around the target. Characters in the area either drop PRONE (reaction) or take <strong>2 kinetic and are knocked back 2 spaces</strong>."},
+    {num:"III",ability:"Lockbreaker", effect:"1/round, <strong>before rolling a CANNON attack</strong>, all characters adjacent to you HULL save or be knocked back 1 space and PRONE. You are then <strong>pushed 1 space</strong> in any direction."}
+  ]},
+  {name:"Skirmisher", cat:"mob", flavor:"Stay low, stay mobile, stay fast. You live to push your machine beyond expected parameters.",
+   ranks:[
+    {num:"I",  ability:"Impact", effect:"Before or after SKIRMISH (including as a reaction, e.g. Overwatch), <strong>move 2 spaces</strong>. Ignores engagement, no reactions."},
+    {num:"II", ability:"Integrated Chaff Launchers", effect:"At the start of your turn, gain <strong>soft cover</strong>. Lose it if you attack or force a save."},
+    {num:"III",ability:"Weave", effect:"The <strong>first attack taken as a reaction against you</strong> in any round <strong>automatically misses</strong>."}
+  ]},
+  {name:"Spotter", cat:"sup", flavor:"To see all — to divide each object you perceive from its cohesion, pulled apart like individual fibers in a vast sheet.",
+   ranks:[
+    {num:"I",  ability:"Particularize", effect:"When an <strong>adjacent allied character attacks and consumes LOCK ON</strong>, they may <strong>roll twice and choose either result</strong>."},
+    {num:"II", ability:"Panopticon", effect:"At end of your turn, if you didn't move and used Lock On Quick Tech, <strong>LOCK ON once as a free action</strong>. When you Lock On, also learn target's ARMOR, SPEED, EVASION, E-DEFENSE, MECH SKILLS, and current HP."},
+    {num:"III",ability:"Bentham/Foucault Elimination", effect:"Quick action when you LOCK ON: nominate an adjacent ally — they may <strong>immediately take any quick action as a reaction</strong>, consuming the Lock On. The action doesn't need to be an attack (but benefits from Lock On if it is)."}
+  ]},
+  {name:"Stormbringer", cat:"combat", flavor:"Drops of water, when taken together, can carve away the earth.",
+   ranks:[
+    {num:"I",  ability:"Seismic Deluge", effect:"1/round, when you <strong>successfully attack with a LAUNCHER and consume LOCK ON</strong>, you may also <strong>knock the target PRONE</strong>."},
+    {num:"II", ability:"Stormbending", effect:"1/round, when you hit with a LAUNCHER, choose: <strong>Lightning</strong> (concentrated blast — HULL save or knocked 3 spaces away from you; you're also knocked 3 spaces away from fire direction) or <strong>Thunder</strong> (spray in Burst 2 — AGILITY save or knocked 1 space away from target; primary target unaffected)."},
+    {num:"III",ability:"Torrent", effect:"Gain a <strong>TORRENT DIE</strong> (d6, starting at 6). Each Stormbending use reduces it by 1. When it reaches 1: reset to 6 and full action massive attack (RANGE 15, LoS): AGILITY save or <strong>2d6 kinetic + STUNNED + PRONE</strong>. Success: half damage + PRONE only. Resets on rest/Full Repair."}
+  ]},
+  {name:"Tactician", cat:"sup", flavor:"High ground, cover, the sun in her enemy's eyes, fire and move — she was a smart one.",
+   ranks:[
+    {num:"I",  ability:"Opportunist", effect:"1/round, gain <strong>+1 Accuracy on any melee attack</strong> if at least one allied character is <strong>ENGAGED with your target</strong>."},
+    {num:"II", ability:"Solar Backdrop", effect:"1/round, gain <strong>+1 Accuracy on any ranged attack</strong> made while you are at a <strong>higher elevation than your target</strong>."},
+    {num:"III",ability:"Overlapping Fire", effect:"Gain the <strong>Flank</strong> reaction (1/round): <span class='react'>Trigger: a character without cover from your position is successfully hit by an ally. Effect: target them with OVERWATCH, dealing half damage on hit.</span>"}
+  ]},
+  {name:"Technophile", cat:"tech", flavor:"You have dreams that aren't your own, now. The thing that was once contained speaks with your voice.",
+   ranks:[
+    {num:"I",  ability:"Servant Fragment", effect:"Gain a custom NHP as a free 0 SP AI system: <span class='weapon-gained'>Servant-Class NHP — 0 SP, Unique, AI. Your mech gains the AI tag. Can speak and has a personality, but limited initiative. Follows last direction given and defends itself. Doesn't benefit from your talents.</span>"},
+    {num:"II", ability:"Student Fragment", effect:"Your NHP develops further. Replace with: <span class='weapon-gained'>Student-Class NHP — 0 SP, Unique, AI, 1/round. 1/round: reroll any mech skill check or save. Must keep new result. Capable of complex independent thought.</span>"},
+    {num:"III",ability:"Enlightenment", effect:"Your NHP reaches enlightenment. Replace with <strong>Enlightenment-Class NHP</strong> (0 SP, doesn't count toward AI limit, 1/round reroll). Additional benefits: AIs in your mech can't cascade unless you allow it. Cascading/unshackled NHPs view you as significant rather than indifferent. NHP benefits from your talents."}
+  ]},
+  {name:"Vanguard", cat:"combat", flavor:"Get through their guard, get in their face, and make them know your name.",
+   ranks:[
+    {num:"I",  ability:"Handshake Etiquette", effect:"+1 Accuracy when using <strong>CQB weapons to attack targets within Range 3</strong>."},
+    {num:"II", ability:"See-Through Seeker", effect:"When using CQB weapons to attack targets <strong>within Range 3</strong>: <strong>ignore both soft and hard cover</strong> as long as you have line of sight."},
+    {num:"III",ability:"Semper Vigilo", effect:"You may use <strong>OVERWATCH with CQB weapons</strong> when enemies enter, leave, or move through spaces within your THREAT, <strong>regardless of where they started their turn</strong>."}
+  ]},
+  {name:"Walking Armory", cat:"util", flavor:"Lay waste in style, and live forever.",
+   ranks:[
+    {num:"I",  ability:"Armament", effect:"Gain the <span class='weapon-gained'>Ammo Case — 0 SP, Limited 6. 1/turn when you hit with a MAIN ranged weapon, expend charges: THUMPER (1) — KNOCKBACK 1 + kinetic; SHOCK (1) — energy damage + adjacent characters take 1 AP energy; MAG (1) — gains ARCING + energy damage.</span>"},
+    {num:"II", ability:"Expanded Portfolio", effect:"Ammo Case gains new ammo types (2 charges each): <strong>Hellfire</strong> (energy + bonus damage as burn), <strong>Jager</strong> (KNOCKBACK 2 + kinetic + HULL save or PRONE), <strong>Sabot</strong> (AP + energy)."},
+    {num:"III",ability:"Efficiency", effect:"On a <strong>critical hit using Ammo Case ammunition</strong>, <strong>don't expend any charges</strong>. (If the attack has multiple targets, only applies to the first attack roll.)"}
+  ]},
+];
+
+const catCls = {combat:"cat-combat",tech:"cat-tech",reactor:"cat-reactor",mob:"cat-mob",drone:"cat-drone",sup:"cat-sup",util:"cat-util"};
+const catLabel = {combat:"Combat",tech:"Tech / E-War",reactor:"Reactor / DZ",mob:"Mobility",drone:"Drone",sup:"Support",util:"Utility"};
+const rankCls = {I:"rank-I",II:"rank-II",III:"rank-III"};
+
+const grid = document.getElementById("grid");
+T.forEach(t => {
+  const card = document.createElement("div");
+  card.className = "talent-card";
+  card.dataset.cat = t.cat;
+  card.dataset.search = [t.name, t.cat, t.flavor, ...t.ranks.map(r => r.ability + " " + r.effect)].join(" ").toLowerCase();
+  card.innerHTML = `
+    <div class="tc-header">
+      <div>
+        <div class="tc-name">${t.name}</div>
+        <span class="tc-category ${catCls[t.cat]}">${catLabel[t.cat]}</span>
+      </div>
+    </div>
+    <div class="tc-flavor">${t.flavor}</div>
+    <div class="tc-ranks">
+      ${t.ranks.map(r => `
+        <div class="rank-block">
+          <div class="rank-header">
+            <span class="rank-num ${rankCls[r.num]}">Rank ${r.num}</span>
+            <span class="rank-ability">${r.ability}</span>
+          </div>
+          <div class="rank-effect">${r.effect}</div>
+        </div>`).join("")}
+    </div>`;
+  grid.appendChild(card);
+});
+
+let fCat = "all", fSearch = "";
+function setF(btn, cat) {
+  fCat = cat;
+  document.querySelectorAll("[data-cat]").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  applyFilters();
+}
+function doSearch(v) { fSearch = v.trim().toLowerCase(); applyFilters(); }
+function applyFilters() {
+  let n = 0;
+  document.querySelectorAll(".talent-card").forEach(c => {
+    const mc = fCat === "all" || c.dataset.cat === fCat;
+    const mq = !fSearch || c.dataset.search.includes(fSearch);
+    const show = mc && mq;
+    c.classList.toggle("hidden", !show);
+    if (show) n++;
+  });
+  document.getElementById("count").textContent = n;
+  document.getElementById("nores").style.display = n === 0 ? "block" : "none";
+}
+applyFilters();
+</script>
+</body>
+</html>
